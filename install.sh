@@ -67,6 +67,61 @@ if [ "$NODE_MAJOR" -lt 18 ] 2>/dev/null; then
   exit 1
 fi
 
+# Helper: robust npm global install that handles EACCES on Linux (apt node)
+npm_install_fallback() {
+  # First try normal global install
+  echo "› npm i -g claude-system"
+  if npm i -g claude-system 2>&1; then
+    echo ""
+    echo "✓ claude-system installed via npm"
+    echo "  Run: claude-system --help  (or npx claude-system --help)"
+    return 0
+  fi
+  echo ""
+  echo "  npm global install failed (likely EACCES: permission denied to /usr/local/lib/node_modules)"
+  echo "  This happens when node was installed via apt. Retrying with user-owned prefix ~/.npm-global…"
+  NPM_PREFIX="$HOME/.npm-global"
+  mkdir -p "$NPM_PREFIX/bin" "$NPM_PREFIX/lib" 2>/dev/null || true
+  # Try to set prefix to user dir (use --location=user if supported)
+  if npm config set prefix "$NPM_PREFIX" --location=user 2>/dev/null; then
+    :
+  elif npm config set prefix "$NPM_PREFIX" 2>/dev/null; then
+    :
+  else
+    echo "  Could not set npm prefix, trying with --prefix flag…"
+  fi
+  # Retry with user prefix
+  if npm i -g claude-system 2>&1; then
+    echo ""
+    echo "✓ claude-system installed via npm (user prefix $NPM_PREFIX)"
+    # Check if prefix bin is on PATH
+    case ":$PATH:" in
+      *":$NPM_PREFIX/bin:"*) ;;
+      *)
+        echo "  Add npm global bin to PATH:"
+        echo "    echo 'export PATH=\"\$HOME/.npm-global/bin:\$HOME/.local/bin:\$PATH\"' >> ~/.bashrc"
+        echo "    source ~/.bashrc"
+        echo "  Or run directly:"
+        echo "    $NPM_PREFIX/bin/claude-system --help"
+        echo "    npx claude-system --help"
+        ;;
+    esac
+    return 0
+  fi
+  echo ""
+  echo "✗ npm install still failed."
+  echo "  Try one of these (no sudo sh needed):"
+  echo "    npx claude-system@latest --help          # zero-install, works immediately"
+  echo "    pip install --user claude-system         # Python wrapper (needs pip)"
+  echo "    pipx install claude-system               # isolated pip install"
+  echo "  Or with sudo (if you have it):"
+  echo "    sudo npm i -g claude-system"
+  echo "  Or with nvm (recommended for Node devs):"
+  echo "    curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
+  echo "    nvm install 20 && npm i -g claude-system"
+  return 1
+}
+
 # Resolve version → download URL
 if [ "$VERSION" = "latest" ]; then
   # Use GitHub API to find latest release, fallback to main branch tarball for dev
@@ -84,16 +139,13 @@ if [ "$VERSION" = "latest" ]; then
   if [ -z "$DOWNLOAD_URL" ]; then
     echo "  No release asset found — installing via npm fallback…"
     if command -v npm >/dev/null 2>&1; then
-      echo "› npm i -g claude-system"
-      npm i -g claude-system
-      echo ""
-      echo "✓ claude-system installed via npm"
-      echo "  Run: claude-system --help"
-      exit 0
+      npm_install_fallback
+      exit $?
     else
       echo "✗ No release asset and npm not found. Install manually:"
       echo "  npm i -g claude-system"
       echo "  or: pip install claude-system"
+      echo "  or: npx claude-system@latest --help"
       exit 1
     fi
   fi
@@ -139,9 +191,8 @@ if [ -z "$BIN_SRC" ] || [ ! -f "$BIN_SRC" ]; then
   echo "  Tried: $TMPDIR/bin/claude-system, $TMPDIR/claude-system, $TMPDIR/cli/dist/index.js"
   echo "  Fallback: npm i -g claude-system"
   if command -v npm >/dev/null 2>&1; then
-    npm i -g claude-system
-    echo "✓ Installed via npm fallback"
-    exit 0
+    npm_install_fallback
+    exit $?
   fi
   exit 1
 fi
