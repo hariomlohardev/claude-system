@@ -1,19 +1,18 @@
 {
   "name": "claude-system",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "claude-system — npm distribution wrapper (thin, re-exports cli/)",
   "private": false,
   "type": "module",
   "bin": {
-    "claude-system": "../cli/dist/index.js"
+    "claude-system": "./dist/index.js"
   },
   "files": [
-    "../cli/dist/**/*",
-    "../cli/package.json",
-    "../README.md",
-    "../LICENSE"
+    "dist/**/*",
+    "postinstall.js"
   ],
   "scripts": {
+    "prepare": "node prepare.js",
     "postinstall": "node ./postinstall.js"
   },
   "keywords": ["claude-code", "claude-system"],
@@ -22,6 +21,7 @@
     "type": "git",
     "url": "https://github.com/hariomlohardev/claude-system.git"
   },
+  "homepage": "https://github.com/hariomlohardev/claude-system#readme",
   "engines": {
     "node": ">=18.0.0"
   }

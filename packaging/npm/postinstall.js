@@ -11,7 +11,11 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const binPath = join(here, '../../cli/dist/index.js');
+const binCandidates = [
+  join(here, 'dist/index.js'),
+  join(here, '../../cli/dist/index.js'),
+];
+const binPath = binCandidates.find((p) => existsSync(p)) ?? binCandidates[0]!;
 
 if (existsSync(binPath)) {
   try {

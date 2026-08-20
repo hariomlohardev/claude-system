@@ -115,3 +115,10 @@ packaging/pip/build/
 # Release artifacts (built by release.yml, not committed)
 dist/*.tar.gz
 dist/*.zip
+
+# Packaged CLI bundles (built by prepare.js, not committed)
+packaging/npm/dist/
+packaging/pip/claude_system/dist/
+packaging/pip/claude_system/package.json
+packaging/pip/claude_system/node_modules/
+
