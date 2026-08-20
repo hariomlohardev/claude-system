@@ -78,6 +78,11 @@ tmp/
 .remember/tmp/
 .remember/logs/
 
+# Claude Code local — ignore local settings, keep .claude/commands tracked (already committed)
+.claude/
+!.claude/commands/
+!.claude/commands/**
+
 # Python
 __pycache__/
 *.py[cod]
