@@ -1,0 +1,36 @@
+title: "💡 Feature Request"
+name: "💡 Feature Request"
+description: "Suggest an idea for claude-system"
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: "One-sentence idea"
+      placeholder: "e.g. Add --json to claude-system list"
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: "Motivation"
+      description: "What problem does this solve?"
+      placeholder: "As a contributor, I want … so that …"
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: "Proposed solution"
+      description: "How might it work?"
+      placeholder: "Add a --json flag that…"
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives considered"
+  - type: input
+    id: area
+    attributes:
+      label: "Area"
+      description: "cli / docs / systems / packaging / other"
+      placeholder: "cli"

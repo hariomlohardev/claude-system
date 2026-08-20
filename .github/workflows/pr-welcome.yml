@@ -1,0 +1,58 @@
+name: PR Welcome
+
+on:
+  pull_request:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Greet new contributor
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- pr-welcome -->';
+            const discussionUrl = 'https://github.com/hariomlohardev/claude-system/discussions';
+            const categoryUrl = 'https://github.com/hariomlohardev/claude-system/discussions/16';
+
+            const author = context.payload.pull_request.user.login;
+            const prNumber = context.payload.pull_request.number;
+            const repoOwner = context.repo.owner;
+            const repoName = context.repo.repo;
+
+            // Idempotency: list existing comments, skip if marker already present
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: repoOwner,
+              repo: repoName,
+              issue_number: prNumber,
+            });
+            if (comments.some(c => c.body && c.body.includes(marker))) {
+              console.log('Welcome already posted — skipping');
+              return;
+            }
+
+            const body = `${marker}
+            Hey @${author} ! 👋 Thanks so much for opening this PR — you're awesome! ✨
+
+            🌟 We're thrilled you chose to contribute to **claude-system**!
+            👀 Our maintainers will review your PR soon and get back to you — usually within a day or two. We appreciate your patience! 🙏
+
+            ⭐ If you like the project, please consider **starring the repo** — it helps others discover it and means a lot to us! → https://github.com/${repoOwner}/${repoName}
+
+            💡 Have a feature idea or suggestion? We'd love to hear it! Please share it in our **Feature Requests Discussion** → ${categoryUrl} — just click **New discussion** and post your idea! 🚀
+
+            💖 Thanks again for making **claude-system** better — you're the reason open source is amazing! 🎉
+            `;
+
+            await github.rest.issues.createComment({
+              owner: repoOwner,
+              repo: repoName,
+              issue_number: prNumber,
+              body,
+            });
+            console.log(`Posted welcome on #${prNumber} for @${author}`);
