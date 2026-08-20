@@ -8,6 +8,8 @@ on:
       - 'template/**'
       - 'scripts/**'
       - 'registry/index.json'
+      - 'cli/**'
+      - '.github/workflows/**'
   push:
     branches: [main]
     paths:
@@ -16,6 +18,8 @@ on:
       - 'template/**'
       - 'scripts/**'
       - 'registry/index.json'
+      - 'cli/**'
+      - '.github/workflows/**'
 
 permissions:
   pull-requests: write
