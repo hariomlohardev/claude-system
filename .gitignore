@@ -1,0 +1,112 @@
+# Dependencies
+node_modules/
+cli/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnp.*
+.yarn/*
+
+# Build outputs
+cli/dist/
+dist/
+build/
+*.tsbuildinfo
+
+# Keep package-lock for reproducibility? Uncomment to track it:
+# !cli/package-lock.json
+# Currently ignored per local preference:
+cli/package-lock.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Runtime
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+*.lcov
+.nyc_output/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Env
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.orig
+
+# Local prompts / scratch files (not part of repo)
+prompt.md
+prompt-cli.md
+test.py
+test-*.py
+scratch-*.md
+tmp-*.md
+
+# Local test homes
+test-home-temp/
+test-run-temp/
+.tmp/
+tmp/
+
+# Remember plugin — already has its own .gitignore, but keep top-level
+.remember/tmp/
+.remember/logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+packaging/pip/dist/
+packaging/pip/build/
+*.egg-info/
+.eggs/
+*.egg
+*.whl
+
+# Caches
+.cache/
+.parcel-cache/
+.turbo/
+.next/
+.nuxt/
+.eslintcache
+.stylelintcache
+
+# Release artifacts (built by release.yml, not committed)
+dist/*.tar.gz
+dist/*.zip
