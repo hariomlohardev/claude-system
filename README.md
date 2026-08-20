@@ -1,19 +1,29 @@
-<!-- markdownlint-disable MD013 MD060 -->
-# claude-system
+<!-- markdownlint-disable MD013 MD033 MD041 MD060 -->
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hariomlohardev/claude-system/main/docs/assets/demo.svg" width="800" alt="claude-system demo — list, search, install, run" onerror="this.style.display='none'" />
+</p>
+<p align="center"><em>Demo: <code>claude-system list</code> → <code>install</code> → <code>run</code> — one System, one shot. No demo asset yet — this will be <code>docs/assets/demo.gif</code> (800×450, ~10s).</em></p>
 
-Curated, opinionated Systems for Claude Code — install a complete workflow
-in one shot, not plugins one by one.
+<h1 align="center">claude-system</h1>
 
-[![npm](https://img.shields.io/badge/npm-v0.1.0-blue?style=flat-square)](https://www.npmjs.com/package/claude-system)
-[![PyPI](https://img.shields.io/badge/PyPI-v0.1.0-blue?style=flat-square)](https://pypi.org/project/claude-system/)
-[![CI](https://img.shields.io/badge/CI-validate-green?style=flat-square)](https://github.com/hariomlohardev/claude-system/actions/workflows/validate.yml)
-[![License](https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square)](./LICENSE)
+<p align="center"><strong>Curated, opinionated Systems for Claude Code.</strong> <code>curl | sh</code> and you have a complete workflow — not plugins one by one.</p>
 
-Claude Code's plugin system installs tools. `claude-system` installs
-**complete, tested workflows** — a `CLAUDE.md` prompt, skills, agents,
-commands, and hooks — as a single versioned System. One command to
-discover, one to install, one to run. The System is then the project
-context that `claude` sees.
+<p align="center">
+  <a href="https://www.npmjs.com/package/claude-system"><img src="https://img.shields.io/npm/v/claude-system?label=npm&color=blue&style=flat-square" alt="npm"/></a>
+  <a href="https://pypi.org/project/claude-system/"><img src="https://img.shields.io/pypi/v/claude-system?label=pypi&color=blue&style=flat-square" alt="PyPI"/></a>
+  <a href="https://github.com/hariomlohardev/claude-system/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/hariomlohardev/claude-system/validate.yml?label=CI&style=flat-square" alt="CI"/></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/hariomlohardev/claude-system?color=lightgrey&style=flat-square" alt="License"/></a>
+  <img src="https://img.shields.io/badge/made%20with-TypeScript%20%2B%20commander-3178c6?style=flat-square" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/tests-40%20passed-brightgreen?style=flat-square" alt="tests"/>
+  <a href="https://github.com/hariomlohardev/claude-system/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22"><img src="https://img.shields.io/badge/good%20first%20issues-3-7057ff?style=flat-square" alt="Good First Issues"/></a>
+</p>
+
+<p align="center">
+  <em>One registry, one store, always fresh — Claude Code's native plugins install tools; <code>claude-system</code> installs tested workflows.</em><br>
+  <code>list</code> • <code>search</code> • <code>info</code> • <code>install</code> • <code>run</code> • <code>update</code> • <code>create</code> • <code>validate</code> • <code>report</code>
+</p>
+
+---
 
 ## Install
 
@@ -29,13 +39,9 @@ pip install claude-system
 git clone https://github.com/hariomlohardev/claude-system.git && npm --prefix claude-system/cli install
 ```
 
-**Requirements:** **Node >= 18** and the [`claude` CLI](https://docs.anthropic.com/en/docs/claude-code)
-on your `PATH`. Verify with `node -v` and `claude --version`. No other
-runtime is required — the registry is plain JSON.
+Requires **Node >= 18** and the [`claude` CLI](https://docs.anthropic.com/en/docs/claude-code) on your `PATH`.
 
-## Quickstart
-
-The 30-second loop — discover, inspect, install, run:
+## Quickstart — 30 seconds
 
 ```sh
 claude-system list
@@ -45,14 +51,12 @@ claude-system install open-source
 claude-system run open-source
 ```
 
-`install` copies `systems/<name>/` to `~/.claude-system/systems/<name>/`
-and records `{ version, installedAt, setupDone }` in
+`install` drops the System to `~/.claude-system/systems/<name>/` and
+records `{ version, installedAt, setupDone }` in
 `~/.claude-system/systems.json`. `run` opens `claude` inside that
-System. The first `run` for a System that ships `setup.sh` shows its
-`WHY` message and asks `Are you sure you want to continue? (y/N)` — once
-you confirm and `setup.sh` exits `0`, `setupDone` is set and never
-prompted again. See [`docs/creating-a-system.md`](./docs/creating-a-system.md)
-for the full authoring flow.
+System — first run shows `setup.sh`'s `WHY` message and asks
+`Are you sure you want to continue? (y/N)` — once `setup.sh` exits `0`,
+`setupDone` is set and never prompted again.
 
 ## How it works
 
@@ -69,16 +73,24 @@ flowchart LR
 
 - **One canonical registry** — `registry/index.json` is generated from
   `systems/*/system.json` by `scripts/generate-index.js`, never hand-edited.
-  It is the small file the CLI fetches for `list`/`search`/`info`.
+- **One global store** — `~/.claude-system/systems/<name>/` plus
+  `~/.claude-system/systems.json` for `setupDone`.
+- **Always fresh** — every `list`/`search`/`info`/`install`/`update` fetches
+  from `https://raw.githubusercontent.com/hariomlohardev/claude-system/main/registry/index.json`
+  with `Cache-Control: no-cache`.
 
-- **One global store** — every installed System lives as a full copy in
-  `~/.claude-system/systems/<name>/`. Bookkeeping is in
-  `~/.claude-system/systems.json` (`setupDone` tracks the one-time consent).
+## Features
 
-- **Always fresh** — every `list`, `search`, `info`, `install`, and `update`
-  fetches from
-  `https://raw.githubusercontent.com/hariomlohardev/claude-system/main/registry/index.json`
-  with `Cache-Control: no-cache`. No TTL, no stale cache.
+| Feature | `list` | `search` | `info` | `install` | `run` |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Always fresh (`Cache-Control: no-cache`) | ✓ | ✓ | ✓ | ✓ | — |
+| Category filter (`--category`) | ✓ | — | — | — | — |
+| Keyword search (`name`/`displayName`/`description`/`keywords`) | — | ✓ | — | — | — |
+| Shows `permissions`/`setup.sh` note | — | — | ✓ | — | — |
+| Copies to `~/.claude-system/systems/<name>/` | — | — | — | ✓ | — |
+| One-time `setup.sh` consent (`WHY` → `y/N`, `setupDone`) | — | — | — | — | ✓ |
+| Forwards `-- <args>` to `claude` | — | — | — | — | ✓ |
+| Validates `system.json` + `name===folder` + security | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 ## Available Systems
 
@@ -88,11 +100,9 @@ flowchart LR
 
 More Systems are added via PRs to `systems/` — see
 [Contributing](./CONTRIBUTING.md). `claude-system list` is the source of
-truth; the table above is just a snapshot for V1.
+truth; this table is a V1 snapshot.
 
 ## Creating a System
-
-For contributors — scaffold, edit, validate, PR:
 
 ```sh
 cp -r template/starter-system systems/my-system
@@ -104,9 +114,8 @@ node cli/dist/index.js validate systems/my-system
 
 Checklist: `system.json` validates, `name` equals folder, required files
 `system.json`/`CLAUDE.md`/`README.md` present, `permissions[]` honestly
-declared (`shell:exec` if `setup.sh` exists), `setup.sh` contains a
-`# WHY:` line if present, and you did **not** hand-edit
-`registry/index.json`.
+declared, `setup.sh` has `# WHY:` if present, and you did **not**
+hand-edit `registry/index.json`.
 
 → Full guide: [`docs/creating-a-system.md`](./docs/creating-a-system.md)
 
@@ -120,28 +129,27 @@ declared (`shell:exec` if `setup.sh` exists), `setup.sh` contains a
 | `install <system>` | Copy to `~/.claude-system/systems/<name>/` and record in `systems.json` |
 | `remove <system>` | Remove the System and its entry in `systems.json` |
 | `update [<system>\|--all]` | Update to the latest registry version (preserves `setupDone`) |
+| `report <system>` | Open the tracker's issue page (`bugs.url` → `repository/issues` → monorepo) |
 | `run <system> [-- <args>]` | Open `claude` inside the System (one-time `setup.sh` consent) |
 | `create <name>` | Scaffold `systems/<name>/` from `template/starter-system` |
 | `validate [path]` | Validate `system.json` + required files + `name===folder` + security |
-| `report <system>` | Open the tracker's issue page (`bugs.url` → `repository/issues` → monorepo) |
 | `--help`, `--version` | Themed help and version via `commander` |
 
-Run `claude-system --help` or `claude-system <command> --help` for
-per-command flags. Help output uses the same muted palette as `claude`.
+## Why claude-system?
 
-## Docs
+| Tool | Lacks |
+|---|---|
+| `claude` plugins one by one | No curated, versioned workflow; no `setup.sh` consent; no registry |
+| Copy-pasting `CLAUDE.md` | No versioning, no `validate.yml`, no `permissions` review |
+| Ad-hoc dotfiles | No `list`/`search`/`info`, no `~/.claude-system` store |
 
-- [`SYSTEM_SPEC.md`](./SYSTEM_SPEC.md) — formal contract
-- [`docs/creating-a-system.md`](./docs/creating-a-system.md) — contributor guide
-- [`docs/security.md`](./docs/security.md) — trust model and permissions
-- [`CONTRIBUTING.md`](./CONTRIBUTING.md) — how to contribute a System
-- [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) — Contributor Covenant 2.1
-- [`SECURITY.md`](./SECURITY.md) — supported versions and advisories
-- [`LICENSE`](./LICENSE) — MIT
+**Moat:** Every System is a screenshot. Every `run` is a demo.
+`curl | sh` is zero friction, `validate.yml` is the quality gate.
 
 ## Development
 
 ```sh
+git clone https://github.com/hariomlohardev/claude-system && cd claude-system
 npm --prefix cli ci
 npm --prefix cli run build
 npm --prefix cli test
@@ -149,9 +157,23 @@ node scripts/generate-index.js
 node cli/dist/index.js validate
 ```
 
-`registry/index.json` is generated — run the generator and restore before
-committing (`git restore registry/index.json`) unless you are cutting a
-release.
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md). `npm run build` + `npm test`
+before PR. `registry/index.json` is generated — restore before committing
+(`git restore registry/index.json`) unless you are cutting a release.
+
+## Docs
+
+- [`SYSTEM_SPEC.md`](./SYSTEM_SPEC.md) — formal contract
+- [`docs/creating-a-system.md`](./docs/creating-a-system.md) — contributor guide
+- [`docs/security.md`](./docs/security.md) — trust model and permissions
+- [`CONTRIBUTING.md`](./CONTRIBUTING.md) — how to contribute
+- [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) — Covenant 2.1
+- [`SECURITY.md`](./SECURITY.md) — advisories
+- [`LICENSE`](./LICENSE) — MIT
+
+## Author
+
+Built by [Hariom Lohar](https://hariomlohardev.github.io/) — `hariomlohar.new@gmail.com`
 
 ## License
 
