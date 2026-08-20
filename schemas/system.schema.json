@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/claude-system/claude-system/main/schemas/system.schema.json",
+  "title": "Claude System definition — systems/<name>/system.json",
+  "description": "Validates a single System's manifest. The 'name' field must equal the containing folder name under systems/ (enforced by CI validate.yml, not by JSON Schema alone). See SYSTEM_SPEC.md and docs/creating-a-system.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional JSON Schema reference for editor tooling. Not required for validation; allowed so files that include '$schema' pass strict additionalProperties.",
+      "examples": ["../../schemas/system.schema.json"]
+    },
+    "name": {
+      "type": "string",
+      "description": "Unique kebab-case identifier for the System. Must exactly match the containing folder name under systems/. Must be unique across the registry.",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 1,
+      "maxLength": 64,
+      "examples": ["open-source", "frontend", "my-new-system"]
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Human-readable display name shown in list/info/search results.",
+      "minLength": 1,
+      "maxLength": 80,
+      "examples": ["Open Source Contributor", "My New System"]
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version of the System (semver 2.0.0).",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$",
+      "examples": ["1.0.0", "0.1.0", "2.3.1-beta.1"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Short summary of what the System does. Shown in search/list and registry index.",
+      "minLength": 10,
+      "maxLength": 300,
+      "examples": ["A focused environment for contributing to open-source projects with guided review and PR workflows."]
+    },
+    "keywords": {
+      "type": "array",
+      "description": "Searchable keywords. Used by the registry index to power search/list.",
+      "minItems": 1,
+      "maxItems": 15,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 32,
+        "pattern": "^[a-z0-9][a-z0-9-_ ]*$",
+        "examples": ["open-source", "frontend", "testing"]
+      }
+    },
+    "category": {
+      "type": "string",
+      "description": "Optional grouping for browsing the registry. If omitted, treated as 'other' for display.",
+      "enum": [
+        "open-source",
+        "frontend",
+        "backend",
+        "testing",
+        "security",
+        "docs",
+        "research",
+        "devops",
+        "other"
+      ],
+      "examples": ["open-source"]
+    },
+    "author": {
+      "type": "object",
+      "description": "Author or maintainer of this System.",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name of the author or organization.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "github": {
+          "type": "string",
+          "description": "GitHub username or org handle (without @). Optional.",
+          "minLength": 1,
+          "maxLength": 39,
+          "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$"
+        },
+        "url": {
+          "type": "string",
+          "description": "Author homepage or profile URL. Optional.",
+          "pattern": "^https?://"
+        }
+      },
+      "required": ["name"]
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license expression (e.g. MIT, Apache-2.0, ISC, GPL-3.0-only). Must be a valid SPDX identifier.",
+      "minLength": 1,
+      "maxLength": 64,
+      "examples": ["MIT", "Apache-2.0", "ISC"]
+    },
+    "repository": {
+      "type": "string",
+      "description": "Optional but recommended: URI to the author's own repo for this System, if they maintain one outside this monorepo. If omitted, the System lives only in this monorepo under systems/<name>/.",
+      "pattern": "^https?://"
+    },
+    "bugs": {
+      "type": "object",
+      "description": "Where issue reports for this System should go. If omitted, tooling should treat the default as '<this monorepo>/issues' tagged with the System name — do NOT assume repository exists.",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "URL of the bug tracker or issues page.",
+          "pattern": "^https?://"
+        }
+      },
+      "required": ["url"]
+    },
+    "homepage": {
+      "type": "string",
+      "description": "Optional homepage or documentation URL for this System.",
+      "pattern": "^https?://"
+    },
+    "claudeSystem": {
+      "type": "object",
+      "description": "Claude-system runtime metadata.",
+      "additionalProperties": false,
+      "properties": {
+        "specVersion": {
+          "type": "string",
+          "description": "Version of the System spec this manifest targets. Used to detect breaking spec changes.",
+          "minLength": 1,
+          "maxLength": 32,
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-.*)?(?:\\+.*)?$",
+          "examples": ["1.0.0"]
+        }
+      },
+      "required": ["specVersion"]
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Optional list of other Systems this System depends on. Defaults to [] if omitted.",
+      "default": [],
+      "items": {
+        "type": "object",
+        "description": "A single dependency on another System by name and semver range.",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "kebab-case name of the depended-on System.",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "version": {
+            "type": "string",
+            "description": "Semver version or range (e.g. ^1.0.0, ~0.2.3, 1.2.3). Exact syntax is not validated beyond being a non-empty string.",
+            "minLength": 1,
+            "maxLength": 64
+          }
+        },
+        "required": ["name", "version"]
+      },
+      "uniqueItems": true
+    },
+    "permissions": {
+      "type": "array",
+      "description": "Capabilities this System may request at install/run time. Must be declared honestly; reviewed during PR but not independently verified at runtime. See docs/security.md.",
+      "default": [],
+      "items": {
+        "type": "string",
+        "enum": [
+          "filesystem:read",
+          "filesystem:write",
+          "network:read",
+          "network:write",
+          "shell:exec",
+          "credentials:read"
+        ]
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "name",
+    "displayName",
+    "version",
+    "description",
+    "keywords",
+    "author",
+    "license",
+    "claudeSystem",
+    "permissions"
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/claude-system/claude-system/main/schemas/registry-index.schema.json",
+  "title": "Claude System Registry Index — registry/index.json",
+  "description": "Validates the generated registry/index.json. This file is a build artifact rebuilt by scripts/generate-index.js from systems/*/system.json. Never hand-edit it. Each entry in 'systems' is the subset of system.json fields the CLI needs for search/list/info without reading full System folders.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Optional JSON Schema reference for tooling.",
+      "examples": ["../schemas/registry-index.schema.json"]
+    },
+    "generatedAt": {
+      "type": "string",
+      "description": "ISO 8601 timestamp (UTC) when the index was generated. Empty string is allowed only for the initial placeholder before first generation.",
+      "examples": ["2026-08-20T12:00:00.000Z", ""]
+    },
+    "systems": {
+      "type": "array",
+      "description": "One entry per valid System under systems/<name>/, containing the subset of fields needed for CLI search/list/info.",
+      "items": {
+        "type": "object",
+        "title": "Registry entry — subset of system.json",
+        "description": "Minimal metadata for one System. Mirrors the corresponding fields in system.schema.json; see that schema for full field docs.",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "kebab-case identifier. Must equal the containing folder name under systems/.",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Human-readable display name.",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "version": {
+            "type": "string",
+            "description": "Semver 2.0.0 version of the System.",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*))?$"
+          },
+          "description": {
+            "type": "string",
+            "description": "Short summary of the System.",
+            "minLength": 10,
+            "maxLength": 300
+          },
+          "author": {
+            "type": "object",
+            "description": "Author of the System (subset of system.json author).",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "github": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 39,
+                "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$"
+              },
+              "url": {
+                "type": "string",
+                "pattern": "^https?://"
+              }
+            },
+            "required": ["name"]
+          },
+          "license": {
+            "type": "string",
+            "description": "SPDX license expression.",
+            "minLength": 1,
+            "maxLength": 64
+          },
+          "keywords": {
+            "type": "array",
+            "description": "Searchable keywords.",
+            "minItems": 1,
+            "maxItems": 15,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            }
+          },
+          "category": {
+            "type": "string",
+            "description": "Optional grouping for browsing.",
+            "enum": [
+              "open-source",
+              "frontend",
+              "backend",
+              "testing",
+              "security",
+              "docs",
+              "research",
+              "devops",
+              "other"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "Relative path from repo root to the System folder, e.g. systems/example-system.",
+            "pattern": "^systems/[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "examples": ["systems/example-system", "systems/frontend"]
+          }
+        },
+        "required": [
+          "name",
+          "displayName",
+          "version",
+          "description",
+          "author",
+          "license",
+          "keywords",
+          "path"
+        ]
+      }
+    }
+  },
+  "required": ["generatedAt", "systems"]
+}

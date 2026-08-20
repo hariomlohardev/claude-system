@@ -1,0 +1,25 @@
+{
+  "$schema": "../../schemas/system.schema.json",
+  "name": "example-system",
+  "displayName": "Example System (Reference Fixture)",
+  "version": "0.1.0",
+  "description": "Reference fixture used for CI validation and documentation — not intended for real installation or use.",
+  "keywords": ["example", "fixture", "reference"],
+  "category": "other",
+  "author": {
+    "name": "Claude System Maintainers",
+    "github": "claude-system",
+    "url": "https://github.com/claude-system/claude-system"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/claude-system/claude-system",
+  "bugs": {
+    "url": "https://github.com/claude-system/claude-system/issues"
+  },
+  "homepage": "https://github.com/claude-system/claude-system#readme",
+  "claudeSystem": {
+    "specVersion": "1.0.0"
+  },
+  "dependencies": [],
+  "permissions": ["filesystem:read"]
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "../../schemas/system.schema.json",
+  "name": "my-new-system",
+  "displayName": "My New System",
+  "version": "0.1.0",
+  "description": "A starter template for a new Claude System — replace this 10–300 character description with a concise summary of what your system does before submitting.",
+  "keywords": ["starter", "template", "example"],
+  "category": "other",
+  "author": {
+    "name": "Your Name",
+    "github": "your-github-handle",
+    "url": "https://example.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/your-org/your-system-repo",
+  "bugs": {
+    "url": "https://github.com/your-org/your-system-repo/issues"
+  },
+  "homepage": "https://example.com/my-new-system",
+  "claudeSystem": {
+    "specVersion": "1.0.0"
+  },
+  "dependencies": [],
+  "permissions": []
+}
