@@ -1,1 +1,167 @@
-﻿
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  id-token: write  # for npm provenance / PyPI trusted publishing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          cache-dependency-path: cli/package.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install CLI dependencies
+        working-directory: cli
+        run: npm ci
+
+      - name: Build CLI
+        working-directory: cli
+        run: npm run build
+
+      - name: Run tests
+        working-directory: cli
+        run: npm test
+
+      - name: Validate systems and regenerate registry
+        run: |
+          echo "› Validating all Systems"
+          node cli/dist/index.js validate
+          echo "› Validating template"
+          node cli/dist/index.js validate template/starter-system
+          echo "› Regenerating registry/index.json"
+          node scripts/generate-index.js
+          echo "› Registry generated — contents:"
+          cat registry/index.json | head -n 30
+          # Ensure registry is valid and sorted (generate-index already does, but double-check)
+          node -e "
+            import { readFile } from 'node:fs/promises';
+            import { registryIndexSchema } from './cli/dist/utils/validation.js';
+            const raw = await readFile('registry/index.json','utf-8');
+            const json = JSON.parse(raw);
+            const parsed = registryIndexSchema.safeParse(json);
+            if (!parsed.success) {
+              console.error('registry/index.json invalid:');
+              console.error(parsed.error.format());
+              process.exit(1);
+            }
+            const names = parsed.data.systems.map(s=>s.name);
+            const sorted = [...names].sort();
+            if (JSON.stringify(names) !== JSON.stringify(sorted)) {
+              console.error('registry not sorted');
+              process.exit(1);
+            }
+            console.log('✓ registry validates and is sorted');
+          "
+
+      - name: Package CLI artifacts
+        run: |
+          mkdir -p dist
+          # tar.gz and zip containing cli/dist + registry + install.sh (no node_modules)
+          tar -czf dist/claude-system-${{ github.ref_name }}-cli.tar.gz -C cli dist package.json
+          cp registry/index.json dist/registry-index.json
+          cp install.sh dist/install.sh
+          tar -czf dist/claude-system-${{ github.ref_name }}.tar.gz dist/registry-index.json dist/install.sh -C cli dist package.json 2>/dev/null || tar -czf dist/claude-system-${{ github.ref_name }}.tar.gz -C . registry/index.json install.sh cli/dist cli/package.json
+          # Simpler: build one artifact with cli/dist + registry + install.sh
+          rm -rf dist/claude-system-${{ github.ref_name }}.tar.gz
+          tar -czf dist/claude-system-${{ github.ref_name }}.tar.gz -C . registry/index.json install.sh cli/dist cli/package.json 2>/dev/null || tar -czf dist/claude-system-${{ github.ref_name }}.tar.gz cli/dist registry/index.json install.sh
+          cd cli && zip -r ../dist/claude-system-${{ github.ref_name }}.zip dist package.json 2>/dev/null || true
+          cp ../registry/index.json ../dist/ 2>/dev/null || true
+          cp ../install.sh ../dist/ 2>/dev/null || true
+          ls -lh dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*
+            registry/index.json
+          generate_release_notes: true
+          body: |
+            ## claude-system ${{ github.ref_name }}
+
+            ### Install
+
+            **curl | sh:**
+            ```sh
+            curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/main/install.sh | sh
+            ```
+
+            **npm:**
+            ```sh
+            npm i -g claude-system
+            ```
+
+            **pip:**
+            ```sh
+            pip install claude-system
+            ```
+
+            ### Verify
+
+            ```sh
+            claude-system --help
+            claude-system validate
+            ```
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install and build
+        working-directory: cli
+        run: |
+          npm ci
+          npm run build
+      - name: Publish to npm (provenance)
+        run: npm publish --provenance --access public
+        working-directory: cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install build deps
+        run: pip install build twine
+      - name: Build Python wrapper
+        working-directory: packaging/pip
+        run: |
+          python -m build
+          ls -lh dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: packaging/pip/dist

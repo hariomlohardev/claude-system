@@ -1,1 +1,41 @@
-﻿
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claude-system"
+version = "0.1.0"
+description = "claude-system — Python distribution wrapper (thin, fetches the GitHub Release artifact)"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Claude System Maintainers" }]
+maintainers = [{ name = "Claude System Maintainers" }]
+keywords = ["claude-code", "claude-system"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Environment :: Console",
+]
+requires-python = ">=3.8"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/hariomlohardev/claude-system"
+Repository = "https://github.com/hariomlohardev/claude-system"
+Issues = "https://github.com/hariomlohardev/claude-system/issues"
+
+[project.scripts]
+claude-system = "claude_system.wrapper:main"
+
+[tool.setuptools]
+packages = ["claude_system"]
+
+[tool.setuptools.package-data]
+claude_system = ["py.typed"]

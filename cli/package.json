@@ -1,0 +1,39 @@
+{
+  "name": "claude-system",
+  "version": "0.1.0",
+  "description": "Package-management and ecosystem layer for Claude Code Systems",
+  "type": "module",
+  "bin": {
+    "claude-system": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepare": "npm run build"
+  },
+  "keywords": ["claude-code", "claude", "ai", "systems", "plugins"],
+  "license": "MIT",
+  "author": "Claude System Maintainers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hariomlohardev/claude-system.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "execa": "^8.0.1",
+    "simple-git": "^3.20.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.4",
+    "vitest": "^1.6.0"
+  }
+}

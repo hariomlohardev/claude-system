@@ -1,0 +1,73 @@
+name: Bug report
+description: Report a bug in claude-system or a System
+labels: [bug]
+body:
+  - type: input
+    id: system
+    attributes:
+      label: System / Component
+      description: Which System is affected, or cli / registry / other?
+      placeholder: e.g. example-system, cli, registry, install.sh
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of claude-system --version (and Node version)
+      placeholder: e.g. claude-system 0.1.0, Node 20.11.0
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS / Platform
+      description: OS, shell, and arch (e.g. macOS 14, Ubuntu 22.04, Windows 11)
+      placeholder: e.g. Ubuntu 22.04, macOS 14.2, Windows 11 (x64)
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to trigger the bug
+      placeholder: |
+        1. claude-system install example-system
+        2. claude-system run example-system
+        3. ...
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior + logs
+      description: What actually happened. Paste logs/output with render: shell so formatting is preserved.
+      render: shell
+      placeholder: |
+        Paste relevant logs here. Run with DEBUG=1 for verbose logs if applicable.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else (screenshots, workaround, related issues)
+    validations:
+      required: false

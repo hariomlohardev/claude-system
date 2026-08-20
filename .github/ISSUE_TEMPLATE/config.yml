@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions & Discussions
+    url: https://github.com/hariomlohardev/claude-system/discussions
+    about: Ask questions or discuss ideas (GitHub Discussions)
+  - name: Documentation
+    url: https://github.com/hariomlohardev/claude-system#readme
+    about: Project docs and creating-a-system guide

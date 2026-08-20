@@ -1,1 +1,378 @@
-﻿
+name: Validate Systems
+
+on:
+  pull_request:
+    paths:
+      - 'systems/**'
+      - 'schemas/**'
+      - 'template/**'
+      - 'scripts/**'
+      - 'registry/index.json'
+  push:
+    branches: [main]
+    paths:
+      - 'systems/**'
+      - 'schemas/**'
+      - 'template/**'
+      - 'scripts/**'
+      - 'registry/index.json'
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: cli/package.json
+
+      - name: Install CLI dependencies
+        working-directory: cli
+        run: npm ci
+
+      - name: Build CLI
+        working-directory: cli
+        run: npm run build
+
+      # 2. Validate every System + template
+      - name: '2 — Validate every System (zod + name===folder + required files)'
+        run: |
+          echo "› Validating all systems/*/"
+          node cli/dist/index.js validate
+          echo "› Validating template/starter-system"
+          node cli/dist/index.js validate template/starter-system
+          echo "✓ All Systems and template passed"
+
+      # 3 & 4 are covered by the validate command itself (it checks name===folder and required files)
+      # but we also emit explicit annotations for the #1 contributor mistake
+      - name: '3/4 — Explicit name===folder + required files check (annotation)'
+        run: |
+          echo "› Explicit check: name === folder and required files"
+          FAIL=0
+          for dir in systems/*/; do
+            [ -d "$dir" ] || continue
+            name=$(basename "$dir")
+            json="s/${dir}system.json"
+            if [ ! -f "$dir/system.json" ]; then
+              echo "::error file=${dir}system.json::Missing system.json in $dir"
+              FAIL=1
+              continue
+            fi
+            # name === folder
+            jname=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf-8')).name)" "$dir/system.json" 2>/dev/null || echo "")
+            if [ "$jname" != "$name" ]; then
+              echo "::error file=${dir}system.json::name \"$jname\" must exactly match folder name \"$name\" (kebab-case)"
+              FAIL=1
+            fi
+            for f in CLAUDE.md README.md; do
+              if [ ! -f "$dir/$f" ]; then
+                echo "::error file=${dir}${f}::Missing required file $f in $dir"
+                FAIL=1
+              fi
+            done
+          done
+          if [ "$FAIL" != "0" ]; then
+            echo "✗ name===folder or required-files check failed"
+            exit 1
+          fi
+          echo "✓ name===folder and required files ok"
+
+      # 5. version semver bump on update PR
+      - name: '5 — Version semver bump check (update PRs)'
+        run: |
+          echo "› Checking version bump for modified Systems"
+          # Only on PR; on push to main skip (no base to compare)
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "  Not a PR — skipping version bump check"
+            exit 0
+          fi
+          # Get base registry from origin/main
+          git fetch origin main:refs/remotes/origin/main 2>/dev/null || true
+          BASE_REGISTRY=$(git show origin/main:registry/index.json 2>/dev/null || echo '{"systems":[]}')
+          echo "$BASE_REGISTRY" > /tmp/base-registry.json
+
+          # Find modified system.json files in this PR
+          MODIFIED=$(git diff --name-only origin/main...HEAD | grep -E "^systems/[^/]+/system.json$" || true)
+          if [ -z "$MODIFIED" ]; then
+            echo "  No systems/*/system.json modified — skipping"
+            exit 0
+          fi
+          echo "  Modified: $MODIFIED"
+          FAIL=0
+          for f in $MODIFIED; do
+            sysName=$(basename $(dirname "$f"))
+            # Get base version for this system (if exists)
+            baseVer=$(node -e "
+              const base = JSON.parse(require('fs').readFileSync('/tmp/base-registry.json','utf-8'));
+              const e = base.systems.find(s => s.name === process.argv[1]);
+              console.log(e ? e.version : '');
+            " "$sysName" 2>/dev/null || echo "")
+            if [ -z "$baseVer" ]; then
+              echo "  $sysName is new — skipping bump check"
+              continue
+            fi
+            # Get PR version
+            prVer=$(node -e "console.log(JSON.parse(require('fs').readFileSync(process.argv[1],'utf-8')).version)" "$f" 2>/dev/null || echo "")
+            if [ -z "$prVer" ]; then
+              echo "::error file=$f::Could not read version from $f"
+              FAIL=1
+              continue
+            fi
+            # Check semver
+            if ! echo "$prVer" | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$'; then
+              echo "::error file=$f::version \"$prVer\" is not valid semver"
+              FAIL=1
+              continue
+            fi
+            # Compare via Node version lib (replicate cli/src/lib/version.ts)
+            cmp=$(node -e "
+              const a = process.argv[1], b = process.argv[2];
+              function parse(v){ const m=v.match(/^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-(.+))?(?:\\+.*)?\$/); if(!m) return null; return {major:+m[1],minor:+m[2],patch:+m[3],pre:m[4]||null} }
+              function cmp(a,b){ const pa=parse(a), pb=parse(b); if(!pa||!pb) return a.localeCompare(b); if(pa.major!==pb.major) return pa.major-pb.major; if(pa.minor!==pb.minor) return pa.minor-pb.minor; if(pa.patch!==pb.patch) return pa.patch-pb.patch; if(pa.pre===pb.pre) return 0; if(pa.pre===null) return 1; if(pb.pre===null) return -1; return pa.pre.localeCompare(pb.pre); }
+              console.log(cmp(a,b));
+            " "$prVer" "$baseVer")
+            if [ "$cmp" -le 0 ] 2>/dev/null; then
+              echo "::error file=$f::version \"$prVer\" must be > base \"$baseVer\" (semver bump required for updates)"
+              FAIL=1
+            else
+              echo "  $sysName: $baseVer → $prVer ✓"
+            fi
+          done
+          if [ "$FAIL" != "0" ]; then
+            echo "✗ version bump check failed"
+            exit 1
+          fi
+          echo "✓ version bump ok"
+
+      # 6. permissions vs setup.sh cross-check
+      - name: '6 — permissions vs setup.sh cross-check'
+        run: |
+          echo "› Checking permissions vs setup.sh"
+          FAIL=0
+          for dir in systems/*/; do
+            [ -d "$dir" ] || continue
+            sys=$(basename "$dir")
+            hasSetup=0
+            [ -f "${dir}setup.sh" ] && hasSetup=1
+            # Read permissions array
+            hasShellExec=$(node -e "
+              try {
+                const j = JSON.parse(require('fs').readFileSync(process.argv[1],'utf-8'));
+                const p = j.permissions || [];
+                console.log(p.includes('shell:exec') ? '1' : '0');
+              } catch { console.log('0'); }
+            " "${dir}system.json" 2>/dev/null || echo "0")
+
+            if [ "$hasSetup" = "1" ] && [ "$hasShellExec" != "1" ]; then
+              echo "::error file=${dir}system.json::setup.sh exists but permissions does not include \"shell:exec\" — add it"
+              FAIL=1
+            fi
+            if [ "$hasSetup" = "0" ] && [ "$hasShellExec" = "1" ]; then
+              # Check if any hooks that need shell exist
+              hasHooks=0
+              for d in "${dir}hooks" "${dir}skills" "${dir}agents" "${dir}commands"; do
+                [ -d "$d" ] && hasHooks=1
+              done
+              if [ "$hasHooks" = "0" ]; then
+                echo "::warning file=${dir}system.json::permissions includes \"shell:exec\" but no setup.sh or hooks found — is shell:exec needed?"
+              fi
+            fi
+          done
+          if [ "$FAIL" != "0" ]; then
+            echo "✗ permissions/setup.sh cross-check failed"
+            exit 1
+          fi
+          echo "✓ permissions/setup.sh cross-check ok"
+
+      # 7. setup.sh WHY message check
+      - name: '7 — setup.sh WHY message check'
+        run: |
+          echo "› Checking setup.sh WHY message"
+          FAIL=0
+          for f in systems/*/setup.sh; do
+            [ -f "$f" ] || continue
+            # Must contain a WHY explanation — case-insensitive WHY or an echo that explains
+            if ! grep -qi "WHY" "$f" && ! grep -q "echo" "$f"; then
+              echo "::error file=$f::setup.sh must contain a WHY explanation (a line with \"# WHY:\" or an echo describing why setup is needed) — this is shown in the consent prompt"
+              FAIL=1
+            else
+              # Also verify it has at least 5 chars of explanation after WHY
+              whyLine=$(grep -i "WHY" "$f" | head -n1 || echo "")
+              if [ -n "$whyLine" ]; then
+                # Extract after WHY and check length
+                whyText=$(echo "$whyLine" | sed -E 's/.*WHY:?[[:space:]]*//I' | tr -d '[:space:]')
+                if [ -z "$whyText" ]; then
+                  echo "::warning file=$f::WHY line seems empty — add a meaningful explanation"
+                fi
+              fi
+              echo "  $f — WHY present ✓"
+            fi
+          done
+          if [ "$FAIL" != "0" ]; then
+            echo "✗ WHY message check failed"
+            exit 1
+          fi
+          echo "✓ WHY message ok (or no setup.sh)"
+
+      # 8. Unsafe content annotation (warning, not hard fail)
+      - name: '8 — Unsafe content scan (warnings)'
+        run: |
+          echo "› Scanning for unsafe patterns (warnings only)"
+          FOUND=0
+          # Use grep -r and emit ::warning per file/line
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            file=$(echo "$line" | cut -d: -f1)
+            lineno=$(echo "$line" | cut -d: -f2)
+            content=$(echo "$line" | cut -d: -f3- | head -c 120)
+            echo "::warning file=$file,line=$lineno::Unsafe pattern: curl | sh — requires network:read + shell:exec and consent — \"$content\""
+            FOUND=1
+          done < <(grep -rn -E "curl\s+.*\|\s*(sh|bash)" systems/ 2>/dev/null || true)
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            file=$(echo "$line" | cut -d: -f1)
+            lineno=$(echo "$line" | cut -d: -f2)
+            content=$(echo "$line" | cut -d: -f3- | head -c 120)
+            echo "::warning file=$file,line=$lineno::Unsafe pattern: wget | sh — \"$content\""
+            FOUND=1
+          done < <(grep -rn -E "wget\s+.*\|\s*(sh|bash)" systems/ 2>/dev/null || true)
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            file=$(echo "$line" | cut -d: -f1)
+            lineno=$(echo "$line" | cut -d: -f2)
+            echo "::warning file=$file,line=$lineno::Destructive pattern: rm -rf /"
+            FOUND=1
+          done < <(grep -rn -E "rm\s+-rf\s+/" systems/ 2>/dev/null || true)
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            file=$(echo "$line" | cut -d: -f1)
+            lineno=$(echo "$line" | cut -d: -f2)
+            echo "::warning file=$file,line=$lineno::Destructive pattern: rm -rf /*"
+            FOUND=1
+          done < <(grep -rn -E "rm\s+-rf\s+/\*" systems/ 2>/dev/null || true)
+          if [ "$FOUND" = "0" ]; then
+            echo "✓ No unsafe patterns found"
+          else
+            echo "⚠ Warnings emitted — review required, not a hard block"
+          fi
+
+      # 9. Registry hand-edit guard
+      - name: '9 — Registry hand-edit guard'
+        run: |
+          echo "› Checking registry/index.json is not hand-edited"
+          if git diff --name-only origin/main...HEAD 2>/dev/null | grep -q "^registry/index.json"; then
+            echo "registry/index.json was modified in this PR"
+            if git diff --name-only origin/main...HEAD | grep -q "^systems/.*/system.json"; then
+              echo "  Found systems/*/system.json change — checking if registry matches generator"
+              cp registry/index.json /tmp/old-registry.json
+              node scripts/generate-index.js
+              if ! diff -u /tmp/old-registry.json registry/index.json > /tmp/registry-diff.txt 2>&1; then
+                echo "::error file=registry/index.json::registry/index.json does not match generator output — do not hand-edit it. Edit systems/*/system.json and run node scripts/generate-index.js"
+                cat /tmp/registry-diff.txt
+                git restore registry/index.json
+                exit 1
+              else
+                echo "✓ Registry matches generator — OK"
+                git restore registry/index.json
+              fi
+            else
+              echo "::error file=registry/index.json::registry/index.json is generated — do not hand-edit it. Edit systems/*/system.json and run node scripts/generate-index.js"
+              exit 1
+            fi
+          else
+            echo "✓ Registry not hand-edited (or not changed) — OK"
+          fi
+
+      # 10. Regenerate + validate registry
+      - name: '10 — Regenerate and validate registry'
+        run: |
+          echo "› Regenerating registry/index.json"
+          node scripts/generate-index.js
+          echo "› Validating registry against schemas/registry-index.schema.json"
+          node -e "
+            import { readFile } from 'node:fs/promises';
+            import { registryIndexSchema } from './cli/dist/utils/validation.js';
+            const raw = await readFile('registry/index.json','utf-8');
+            const json = JSON.parse(raw);
+            const parsed = registryIndexSchema.safeParse(json);
+            if (!parsed.success) {
+              console.error('registry/index.json failed schema validation:');
+              console.error(parsed.error.format());
+              process.exit(1);
+            }
+            // Check sorted by name
+            const names = parsed.data.systems.map(s => s.name);
+            const sorted = [...names].sort();
+            if (JSON.stringify(names) !== JSON.stringify(sorted)) {
+              console.error('registry/index.json systems must be sorted by name ascending');
+              console.error('Expected:', sorted);
+              console.error('Got:', names);
+              process.exit(1);
+            }
+            console.log('✓ registry/index.json validates and is sorted');
+          "
+          # Restore so PR doesn't commit generated file (unless the PR intentionally updates registry via merge)
+          git restore registry/index.json
+
+      # 12. Template validates (keep as separate step for clarity)
+      - name: '12 — Template validates'
+        run: |
+          echo "› Validating template/starter-system"
+          node cli/dist/index.js validate template/starter-system
+          echo "✓ Template valid"
+
+      # 11. Auto-comment on failure
+      - name: '11 — Auto-comment on failure'
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            // Try to get last logs — we just post a helpful message
+            const body = `### ❌ Validation failed
+
+            The \`validate.yml\` workflow failed. Fix the errors above and push again.
+
+            **Run locally:**
+            \`\`\`sh
+            npm --prefix cli ci
+            npm --prefix cli run build
+            node cli/dist/index.js validate systems/<name>
+            # or validate all:
+            node cli/dist/index.js validate
+            \`\`\`
+
+            **Common fixes:**
+            - \`name\` must equal folder name (kebab-case)
+            - Required files: \`system.json\`, \`CLAUDE.md\`, \`README.md\`
+            - \`version\` must be semver and bumped for updates (e.g. 1.0.0 → 1.0.1)
+            - If \`setup.sh\` exists: add \`# WHY: ...\` and include \`"shell:exec"\` in \`permissions\`
+            - **Do not hand-edit \`registry/index.json\`** — edit \`systems/<name>/system.json\` and run \`node scripts/generate-index.js\`
+
+            Check the **Annotations** and **Logs** above for the exact file/line.`;
+
+            // Find PR number
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              console.log('Not a PR — skipping comment');
+              return;
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body,
+            });
+            console.log('Posted auto-comment to PR #' + pr.number);
