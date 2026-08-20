@@ -13,10 +13,8 @@ dist/
 build/
 *.tsbuildinfo
 
-# Keep package-lock for reproducibility? Uncomment to track it:
-# !cli/package-lock.json
-# Currently ignored per local preference:
-cli/package-lock.json
+# Keep package-lock for reproducibility (required for CI `npm ci`)
+# cli/package-lock.json is intentionally tracked — do not ignore
 
 # Logs
 logs/
@@ -121,4 +119,3 @@ packaging/npm/dist/
 packaging/pip/claude_system/dist/
 packaging/pip/claude_system/package.json
 packaging/pip/claude_system/node_modules/
-
