@@ -1,18 +1,39 @@
 {
   "rewrites": [
-    { "source": "/install", "destination": "/install.sh" },
-    { "source": "/install.sh", "destination": "/install.sh" }
+    {
+      "source": "/install",
+      "destination": "/install.sh"
+    },
+    {
+      "source": "/install.sh",
+      "destination": "/install.sh"
+    }
   ],
   "headers": [
     {
       "source": "/install",
-      "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }]
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60"
+        }
+      ]
     },
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "s-maxage=60, stale-while-revalidate=300" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Cache-Control",
+          "value": "s-maxage=60, stale-while-revalidate=300"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     }
   ],

@@ -12,6 +12,8 @@
 #   CLAUDE_SYSTEM_INSTALL_DIR — install directory, default: $HOME/.local/bin or /usr/local/bin
 
 set -eu
+# pipefail for bash, ignore for sh/dash
+set -o pipefail 2>/dev/null || true
 
 REPO="hariomlohardev/claude-system"
 BIN_NAME="claude-system"
@@ -56,15 +58,24 @@ mkdir -p "$INSTALL_DIR"
 
 # Check for Node (required for the Node-based CLI)
 if ! command -v node >/dev/null 2>&1; then
-  echo "✗ Node.js is required (18+). Install from https://nodejs.org and re-run."
+  echo "✗ Node not found — install Node >=18 from https://nodejs.org then re-run" >&2
   exit 1
 fi
 
 NODE_VER="$(node -v 2>/dev/null | sed 's/^v//')"
 NODE_MAJOR="$(echo "$NODE_VER" | cut -d. -f1)"
 if [ "$NODE_MAJOR" -lt 18 ] 2>/dev/null; then
-  echo "✗ Node.js 18+ is required (found v$NODE_VER). Please upgrade."
+  echo "✗ claude-system requires Node >=18 (found v$NODE_VER) — upgrade at https://nodejs.org" >&2
   exit 1
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "✗ npm not found — install Node from https://nodejs.org" >&2
+  exit 1
+fi
+
+if ! command -v git >/dev/null 2>&1; then
+  echo "⚠ git not found — some Systems need git (install from https://git-scm.com)" >&2
 fi
 
 # Helper: robust npm global install that handles EACCES on Linux (apt node)

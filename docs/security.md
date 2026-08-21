@@ -33,7 +33,26 @@ See [`docs/creating-a-system.md#3-permissions-—-declare-honestly`](creating-a-
 
 ---
 
-## 2. Reviewed but not independently verified
+## 2. setup.sh contract
+
+If a System ships `setup.sh`, it **must**:
+
+- Include a `# WHY:` line (or an `echo` explaining why setup is needed) — this is shown in the `claude-system run` consent prompt.
+- Be gated by a one-time consent prompt on first `claude-system run` — **never silently executed**.
+- Set `setupDone` in `~/.claude-system/systems.json` only after successful `setup.sh` exit (0); on non-zero, `setupDone` stays `false` and next `run` re-prompts.
+- Declare `"shell:exec"` in `permissions` (enforced by `validate.yml` cross-check).
+
+Example `setup.sh` header:
+
+```sh
+#!/bin/sh
+# WHY: installs claude and checks gh auth
+echo "Installing…"
+```
+
+`claude-system run` will show `WHY` and ask `Are you sure you want to continue? (y/N)` — no consent, no execution.
+
+## 3. Reviewed but not independently verified
 
 - **PR review:** Every System PR must pass [`validate.yml`](../.github/workflows/validate.yml) and maintainer review before merge. Reviewers compare the declared `permissions` against the actual content in `skills/`, `agents/`, `commands/`, `hooks/`, and `CLAUDE.md` (e.g. a System declaring `[]` but shipping a hook that runs `curl | bash` will be rejected). Security checks for unsafe patterns run in CI (see `docs/security.md` checks in `validate.yml`).
 - **Not a runtime sandbox guarantee:** The review is human and static. **There is no independent runtime verification or sandbox that enforces `permissions` at execution time.** A malicious or compromised System that is merged could do more than it declared. This is the same trust model as most package registries.
@@ -42,7 +61,7 @@ See [`docs/creating-a-system.md#3-permissions-—-declare-honestly`](creating-a-
 
 ---
 
-## 3. How to read `permissions` before installing
+## 4. How to read `permissions` before installing
 
 Before running `claude-system install <name>` or `claude-system run <name>`:
 
@@ -66,7 +85,7 @@ Before running `claude-system install <name>` or `claude-system run <name>`:
 
 ---
 
-## 4. For authors — how to keep users' trust
+## 5. For authors — how to keep users' trust
 
 - **Declare the honest superset.** If any skill, hook, or command *could* read the network, shell out, or touch credentials, include that permission even if it's conditional.
 - **Don't hide `shell:exec`.** If `hooks/` or `skills/` contain any executable code, declare `shell:exec`.
@@ -75,7 +94,7 @@ Before running `claude-system install <name>` or `claude-system run <name>`:
 
 ---
 
-## 5. Reporting concerns
+## 6. Reporting concerns
 
 If you find a System that appears to under-declare permissions, contains obfuscated or unsafe hooks, or exfiltrates data:
 

@@ -94,6 +94,16 @@ node cli/dist/index.js --help   # should render in Claude Code theme (cyan/gray,
 
 `registry/index.json` must remain sorted by `name` and validate against `schemas/registry-index.schema.json` — the generator does this.
 
+## Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `name must exactly match folder name (kebab-case)` | `system.json` `name` !== folder | Set `"name"` to folder or rename folder: `mv systems/old systems/new` |
+| `Missing CLAUDE.md / README.md` | Required files absent | `cp template/starter-system/CLAUDE.md systems/<name>/` and same for `README.md` |
+| `setup.sh exists but permissions does not include shell:exec` | `setup.sh` needs `shell:exec` | Add `"shell:exec"` to `permissions[]` in `system.json` |
+| `WHY message missing` | `setup.sh` without `# WHY:` | Add `# WHY: ...` to `setup.sh` |
+| `registry/index.json is generated — do not hand-edit` | Hand-edited generated file | `git restore registry/index.json && node scripts/generate-index.js` |
+
 ## Branch protection
 
 `main` requires `validate.yml` to pass before merge. No direct pushes for Systems — use the fork + PR flow above. Never bypass CI.

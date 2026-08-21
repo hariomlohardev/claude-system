@@ -28,7 +28,7 @@
 ## Install
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | sh
+curl -fsSL https://claude-system-tau.vercel.app/install | sh
 ```
 
 Alternatives:
@@ -36,7 +36,7 @@ Alternatives:
 ```sh
 npm i -g claude-system
 pip install claude-system
-git clone https://github.com/hariomlohardev/claude-system.git && npm --prefix claude-system/cli install
+curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | sh
 ```
 
 Requires **Node >= 18** and the [`claude` CLI](https://docs.anthropic.com/en/docs/claude-code) on your `PATH`.
@@ -65,10 +65,11 @@ flowchart LR
     A[Systems PR] --> B[validate.yml]
     B --> C[merge]
     C --> D[registry/index.json<br>generated]
-    D --> E[claude-system install]
-    E --> F[~/.claude-system/systems/&lt;name&gt;/]
-    F --> G[claude-system run]
-    G --> H[claude inside System]
+    D --> E[Supabase sync<br>via sync-registry.yml]
+    E --> F[claude-system install<br>Vercel API]
+    F --> G[~/.claude-system/systems/&lt;name&gt;/]
+    G --> H[claude-system run]
+    H --> I[claude inside System]
 ```
 
 - **One canonical registry** — `registry/index.json` is generated from
@@ -76,8 +77,8 @@ flowchart LR
 - **One global store** — `~/.claude-system/systems/<name>/` plus
   `~/.claude-system/systems.json` for `setupDone`.
 - **Always fresh** — every `list`/`search`/`info`/`install`/`update` fetches
-  from `https://raw.githubusercontent.com/hariomlohardev/claude-system/main/registry/index.json`
-  with `Cache-Control: no-cache`.
+  from `https://claude-system-tau.vercel.app/api/registry`
+  (Supabase via Vercel, `s-maxage=60`) with fallback to `raw.githubusercontent.com` and `Cache-Control: no-cache`.
 
 ## Features
 
@@ -181,3 +182,5 @@ MIT — see [LICENSE](./LICENSE).
 
 Built for Claude Code — this project does not replace it, it just launches
 it in the right place.
+
+<!-- SEO: claude-system, claude code systems, curated workflows, skills, agents, commands, hooks -->

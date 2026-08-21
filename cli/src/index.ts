@@ -16,6 +16,8 @@ import { registerRun } from './commands/run.js';
 import { registerCreate } from './commands/create.js';
 import { registerValidate } from './commands/validate.js';
 import { registerReport } from './commands/report.js';
+import { registerDoctor } from './commands/doctor.js';
+import { registerCompletion } from './commands/completion.js';
 
 function getVersion(): string {
   try {
@@ -68,6 +70,8 @@ registerRun(program);
 registerCreate(program);
 registerValidate(program);
 registerReport(program);
+registerDoctor(program);
+registerCompletion(program);
 
 // Global error handling for unknown commands
 program.on('command:*', (operands) => {

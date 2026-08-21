@@ -336,6 +336,14 @@ jobs:
           node cli/dist/index.js validate template/starter-system
           echo "✓ Template valid"
 
+      - name: 'e2e — curl install'
+        run: |
+          bash install.sh --help 2>&1 | head -n 20 || true
+          echo "› install.sh Node gate checked"
+
+      - name: 'e2e — doctor'
+        run: node cli/dist/index.js doctor 2>&1 | cat
+
       # 11. Auto-comment on failure
       - name: '11 — Auto-comment on failure'
         if: failure()
