@@ -92,7 +92,8 @@ jobs:
           ls -lh dist/
 
       - name: Build npm pack (dry-run check)
-        run: npm --prefix cli pack --dry-run 2>&1 | head -n 30
+        working-directory: cli
+        run: npm pack --dry-run 2>&1 | head -n 30
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
