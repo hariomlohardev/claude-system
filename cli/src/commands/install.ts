@@ -4,8 +4,10 @@ import { getSystemInstallPath, isInstalled, recordInstall, getSetupDone } from '
 import { findRepoSystemSource } from '../lib/repo.js';
 import { theme } from '../utils/theme.js';
 import { handleError } from '../utils/errors.js';
-import { cp, mkdir, stat } from 'node:fs/promises';
+import { cp, mkdir, stat, writeFile, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 
 export function registerInstall(program: Command): void {
   program
@@ -19,6 +21,75 @@ export function registerInstall(program: Command): void {
         handleError(err);
       }
     });
+}
+
+async function downloadSystemFromGitHub(name: string, entryPath: string): Promise<string | null> {
+  // Download System folder from GitHub raw as fallback when local source not found
+  // Works for production (global install) and for any cwd
+  const baseRaw = `https://raw.githubusercontent.com/hariomlohardev/claude-system/main/${entryPath}`;
+  const apiUrl = `https://api.github.com/repos/hariomlohardev/claude-system/contents/${entryPath}`;
+
+  // Create temp source dir
+  const tmpBase = join(tmpdir(), `claude-system-download-${name}-${Date.now()}`);
+  await mkdir(tmpBase, { recursive: true });
+
+  // Helper to fetch and write a single file
+  async function fetchFile(relPath: string, dest: string): Promise<boolean> {
+    const url = `${baseRaw}/${relPath}`;
+    try {
+      const res = await fetch(url, { headers: { Accept: 'text/plain', 'Cache-Control': 'no-cache' } });
+      if (!res.ok) return false;
+      const text = await res.text();
+      await mkdir(join(dest, '..'), { recursive: true });
+      await writeFile(dest, text, 'utf-8');
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // Try to list directory via GitHub API to know what to download
+  let filesToFetch: string[] = ['system.json', 'CLAUDE.md', 'README.md', 'settings.json', '.claude/config.json'];
+  // Known agents/commands for oss-contrib-finder and generic fallback
+  const knownAgents = ['fit-scorer.md', 'issue-hunter.md', 'issue-triager.md', 'portfolio-curator.md', 'repo-archaeologist.md', 'repo-scout.md', 'shadow-reviewer.md'];
+  const knownCommands = ['find-issues.md', 'history.md', 'portfolio.md', 'solve-issue.md', 'understand.md'];
+  for (const a of knownAgents) filesToFetch.push(`.claude/agents/${a}`);
+  for (const c of knownCommands) filesToFetch.push(`.claude/commands/${c}`);
+  filesToFetch.push('.claude/state/.gitkeep');
+  filesToFetch.push('PORTFOLIO.example.md');
+
+  // Also try API listing to discover any other files (best effort)
+  try {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(apiUrl, { headers: { Accept: 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' }, signal: controller.signal });
+    clearTimeout(t);
+    if (res.ok) {
+      const listing: any = await res.json();
+      if (Array.isArray(listing)) {
+        // We have listing, but our known list already covers required files; keep it
+      }
+    }
+  } catch {
+    // ignore, use known list
+  }
+
+  let fetched = 0;
+  for (const rel of filesToFetch) {
+    const dest = join(tmpBase, rel);
+    const ok = await fetchFile(rel, dest);
+    if (ok) fetched++;
+  }
+
+  // Must have at least system.json to be valid
+  if (!existsSync(join(tmpBase, 'system.json'))) {
+    return null;
+  }
+
+  // Also ensure .claude/state/drafts exists
+  try { await mkdir(join(tmpBase, '.claude/state/drafts'), { recursive: true }); } catch {}
+
+  return tmpBase;
 }
 
 async function runInstall(name: string): Promise<void> {
@@ -49,12 +120,21 @@ async function runInstall(name: string): Promise<void> {
     process.exit(0);
   }
 
-  // Resolve source — prefer local repo copy (dev), else try GitHub fetch
-  const sourcePath = findRepoSystemSource(name);
+  // Resolve source — prefer local repo copy (dev), else try GitHub fetch (any cwd, production)
+  let sourcePath = findRepoSystemSource(name);
+  let via: 'local' | 'download' = 'local';
 
   if (!sourcePath) {
-    // Try to explain that we need to fetch from GitHub — but for v1 we only support local copy
-    // In a real release asset flow, we'd download from GitHub Releases.
+    console.log(theme.dim(`› Local source not found — fetching "systems/${name}/" from GitHub raw…`));
+    const downloaded = await downloadSystemFromGitHub(name, entry.path || `systems/${name}`);
+    if (downloaded) {
+      sourcePath = downloaded;
+      via = 'download';
+      console.log(theme.dim(`  via: download from raw.githubusercontent.com (main)`));
+    }
+  }
+
+  if (!sourcePath) {
     console.error(theme.error(`Source for "${name}" not found locally.`));
     console.error(theme.dim(`  Expected: systems/${name}/ in the registry repo`));
     console.error(theme.dim(`  Registry says path: ${entry.path}`));
@@ -66,7 +146,6 @@ async function runInstall(name: string): Promise<void> {
   const destPath = getSystemInstallPath(name);
   try {
     await mkdir(destPath, { recursive: true });
-    // Node 16.7+ has cp
     await cp(sourcePath, destPath, { recursive: true, force: true });
   } catch (err) {
     console.error(theme.error(`Failed to install "${name}": ${err instanceof Error ? err.message : String(err)}`));
@@ -78,7 +157,6 @@ async function runInstall(name: string): Promise<void> {
   // Fire-and-forget analytics — do not block install on failure
   try {
     const vercelUrl = 'https://claude-system-tau.vercel.app';
-    // Use native fetch with short timeout, ignore errors
     const controller = new AbortController();
     const t = setTimeout(() => controller.abort(), 3000);
     fetch(`${vercelUrl}/api/systems/${name}/install`, { method: 'POST', signal: controller.signal }).then(async (r) => {
@@ -92,7 +170,7 @@ async function runInstall(name: string): Promise<void> {
     });
   } catch {}
 
-  console.log(theme.success(`Installed ${theme.cyan(name)} ${theme.dim(`v${entry.version}`)}`));
+  console.log(theme.success(`Installed ${theme.cyan(name)} ${theme.dim(`v${entry.version}`)}`) + (via === 'download' ? theme.dim(' (via download)') : ''));
   console.log(theme.dim(`  → ${destPath}`));
   console.log('');
 
