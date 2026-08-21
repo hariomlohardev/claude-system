@@ -1,8 +1,8 @@
 <!-- markdownlint-disable MD013 MD033 MD041 MD060 -->
 <p align="center">
-  <img src="https://raw.githubusercontent.com/hariomlohardev/claude-system/main/docs/assets/demo.svg" width="800" alt="claude-system demo — list, search, install, run" onerror="this.style.display='none'" />
+  <img src="./docs/assets/demo.gif" width="800" alt="claude-system demo — list, search, install, run — 10s" onerror="this.onerror=null;this.src='./docs/assets/demo.svg';" />
 </p>
-<p align="center"><em>Demo: <code>claude-system list</code> → <code>install</code> → <code>run</code> — one System, one shot. No demo asset yet — this will be <code>docs/assets/demo.gif</code> (800×450, ~10s).</em></p>
+<p align="center"><em>Demo: <code>claude-system list</code> → <code>install</code> → <code>run</code> — one System, one shot (800×450, ~10s).</em></p>
 
 <h1 align="center">claude-system</h1>
 
@@ -14,8 +14,7 @@
   <a href="https://github.com/hariomlohardev/claude-system/actions/workflows/validate.yml"><img src="https://img.shields.io/github/actions/workflow/status/hariomlohardev/claude-system/validate.yml?label=CI&style=flat-square" alt="CI"/></a>
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/hariomlohardev/claude-system?color=lightgrey&style=flat-square" alt="License"/></a>
   <img src="https://img.shields.io/badge/made%20with-TypeScript%20%2B%20commander-3178c6?style=flat-square" alt="TypeScript"/>
-  <img src="https://img.shields.io/badge/tests-40%20passed-brightgreen?style=flat-square" alt="tests"/>
-  <a href="https://github.com/hariomlohardev/claude-system/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22"><img src="https://img.shields.io/badge/good%20first%20issues-3-7057ff?style=flat-square" alt="Good First Issues"/></a>
+  <a href="https://github.com/hariomlohardev/claude-system/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22"><img src="https://img.shields.io/github/issues-search/hariomlohardev/claude-system?query=label%3A%22good%20first%20issue%22%20state%3Aopen&label=good%20first%20issues&color=7057ff&style=flat-square" alt="Good First Issues" /></a>
 </p>
 
 <p align="center">
@@ -39,7 +38,7 @@ pip install claude-system
 curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | sh
 ```
 
-Requires **Node >= 18** and the [`claude` CLI](https://docs.anthropic.com/en/docs/claude-code) on your `PATH`.
+Requires **Node >= 18** and the `claude` CLI on your `PATH`.
 
 ## Quickstart — 30 seconds
 

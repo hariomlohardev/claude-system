@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450" role="img" aria-label="claude-system demo — list, search, install, run — 10s">
+<title>claude-system demo — list, search, install, run — 10s</title>
+<rect width="800" height="450" rx="8" fill="#181611"/>
+<rect x="0" y="0" width="800" height="28" rx="8" fill="#1f1d17"/>
+<rect x="0" y="20" width="800" height="8" fill="#1f1d17"/>
+<circle cx="20" cy="14" r="5.5" fill="#ff5f56" opacity="0.95"/>
+<circle cx="38" cy="14" r="5.5" fill="#ffbd2e" opacity="0.95"/>
+<circle cx="56" cy="14" r="5.5" fill="#27c93f" opacity="0.95"/>
+<text x="400" y="18" text-anchor="middle" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#9A9588" letter-spacing="0.08em">claude-system — zsh — 80×24</text>
+<text x="786" y="18" text-anchor="end" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9" fill="#9A9588" opacity="0.8">800×450 · ~10s</text>
+<rect x="0" y="448" width="800" height="2" fill="#B93A13" opacity="0.9"/>
+<g opacity="0">
+  <animate attributeName="opacity" values="0;1" dur="0.45s" begin="0.00s" fill="freeze"/>
+  <text x="18" y="52" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#B93A13" font-weight="600">$ <tspan fill="#F6F4EE">npm --prefix cli run build</tspan></text>
+  <text x="26" y="67" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#9A9588" opacity="0.95">&gt; claude-system@0.2.0 build</text>
+  <text x="26" y="81" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#9A9588" opacity="0.95">&gt; tsc</text>
+</g>
+<g opacity="0">
+  <animate attributeName="opacity" values="0;1" dur="0.45s" begin="1.35s" fill="freeze"/>
+  <text x="18" y="100" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#B93A13" font-weight="600">$ <tspan fill="#F6F4EE">node cli/dist/index.js validate systems/example-system</tspan></text>
+  <text x="26" y="115" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#5ee9a8" opacity="0.95">✓ D:\Projects\claude-system\systems\example-system — valid</text>
+  <text x="26" y="129" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#3a3832" opacity="0.95"> </text>
+  <text x="26" y="143" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#5ee9a8" opacity="0.95">✓ All 1 System(s) passed validation.</text>
+</g>
+<g opacity="0">
+  <animate attributeName="opacity" values="0;1" dur="0.45s" begin="2.70s" fill="freeze"/>
+  <text x="18" y="162" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#B93A13" font-weight="600">$ <tspan fill="#F6F4EE">node cli/dist/index.js list</tspan></text>
+  <text x="26" y="177" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">Available Systems (1)</text>
+  <text x="26" y="191" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">  Registry: fresh fetch — no cache</text>
+  <text x="26" y="205" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">NAME                DISPLAY NAME            VERSION     CATEGORY      DESCRIPTION</text>
+  <text x="26" y="219" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">──────────────────  ──────────────────────  ──────────  ────────────  ─────────────────────…</text>
+  <text x="26" y="233" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#7DD3C8" opacity="0.95">example-system      Example System (Reference Fixture)  0.1.0       other         Reference…</text>
+</g>
+<g opacity="0">
+  <animate attributeName="opacity" values="0;1" dur="0.45s" begin="4.05s" fill="freeze"/>
+  <text x="18" y="252" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#B93A13" font-weight="600">$ <tspan fill="#F6F4EE">node cli/dist/index.js search example</tspan></text>
+  <text x="26" y="267" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">Search results for &quot;example&quot; (1)</text>
+  <text x="26" y="281" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">  Registry: fresh fetch — no cache</text>
+  <text x="26" y="295" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">NAME                DISPLAY NAME            VERSION     CATEGORY      DESCRIPTION</text>
+  <text x="26" y="309" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">──────────────────  ──────────────────────  ──────────  ────────────  ─────────────────────…</text>
+  <text x="26" y="323" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#7DD3C8" opacity="0.95">example-system      Example System (Reference Fixture)  0.1.0       other         Reference…</text>
+</g>
+<g opacity="0">
+  <animate attributeName="opacity" values="0;1" dur="0.45s" begin="5.40s" fill="freeze"/>
+  <text x="18" y="342" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11.5" fill="#B93A13" font-weight="600">$ <tspan fill="#F6F4EE">node cli/dist/index.js info example-system</tspan></text>
+  <text x="26" y="357" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">Example System (Reference Fixture)  v0.1.0</text>
+  <text x="26" y="371" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#7DD3C8" opacity="0.95">  example-system  ·  other  ·  MIT</text>
+  <text x="26" y="385" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#3a3832" opacity="0.95"> </text>
+  <text x="26" y="399" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#F6F4EE" opacity="0.95">Description</text>
+  <text x="26" y="413" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#5ee9a8" opacity="0.95">  Reference fixture used for CI validation and documentation — not intended for real instal…</text>
+  <text x="26" y="427" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.8" fill="#3a3832" opacity="0.95"> </text>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;1" dur="0.4s" begin="9.45s" fill="freeze"/>
+  <rect x="18" y="432" width="8" height="11" fill="#F6F4EE" opacity="0.9"><animate attributeName="opacity" values="0.9;0;0.9" dur="0.9s" repeatCount="indefinite"/></rect>
+  <text x="32" y="441" font-family="'Space Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#9A9588">✓ demo — claude-system list -> install -> run — one System, one shot</text>
+</g>
+<rect x="0" y="0" width="800" height="450" rx="8" fill="none" stroke="#2a2822" stroke-opacity="0.6"/>
+</svg>
