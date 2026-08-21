@@ -3,6 +3,14 @@
     {
       "source": "/install",
       "destination": "/install.sh"
+    },
+    {
+      "source": "/browse",
+      "destination": "/browse.html"
+    },
+    {
+      "source": "/system",
+      "destination": "/system.html"
     }
   ],
   "headers": [
