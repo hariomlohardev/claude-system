@@ -61,9 +61,19 @@
     </div>
     <div id="install-block" class="rv hidden" style="margin-top:28px">
       <h2 style="font-family:var(--serif);font-weight:600;letter-spacing:-.02em">Install</h2>
-      <pre><code id="install-code">claude-system install …</code></pre>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="btn sm" id="copy-install">Copy install</button><a class="btn solid sm" id="gh-link" href="#" target="_blank" rel="noreferrer">View on GitHub →</a></div>
-      <p class="small muted" style="margin-top:10px">Downloads auto-increment on <code class="inline">POST /api/systems/:name/install</code> — counts are public via <code class="inline">/api/stats</code>.</p>
+      <div class="install-tabs" role="tablist" aria-label="Install tabs">
+        <button class="pill active" role="tab" aria-selected="true" data-tab="0">curl | sh</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="1">npm</button>
+        <button class="pill" role="tab" aria-selected="false" data-tab="2">pip</button>
+      </div>
+      <div class="install-panel active"><pre><code id="install-code-0">claude-system install …</code></pre></div>
+      <div class="install-panel"><pre><code id="install-code-1">npm i -g claude-system
+claude-system install …</code></pre></div>
+      <div class="install-panel"><pre><code id="install-code-2">pip install claude-system
+claude-system install …</code></pre></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"><button class="btn sm" id="copy-install">Copy install</button><a class="btn solid sm" id="gh-link" href="#" target="_blank" rel="noreferrer">View on GitHub →</a><a class="btn ghost sm" href="/docs/cli">CLI →</a></div>
+      <p class="small muted" style="margin-top:10px">Downloads via <code class="inline">POST /api/systems/:name/install</code> — <code class="inline">⬇</code> public at <code class="inline">/api/stats</code>. First <code class="inline">run</code> shows <code class="inline"># WHY:</code> → <code class="inline">y/N</code> → <code class="inline">setupDone</code>.</p>
+      <div id="perm-badges" class="rv" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap"></div>
     </div>
     <div id="versions" class="rv hidden" style="margin-top:28px">
       <h2 style="font-family:var(--serif);font-weight:600;letter-spacing:-.02em">Version history</h2>
@@ -99,7 +109,7 @@
   }
   var bc=document.getElementById('bc-name'), title=document.getElementById('hero-title'), lead=document.getElementById('hero-lead'), kicker=document.getElementById('hero-kicker'), meta=document.getElementById('hero-meta');
   var content=document.getElementById('content'), label=document.getElementById('fetch-label');
-  var installBlock=document.getElementById('install-block'), installCode=document.getElementById('install-code'), ghLink=document.getElementById('gh-link'), copyBtn=document.getElementById('copy-install');
+  var installBlock=document.getElementById('install-block'), ghLink=document.getElementById('gh-link'), copyBtn=document.getElementById('copy-install');
   var versionsEl=document.getElementById('versions'), versionsList=document.getElementById('versions-list');
   if(!name){
     bc.textContent='Missing name'; title.textContent='Missing ?name='; content.innerHTML='<p>Provide <code class="inline">?name=&lt;system&gt;</code> — e.g. <a href="/system?name=example-system" style="color:var(--accent)">/system?name=example-system</a>.</p>'; return;
@@ -155,11 +165,25 @@
       + '<blockquote>Install with <code class="inline">claude-system install '+s.name+'</code> and run with <code class="inline">claude-system run '+s.name+'</code>. First run shows <code class="inline"># WHY:</code> and asks <code class="inline">y/N</code>.</blockquote>'
       + '<h2>Install & run</h2><p>Copy the install command, then open the System in Claude Code. The registry is always fresh via <code class="inline">/api/registry</code> with fallback to <code class="inline">raw.githubusercontent.com</code>.</p>'
       + '<p><strong>Repository:</strong> '+(s.repository? '<a href="'+s.repository+'">'+s.repository+'</a>' : '— monorepo only')+' · <strong>Homepage:</strong> '+(s.homepage? '<a href="'+s.homepage+'">'+s.homepage+'</a>' : '—')+' · <strong>Issues:</strong> '+(s.bugs_url? '<a href="'+s.bugs_url+'">'+s.bugs_url+'</a>' : (s.repository? s.repository+'/issues' : 'this monorepo /issues'))+'</p>';
-    // install block
-    installCode.textContent = 'claude-system install '+s.name+'\nclaude-system run '+s.name+'\nclaude-system info '+s.name;
+    // install block — tabs per DESIGN.md 8.7
+    document.getElementById('install-code-0').textContent = 'curl -fsSL https://claude-system-tau.vercel.app/install | sh\nclaude-system install '+s.name+'\nclaude-system run '+s.name+'\nclaude-system info '+s.name;
+    document.getElementById('install-code-1').textContent = 'npm i -g claude-system\nclaude-system install '+s.name+'\nclaude-system run '+s.name;
+    document.getElementById('install-code-2').textContent = 'pip install claude-system\nclaude-system install '+s.name+'\nclaude-system run '+s.name;
     ghLink.href = 'https://github.com/hariomlohardev/claude-system/tree/main/'+(s.path||'systems/'+s.name);
     installBlock.classList.remove('hidden');
     copyBtn.onclick = function(){ navigator.clipboard.writeText('claude-system install '+s.name).then(function(){ copyBtn.textContent='Copied!'; setTimeout(function(){ copyBtn.textContent='Copy install'; },1200); }); };
+    // perm badges per DESIGN.md 8.8
+    var permEl=document.getElementById('perm-badges');
+    var perms=s.permissions||[];
+    if(perms.length){
+      permEl.innerHTML = perms.map(function(p){
+        var cls = (p==='shell:exec'||p==='credentials:read') ? 'perm-badge warn' : 'perm-badge';
+        var dot = (p==='shell:exec'||p==='credentials:read') ? 'perm-dot accent' : (p.indexOf('filesystem')===0 ? 'perm-dot muted' : 'perm-dot green');
+        return '<span class="'+cls+'"><span class="'+dot+'" aria-hidden="true"></span> '+p+'</span>';
+      }).join('');
+    } else {
+      permEl.innerHTML = '<span class="perm-badge"><span class="perm-dot muted" aria-hidden="true"></span> permissions: []</span>';
+    }
     // versions
     if(versions.length){
       versionsEl.classList.remove('hidden');
