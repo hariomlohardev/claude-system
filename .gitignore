@@ -77,10 +77,19 @@ tmp/
 .remember/logs/
 
 # Claude Code local — ignore local settings, keep .claude/commands tracked (already committed)
-.claude/
+.claude/*
 !.claude/commands/
 !.claude/commands/**
 !.claude/DESIGN.md
+!.claude/STACK.md
+!.claude/STRUCTURE.md
+!.claude/CONTRACTS.md
+!.claude/FLOWS.md
+!.claude/CLI_MAP.md
+!.claude/DATA.md
+!.claude/OPERATIONS.md
+!.claude/DESIGN_NOTES.md
+!.claude/KNOWLEDGE_INDEX.md
 
 # Python
 __pycache__/

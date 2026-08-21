@@ -95,3 +95,8 @@ docs/                     Human-readable docs. creating-a-system.md is the
 See `SYSTEM_SPEC.md` §46. No web marketplace, no cloud backend, no custom AI
 runtime, no full GUI, no multi-system dependency resolution beyond the
 simple case, no enterprise auth. MVP first.
+
+## Knowledge base for future AI
+- Entry point: [PROJECT_KNOWLEDGE.md](PROJECT_KNOWLEDGE.md)
+- Topic index: [.claude/KNOWLEDGE_INDEX.md](.claude/KNOWLEDGE_INDEX.md)
+- Stack / Structure / Contracts / Flows / CLI Map / Data / Operations / Design Notes in `.claude/`
