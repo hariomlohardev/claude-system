@@ -76,23 +76,8 @@ tmp/
 .remember/tmp/
 .remember/logs/
 
-# Claude Code local — ignore local settings, keep .claude/commands tracked (already committed)
-.claude/*
-!.claude/commands/
-!.claude/commands/**
-!.claude/DESIGN.md
-!.claude/STACK.md
-!.claude/STRUCTURE.md
-!.claude/CONTRACTS.md
-!.claude/FLOWS.md
-!.claude/CLI_MAP.md
-!.claude/DATA.md
-!.claude/OPERATIONS.md
-!.claude/DESIGN_NOTES.md
-!.claude/KNOWLEDGE_INDEX.md
-!.claude/DESIGN_EXAMPLES_PLAN.md
-!.claude/design-exaples/
-!.claude/design-exaples/**
+# Claude Code — local-only, not pushed to git (maintained locally per project)
+.claude/
 
 # Python
 __pycache__/
