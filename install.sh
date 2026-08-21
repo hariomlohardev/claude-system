@@ -208,6 +208,75 @@ if [ -z "$BIN_SRC" ] || [ ! -f "$BIN_SRC" ]; then
   exit 1
 fi
 
+# --- verify SHA256 if SHASUMS256.txt is present on the Release ---
+# Determine Release base URL from DOWNLOAD_URL (strip filename); for npm fallback this is empty and verify is skipped.
+SHASUMS_URL=""
+TAG_FOR_VERIFY="$VERSION"
+if [ -n "${DOWNLOAD_URL:-}" ]; then
+  RELEASE_URL="$(printf '%s' "$DOWNLOAD_URL" | sed 's|/[^/]*$||')"
+  SHASUMS_URL="${RELEASE_URL}/SHASUMS256.txt"
+  # Derive TAG from RELEASE_URL last segment for old-release detection
+  TAG_FOR_VERIFY="$(printf '%s' "$RELEASE_URL" | sed 's|.*/||')"
+fi
+if [ -n "$SHASUMS_URL" ]; then
+  if command -v curl >/dev/null 2>&1; then FETCH="curl -fsSL"; else FETCH="wget -qO-"; fi
+  echo "› Verifying SHA256…"
+  # Fetch SHASUMS256.txt if present
+  if $FETCH "$SHASUMS_URL" -o "$TMPDIR/SHASUMS256.txt" 2>/dev/null; then
+    cat "$TMPDIR/SHASUMS256.txt"
+    # Verify: try sha256sum -c against the archive by matching hash (works whether SHASUMS has dist/ prefix or basename)
+    ARCHIVE="$TMPDIR/claude-system.tar.gz"
+    if command -v sha256sum >/dev/null 2>&1; then
+      # First try standard sha256sum -c with a normalized entry (create tmp with just this file's entry)
+      # Extract expected hash for our archive name if present, else check hash presence
+      CALC="$(sha256sum "$ARCHIVE" 2>/dev/null | awk '{print $1}')"
+      if grep -q "$CALC" "$TMPDIR/SHASUMS256.txt" 2>/dev/null; then
+        echo "✓ checksum passed"
+      else
+        # Fallback: try sha256sum -c with path-adjusted SHASUMS (handles dist/ prefix)
+        # Create normalized SHASUMS that points to ARCHIVE
+        EXPECTED="$(grep -F "$(basename "$DOWNLOAD_URL" 2>/dev/null || basename "$ARCHIVE")" "$TMPDIR/SHASUMS256.txt" 2>/dev/null | awk '{print $1}')"
+        if [ -n "$EXPECTED" ] && [ "$CALC" = "$EXPECTED" ]; then
+          echo "✓ checksum passed"
+        else
+          # Last chance: direct sha256sum -c against archive if SHASUMS contains its basename
+          (cd "$TMPDIR" && sha256sum -c SHASUMS256.txt 2>&1 | head -n 20) || true
+          # Re-check by hash presence — if still not found, fail
+          if grep -q "$CALC" "$TMPDIR/SHASUMS256.txt" 2>/dev/null; then
+            echo "✓ checksum passed"
+          else
+            echo "✗ checksum failed — aborting install. File may be tampered or truncated." >&2
+            exit 1
+          fi
+        fi
+      fi
+    elif command -v shasum >/dev/null 2>&1; then
+      CALC="$(shasum -a 256 "$ARCHIVE" 2>/dev/null | awk '{print $1}')"
+      if grep -q "$CALC" "$TMPDIR/SHASUMS256.txt" 2>/dev/null; then
+        echo "✓ checksum passed"
+      else
+        (cd "$TMPDIR" && shasum -a 256 -c SHASUMS256.txt 2>&1 | head -n 20) || true
+        if grep -q "$CALC" "$TMPDIR/SHASUMS256.txt" 2>/dev/null; then
+          echo "✓ checksum passed"
+        else
+          echo "✗ checksum failed — aborting install. File may be tampered or truncated." >&2
+          exit 1
+        fi
+      fi
+    else
+      echo "⚠ sha256sum/shasum not found — skipping verify (install continues, not recommended)" >&2
+    fi
+  else
+    # SHASUMS not found on Release
+    if printf '%s' "$TAG_FOR_VERIFY" | grep -qE "^v0\.(0|1)\."; then
+      echo "⚠ SHASUMS256.txt not found for $TAG_FOR_VERIFY — old Release, continuing without verify" >&2
+    else
+      echo "✗ SHASUMS256.txt missing for $TAG_FOR_VERIFY — aborting install. Re-run with a newer Release or check network." >&2
+      exit 1
+    fi
+  fi
+fi
+
 # Install
 cp "$BIN_SRC" "$INSTALL_DIR/$BIN_NAME"
 chmod +x "$INSTALL_DIR/$BIN_NAME" 2>/dev/null || true
