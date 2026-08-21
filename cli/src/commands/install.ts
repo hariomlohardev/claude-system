@@ -1,13 +1,12 @@
 import { Command } from 'commander';
 import { findInRegistry } from '../lib/registry.js';
-import { getSystemInstallPath, isInstalled, recordInstall, getSetupDone, saveInstalledFiles } from '../lib/storage.js';
+import { getSystemInstallPath, isInstalled, recordInstall, saveInstalledFiles } from '../lib/storage.js';
 import { findRepoSystemSource } from '../lib/repo.js';
+import { downloadSystemFromGitHub } from '../lib/systemDownloader.js';
 import { theme } from '../utils/theme.js';
 import { handleError } from '../utils/errors.js';
-import { cp, mkdir, stat, writeFile, readdir } from 'node:fs/promises';
+import { cp, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
 
 export function registerInstall(program: Command): void {
   program
@@ -21,75 +20,6 @@ export function registerInstall(program: Command): void {
         handleError(err);
       }
     });
-}
-
-async function downloadSystemFromGitHub(name: string, entryPath: string): Promise<string | null> {
-  // Download System folder from GitHub raw as fallback when local source not found
-  // Works for production (global install) and for any cwd
-  const baseRaw = `https://raw.githubusercontent.com/hariomlohardev/claude-system/main/${entryPath}`;
-  const apiUrl = `https://api.github.com/repos/hariomlohardev/claude-system/contents/${entryPath}`;
-
-  // Create temp source dir
-  const tmpBase = join(tmpdir(), `claude-system-download-${name}-${Date.now()}`);
-  await mkdir(tmpBase, { recursive: true });
-
-  // Helper to fetch and write a single file
-  async function fetchFile(relPath: string, dest: string): Promise<boolean> {
-    const url = `${baseRaw}/${relPath}`;
-    try {
-      const res = await fetch(url, { headers: { Accept: 'text/plain', 'Cache-Control': 'no-cache' } });
-      if (!res.ok) return false;
-      const text = await res.text();
-      await mkdir(join(dest, '..'), { recursive: true });
-      await writeFile(dest, text, 'utf-8');
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  // Try to list directory via GitHub API to know what to download
-  let filesToFetch: string[] = ['system.json', 'CLAUDE.md', 'README.md', 'settings.json', '.claude/config.json'];
-  // Known agents/commands for oss-contrib-finder and generic fallback
-  const knownAgents = ['fit-scorer.md', 'issue-hunter.md', 'issue-triager.md', 'portfolio-curator.md', 'repo-archaeologist.md', 'repo-scout.md', 'shadow-reviewer.md'];
-  const knownCommands = ['find-issues.md', 'history.md', 'portfolio.md', 'solve-issue.md', 'understand.md'];
-  for (const a of knownAgents) filesToFetch.push(`.claude/agents/${a}`);
-  for (const c of knownCommands) filesToFetch.push(`.claude/commands/${c}`);
-  filesToFetch.push('.claude/state/.gitkeep');
-  filesToFetch.push('PORTFOLIO.example.md');
-
-  // Also try API listing to discover any other files (best effort)
-  try {
-    const controller = new AbortController();
-    const t = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(apiUrl, { headers: { Accept: 'application/vnd.github.v3+json', 'Cache-Control': 'no-cache' }, signal: controller.signal });
-    clearTimeout(t);
-    if (res.ok) {
-      const listing: any = await res.json();
-      if (Array.isArray(listing)) {
-        // We have listing, but our known list already covers required files; keep it
-      }
-    }
-  } catch {
-    // ignore, use known list
-  }
-
-  let fetched = 0;
-  for (const rel of filesToFetch) {
-    const dest = join(tmpBase, rel);
-    const ok = await fetchFile(rel, dest);
-    if (ok) fetched++;
-  }
-
-  // Must have at least system.json to be valid
-  if (!existsSync(join(tmpBase, 'system.json'))) {
-    return null;
-  }
-
-  // Also ensure .claude/state/drafts exists
-  try { await mkdir(join(tmpBase, '.claude/state/drafts'), { recursive: true }); } catch {}
-
-  return tmpBase;
 }
 
 async function runInstall(name: string): Promise<void> {
@@ -125,12 +55,14 @@ async function runInstall(name: string): Promise<void> {
   let via: 'local' | 'download' = 'local';
 
   if (!sourcePath) {
-    console.log(theme.dim(`› Local source not found — fetching "systems/${name}/" from GitHub raw…`));
-    const downloaded = await downloadSystemFromGitHub(name, entry.path || `systems/${name}`);
-    if (downloaded) {
+    console.log(theme.dim(`› Local source not found — fetching "systems/${name}/" from GitHub…`));
+    try {
+      const downloaded = await downloadSystemFromGitHub({ name });
       sourcePath = downloaded;
       via = 'download';
-      console.log(theme.dim(`  via: download from raw.githubusercontent.com (main)`));
+      console.log(theme.dim(`  via: download from GitHub (main)`));
+    } catch (err) {
+      console.error(theme.dim(`  download failed: ${err instanceof Error ? err.message : String(err)}`));
     }
   }
 

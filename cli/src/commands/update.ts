@@ -10,12 +10,11 @@ import {
   saveInstalledFiles,
 } from '../lib/storage.js';
 import { findRepoSystemSource } from '../lib/repo.js';
+import { downloadSystemFromGitHub } from '../lib/systemDownloader.js';
 import { theme } from '../utils/theme.js';
 import { handleError } from '../utils/errors.js';
-import { cp, mkdir, readdir, writeFile, rm } from 'node:fs/promises';
+import { cp, mkdir, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
 import { createInterface } from 'node:readline';
 import { isNewer } from '../lib/version.js';
 
@@ -34,39 +33,6 @@ export function registerUpdate(program: Command): void {
     });
 }
 
-async function downloadSystemFromGitHub(name: string, entryPath: string): Promise<string | null> {
-  const baseRaw = `https://raw.githubusercontent.com/hariomlohardev/claude-system/main/${entryPath}`;
-  const tmpBase = join(tmpdir(), `claude-system-download-${name}-${Date.now()}`);
-  await mkdir(tmpBase, { recursive: true });
-  async function fetchFile(relPath: string, dest: string): Promise<boolean> {
-    const url = `${baseRaw}/${relPath}`;
-    try {
-      const res = await fetch(url, { headers: { Accept: 'text/plain', 'Cache-Control': 'no-cache' } });
-      if (!res.ok) return false;
-      const text = await res.text();
-      await mkdir(join(dest, '..'), { recursive: true });
-      await writeFile(dest, text, 'utf-8');
-      return true;
-    } catch {
-      return false;
-    }
-  }
-  const filesToFetch: string[] = ['system.json', 'CLAUDE.md', 'README.md', 'settings.json', '.claude/config.json'];
-  const knownAgents = ['fit-scorer.md', 'issue-hunter.md', 'issue-triager.md', 'portfolio-curator.md', 'repo-archaeologist.md', 'repo-scout.md', 'shadow-reviewer.md'];
-  const knownCommands = ['find-issues.md', 'history.md', 'portfolio.md', 'solve-issue.md', 'understand.md'];
-  for (const a of knownAgents) filesToFetch.push(`.claude/agents/${a}`);
-  for (const c of knownCommands) filesToFetch.push(`.claude/commands/${c}`);
-  filesToFetch.push('.claude/state/.gitkeep');
-  filesToFetch.push('PORTFOLIO.example.md');
-  for (const rel of filesToFetch) {
-    const dest = join(tmpBase, rel);
-    await fetchFile(rel, dest);
-  }
-  if (!existsSync(join(tmpBase, 'system.json'))) return null;
-  try { await mkdir(join(tmpBase, '.claude/state/drafts'), { recursive: true }); } catch {}
-  return tmpBase;
-}
-
 function formatTimestamp(): string {
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -83,7 +49,6 @@ async function promptChoice(sysName: string, changed: string[], untracked: strin
   console.log(theme.dim(`  [b]ackup     — copy current folder to ~/.claude-system/systems/${sysName}.bak.<YYYY-MM-DD_HH-mm-ss>/ then overwrite`));
   console.log(theme.dim(`  [a]bort      — do nothing (default, just press Enter)`));
   console.log('');
-  // Use stderr for prompt? Keep stdout so piped tests capture it
   const isTTY = !!process.stdin.isTTY && !!process.stdout.isTTY;
   if (isTTY) {
     const rl = createInterface({ input: process.stdin, output: process.stdout });
@@ -97,22 +62,16 @@ async function promptChoice(sysName: string, changed: string[], untracked: strin
     if (c === 'o' || c === 'b' || c === 'a') return c as 'o' | 'b' | 'a';
     return 'a';
   } else {
-    // Non-TTY (piped) — read piped input if any
     try {
       const { readFileSync } = await import('node:fs');
       let data = '';
       try {
-        // read piped stdin (will be empty string on EOF, "b\n"/"o\n"/"\n" when piped)
         data = readFileSync(0, 'utf-8');
       } catch {
         data = '';
       }
       const line = data.split(/\r?\n/)[0]?.trim().toLowerCase() ?? '';
       if (line === 'o' || line === 'b' || line === 'a') return line as 'o' | 'b' | 'a';
-      // Also handle case where piped data contains just "b" without newline? Already handled.
-      // If data is empty or just newline, default abort
-      // For CI with no piped data, we abort
-      // To honor spec: non-TTY with no explicit o/b aborts without overwriting
       return 'a';
     } catch {
       return 'a';
@@ -152,7 +111,6 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
     targets = [found];
   }
 
-  // Fetch fresh registry once
   const source = getRegistrySource();
   let index;
   try {
@@ -175,11 +133,8 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
       continue;
     }
 
-    // Determine if version is newer
     const newer = isNewer(entry.version, meta.version);
 
-    // If up-to-date and no edits workflow would be silent, but if edits exist we still want to prompt
-    // So we need to detect edits first to decide.
     const destPath = getSystemInstallPath(sysName);
     let changed: string[] = [];
     let untracked: string[] = [];
@@ -192,7 +147,6 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
 
     const manifest = meta.installedFiles;
     if (!manifest || manifest.length === 0) {
-      // Old install without manifest — treat every file as untracked to prompt
       if (currentFiles.length > 0) {
         untracked = currentFiles.map((f) => f.path);
       }
@@ -207,7 +161,6 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
           changed.push(cf.path);
         }
       }
-      // Check for deleted files (in manifest but not on disk)
       for (const mf of manifest) {
         if (!currentMap.has(mf.path)) {
           changed.push(`${mf.path} (deleted)`);
@@ -223,18 +176,15 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
         skipped++;
         continue;
       }
-      // Has edits but version not newer — still offer to restore/overwrite
       console.log(theme.info(`Local edits detected for ${theme.cyan(sysName)} ${theme.dim(`(v${meta.version} → v${entry.version})`)} — offering restore...`));
     } else {
       console.log(theme.info(`Updating ${theme.cyan(sysName)} ${theme.dim(`v${meta.version} → v${entry.version}`)}...`));
     }
 
-    // If edits exist, prompt
     if (hasEdits) {
       const choice = await promptChoice(sysName, changed, untracked);
       if (choice === 'a') {
         console.log(theme.yellow('Aborted — no changes made. Back up your edits and re-run update with [o] or [b].'));
-        // For single target, exit 1 to signal abort; for --all, skip and continue
         if (!opts.all) {
           process.exit(1);
         } else {
@@ -253,25 +203,22 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
           skipped++;
           continue;
         }
-        // proceed to overwrite below
       } else if (choice === 'o') {
-        // proceed without backup
       }
     } else {
-      // No edits — proceed silently (no prompt)
     }
 
-    // Resolve source for overwrite — prefer local, fallback to download
     let sourcePath = findRepoSystemSource(sysName);
     let via: 'local' | 'download' = 'local';
     if (!sourcePath) {
-      // Try download fallback similar to install
-      console.log(theme.dim(`  › Local source not found — fetching "systems/${sysName}/" from GitHub raw…`));
-      const downloaded = await downloadSystemFromGitHub(sysName, entry.path || `systems/${sysName}`);
-      if (downloaded) {
+      console.log(theme.dim(`  › Local source not found — fetching "systems/${sysName}/" from GitHub…`));
+      try {
+        const downloaded = await downloadSystemFromGitHub({ name: sysName });
         sourcePath = downloaded;
         via = 'download';
-        console.log(theme.dim(`    via: download from raw.githubusercontent.com (main)`));
+        console.log(theme.dim(`    via: download from GitHub (main)`));
+      } catch (err) {
+        console.error(theme.dim(`  download failed: ${err instanceof Error ? err.message : String(err)}`));
       }
     }
 
@@ -281,20 +228,16 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
       continue;
     }
 
-    // Preserve setupDone — do NOT reset on update for v1
     const prevSetupDone = meta.setupDone;
 
     try {
-      // Clean destination first so untracked files are removed (flat overwrite, not merge)
       try { await rm(destPath, { recursive: true, force: true }); } catch {}
       await mkdir(destPath, { recursive: true });
       await cp(sourcePath, destPath, { recursive: true, force: true });
       await updateInstallVersion(sysName, entry.version);
-      // Ensure setupDone preserved (updateInstallVersion already preserves, but be explicit if needed)
       if (prevSetupDone) {
         await recordSetupDone(sysName, true);
       }
-      // Re-hash manifest to new files
       try {
         await saveInstalledFiles(sysName);
       } catch {}
@@ -311,6 +254,5 @@ async function runUpdate(name: string | undefined, opts: { all?: boolean }): Pro
     if (updated === 0) console.log(theme.dim('Nothing to update — all Systems are up-to-date.'));
     else console.log(theme.success(`Updated ${updated} System(s).${skipped > 0 ? theme.dim(` ${skipped} skipped.`) : ''}`));
   } else if (updated === 0 && skipped > 0) {
-    // single update with no newer version — already printed up-to-date
   }
 }
