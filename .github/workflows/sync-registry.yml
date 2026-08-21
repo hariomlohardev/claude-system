@@ -1,3 +1,9 @@
+# ADR — Registry Cache API (not a marketplace / not scope creep)
+# Why: raw.githubusercontent.com uncached on every `list` doesn't scale (see audit F.17) — edge cache is the minimal fix.
+# What: read-through cache — source of truth remains registry/index.json (generated from systems/*/system.json).
+#        This workflow mirrors it to Supabase so Vercel can serve GET /api/registry at the edge.
+# How:  CLI two-tier fetch — primary https://claude-system-tau.vercel.app/api/registry (s-maxage=60, fast) → fallback raw.githubusercontent.com (always-fresh, resilient) via cli/src/lib/registry.ts
+# Scope: read-only cache only — no auth, no teams, no marketplace. If Vercel/Supabase die, raw fallback keeps install working. See SYSTEM_SPEC.md §46 footnote.
 name: Sync Registry to Supabase
 on:
   push:

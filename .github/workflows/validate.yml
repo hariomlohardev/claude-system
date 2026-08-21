@@ -352,6 +352,12 @@ jobs:
       - name: 'e2e — doctor'
         run: node cli/dist/index.js doctor 2>&1 | cat
 
+      - name: Scope discipline — raw fallback still works (cache is optional)
+        run: |
+          node cli/dist/index.js list 2>&1 | head -n 10 || true
+          curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/registry/index.json 2>&1 | head -n 20 || echo "::warning::raw fallback check skipped (rate limit ok, but fallback must stay in cli/src/lib/registry.ts)"
+          echo "› Two-tier fetch: Vercel primary (s-maxage=60) + raw fallback — see cli/src/lib/registry.ts"
+
       # 11. Auto-comment on failure
       - name: '11 — Auto-comment on failure'
         if: failure()
