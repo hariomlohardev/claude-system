@@ -34,7 +34,7 @@ jobs:
 
       - name: Install CLI dependencies
         working-directory: cli
-        run: npm ci || npm install
+        run: npm ci
 
       - name: Build CLI
         working-directory: cli
@@ -164,11 +164,19 @@ jobs:
       - name: Install and build
         working-directory: cli
         run: |
-          npm ci || npm install
+          npm ci
           npm run build
       - name: Publish to npm (provenance)
         run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then echo "skip npm — no NPM_TOKEN"; exit 0; fi
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+              echo "skip npm — no NPM_TOKEN (workflow_dispatch dry-run)"
+              exit 0
+            else
+              echo "✗ NPM_TOKEN missing on Release tag ${{ github.ref }} — aborting. Add it in Settings → Secrets → NPM_TOKEN." >&2
+              exit 1
+            fi
+          fi
           npm publish --provenance --access public || npm publish --access public
         working-directory: cli
         env:
@@ -194,9 +202,15 @@ jobs:
         run: |
           python -m build
           ls -lh dist/
+      - name: Guard PyPI publish conditions
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "skip pypi — workflow_dispatch dry-run"
+            exit 0
+          fi
+          echo "tag push — PyPI publish via OIDC will be attempted (hard-fail if not configured)"
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        continue-on-error: true
         with:
           packages-dir: packaging/pip/dist
           skip-existing: true
