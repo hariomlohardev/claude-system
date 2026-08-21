@@ -1,6 +1,6 @@
 {
   "name": "claude-system",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "claude-system — npm distribution wrapper (thin, re-exports cli/)",
   "private": false,
   "type": "module",
@@ -15,7 +15,10 @@
     "prepare": "node prepare.js",
     "postinstall": "node ./postinstall.js"
   },
-  "keywords": ["claude-code", "claude-system"],
+  "keywords": [
+    "claude-code",
+    "claude-system"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
