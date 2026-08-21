@@ -1,5 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-<rect width="1200" height="630" fill="#0f0f12"/>
-<text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-size="64" font-weight="800" fill="#fafafa">claude-system</text>
-<text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#9ca3af">Curated Systems for Claude Code — install a complete workflow in one shot.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">claude-system — Systems for Claude Code</title>
+<desc id="desc">Curated, opinionated Systems for Claude Code — install a complete workflow in one shot.</desc>
+<!-- paper -->
+<rect width="1200" height="630" fill="#F6F4EE"/>
+<!-- hairline top -->
+<rect x="0" y="0" width="1200" height="1" fill="#181611"/>
+<!-- monogram centered top -->
+<g transform="translate(584,140)">
+  <path d="M -32 -28 V 28" stroke="#181611" stroke-width="7" stroke-linecap="square"/>
+  <path d="M 0 -28 V 28" stroke="#181611" stroke-width="7" stroke-linecap="square"/>
+  <path d="M -32 0 H 0" stroke="#B93A13" stroke-width="7" stroke-linecap="square"/>
+  <path d="M 0 28 H 26" stroke="#181611" stroke-width="7" stroke-linecap="square"/>
+  <circle cx="32" cy="-28" r="5" fill="#B93A13"/>
+</g>
+<!-- wordmark -->
+<text x="600" y="200" text-anchor="middle" font-family="Space Mono, monospace" font-size="14" letter-spacing="8" fill="#5F594A">CLAUDE-SYSTEM</text>
+<!-- main title -->
+<text x="600" y="300" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="72" font-weight="600" letter-spacing="-1.5" fill="#181611">Systems for <tspan font-style="italic" font-weight="400" fill="#37342B">Claude Code</tspan></text>
+<!-- accent rule -->
+<rect x="574" y="330" width="52" height="2" fill="#B93A13"/>
+<!-- standfirst -->
+<text x="600" y="372" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="24" font-style="italic" fill="#5F594A">Curated, opinionated Systems — install a complete workflow in one shot.</text>
+<!-- mono meta -->
+<text x="600" y="410" text-anchor="middle" font-family="Space Mono, monospace" font-size="11" letter-spacing="2" fill="#6E6858">01 — SYSTEMS · VERIFIED · PAPER + INK · ONE ACCENT</text>
+<!-- footer line -->
+<rect x="48" y="570" width="1104" height="1" fill="#DAD5C6"/>
+<text x="48" y="595" font-family="Space Mono, monospace" font-size="10" letter-spacing="1.5" fill="#5F594A">claude-system-tau.vercel.app</text>
+<text x="1152" y="595" text-anchor="end" font-family="Space Mono, monospace" font-size="10" letter-spacing="1.5" fill="#5F594A">© 2026 · MIT</text>
 </svg>

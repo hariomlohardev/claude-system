@@ -6,11 +6,31 @@
     },
     {
       "source": "/browse",
-      "destination": "/browse.html"
+      "destination": "/browse/index.html"
     },
     {
       "source": "/system",
-      "destination": "/system.html"
+      "destination": "/system/index.html"
+    },
+    {
+      "source": "/s/:name",
+      "destination": "/system/index.html"
+    },
+    {
+      "source": "/docs",
+      "destination": "/docs/index.html"
+    },
+    {
+      "source": "/docs/creating-a-system",
+      "destination": "/docs/creating-a-system/index.html"
+    },
+    {
+      "source": "/docs/security",
+      "destination": "/docs/security/index.html"
+    },
+    {
+      "source": "/docs/spec",
+      "destination": "/docs/spec/index.html"
     }
   ],
   "headers": [

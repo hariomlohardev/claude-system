@@ -2,5 +2,11 @@
 <urlset xmlns="http://schemas.openxmlformats.org/schemas/1998/sitemap">
   <url><loc>https://claude-system-tau.vercel.app/</loc></url>
   <url><loc>https://claude-system-tau.vercel.app/browse</loc></url>
+  <url><loc>https://claude-system-tau.vercel.app/docs</loc></url>
+  <url><loc>https://claude-system-tau.vercel.app/docs/creating-a-system</loc></url>
+  <url><loc>https://claude-system-tau.vercel.app/docs/security</loc></url>
+  <url><loc>https://claude-system-tau.vercel.app/docs/spec</loc></url>
+  <url><loc>https://claude-system-tau.vercel.app/system?name=example-system</loc></url>
   <url><loc>https://claude-system-tau.vercel.app/api/registry</loc></url>
+  <url><loc>https://claude-system-tau.vercel.app/api/search</loc></url>
 </urlset>
