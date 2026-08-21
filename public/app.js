@@ -1,148 +1,61 @@
-// claude-system — vanilla app for claude.com + code.claude.com chrome
-// Header + sidebar + search + TOC + copy + install tabs — no grain/progress
+// claude-system — paper + ink ledger — prog, header shadow, menu, reveal, tabs, copy, G
 (function(){
-  var ham = document.getElementById('ham');
-  var panel = document.getElementById('mobile-panel');
-  if(ham && panel){
-    ham.addEventListener('click', function(){
-      var open = ham.getAttribute('aria-expanded') === 'true';
-      ham.setAttribute('aria-expanded', String(!open));
-      panel.classList.toggle('open', !open);
-      panel.setAttribute('aria-hidden', String(open));
-    });
-  }
-  // docs sidebar (docs pages)
-  var dHam = document.getElementById('docs-ham');
-  var dSide = document.getElementById('docs-sidebar');
-  var dOver = document.getElementById('docs-overlay');
-  function closeDocs(){
-    if(dSide) dSide.classList.remove('open');
-    if(dOver) dOver.classList.remove('open');
-    if(dHam) dHam.setAttribute('aria-expanded','false');
-  }
-  if(dHam && dSide){
-    dHam.addEventListener('click', function(){
-      var open = dSide.classList.contains('open');
-      dSide.classList.toggle('open', !open);
-      if(dOver) dOver.classList.toggle('open', !open);
-      dHam.setAttribute('aria-expanded', String(!open));
-    });
-  }
-  if(dOver) dOver.addEventListener('click', closeDocs);
-  document.addEventListener('keydown', function(e){
-    if(e.key==='Escape'){ closeDocs(); if(panel) {panel.classList.remove('open'); if(ham) ham.setAttribute('aria-expanded','false');} }
-  });
-  // search ⌘K
-  var ds = document.getElementById('docs-search');
-  var dr = document.getElementById('docs-search-results');
-  var hdrSearch = document.getElementById('hdr-search');
-  var hdrRes = document.getElementById('hdr-search-results');
-  function bindSearch(input, results){
-    if(!input || !results) return;
-    var dataEl = document.getElementById('docs-search-data');
-    var data = [];
-    try{ data = dataEl ? JSON.parse(dataEl.textContent) : []; }catch(e){}
-    // also collect headings from prose for client-side
-    document.querySelectorAll('.prose h2, .prose h3').forEach(function(h){
-      if(!h.id) return;
-      data.push({title:h.textContent.trim(), url:'#'+h.id, snip:''});
-    });
-    function render(q){
-      if(!q){ results.classList.remove('open'); results.innerHTML=''; return; }
-      var qq=q.toLowerCase();
-      var hits = data.filter(function(d){ return d.title.toLowerCase().indexOf(qq)!==-1; }).slice(0,6);
-      if(!hits.length){ results.classList.remove('open'); return; }
-      results.innerHTML = hits.map(function(h){ return '<a href="'+h.url+'"><div class="hit-title">'+h.title+'</div>'+(h.snip?'<div class="hit-snip">'+h.snip+'</div>':'')+'</a>'; }).join('');
-      results.classList.add('open');
-    }
-    input.addEventListener('input', function(){ render(input.value.trim()); });
-    input.addEventListener('focus', function(){ if(input.value.trim()) render(input.value.trim()); });
-    input.addEventListener('blur', function(){ setTimeout(function(){ results.classList.remove('open'); }, 180); });
-    // keyboard
-    input.addEventListener('keydown', function(e){
-      if(e.key==='Escape'){ results.classList.remove('open'); input.value=''; }
-    });
-  }
-  bindSearch(ds, dr);
-  bindSearch(hdrSearch, hdrRes);
-  document.addEventListener('keydown', function(e){
-    if((e.metaKey || e.ctrlKey) && e.key.toLowerCase()==='k'){
-      var inp = ds || hdrSearch;
-      if(inp){ e.preventDefault(); inp.focus(); inp.select(); }
-    }
-    if(e.key==='/' && document.activeElement.tagName!=='INPUT' && !e.metaKey && !e.ctrlKey){
-      var q = document.getElementById('q'); if(q){ e.preventDefault(); q.focus(); }
-    }
-  });
-  // TOC active
-  var toc = document.getElementById('docs-toc');
-  if(toc){
-    var links = Array.from(toc.querySelectorAll('a'));
-    var map = {};
-    links.forEach(function(a){ var id=a.getAttribute('href'); if(id && id[0]==='#') map[id.slice(1)]=a; });
-    var hs = Object.keys(map).map(function(id){ return document.getElementById(id); }).filter(Boolean);
-    if('IntersectionObserver' in window && hs.length){
-      var obs = new IntersectionObserver(function(entries){
-        entries.forEach(function(ent){
-          if(ent.isIntersecting){
-            links.forEach(function(a){ a.classList.remove('active'); });
-            var a = map[ent.target.id];
-            if(a) a.classList.add('active');
-          }
-        });
-      }, {rootMargin:'-20% 0px -70% 0px', threshold:0});
-      hs.forEach(function(h){ obs.observe(h); });
-    }
-  }
-  // copy buttons
-  document.querySelectorAll('pre').forEach(function(pre){
-    if(pre.querySelector('.copy')) return;
-    var head = pre.previousElementSibling;
-    if(head && head.classList.contains('code-head')) return;
-    var wrap = document.createElement('div');
-    wrap.style.position='relative';
-    pre.parentNode.insertBefore(wrap, pre);
-    wrap.appendChild(pre);
-    var btn = document.createElement('button');
-    btn.className='copy';
-    btn.type='button';
-    btn.textContent='Copy';
-    btn.style.position='absolute';
-    btn.style.top='8px';
-    btn.style.right='8px';
-    btn.addEventListener('click', function(){
-      var txt = pre.innerText || pre.textContent;
-      navigator.clipboard.writeText(txt).then(function(){
-        btn.textContent='Copied';
-        btn.classList.add('ok');
-        setTimeout(function(){ btn.textContent='Copy'; btn.classList.remove('ok'); }, 1500);
-      });
-    });
-    wrap.appendChild(btn);
-  });
-  // install tabs
-  document.querySelectorAll('.install-tabs').forEach(function(tabs){
-    var btns = tabs.querySelectorAll('[data-tab]');
-    var panels = tabs.parentElement.querySelectorAll('.install-panel');
-    btns.forEach(function(b){
-      b.addEventListener('click', function(){
-        var idx=b.getAttribute('data-tab');
-        btns.forEach(function(x){ x.classList.toggle('active', x===b); });
-        panels.forEach(function(p,i){ p.classList.toggle('active', String(i)===String(idx)); });
-      });
+"use strict";
+var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var yr=document.getElementById('yr'); if(yr) yr.textContent=new Date().getFullYear();
+var hdr=document.querySelector('header'),prog=document.getElementById('prog'),qd=false;
+function onScroll(){if(qd)return;qd=true;requestAnimationFrame(function(){qd=false;var h=document.documentElement.scrollHeight-window.innerHeight;if(prog)prog.style.width=(h>0?(window.scrollY/h)*100:0)+'%';if(hdr)hdr.classList.toggle('scrolled',window.scrollY>8);});}
+window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+var menuBtn=document.getElementById('menuBtn'),panel=document.getElementById('mobilePanel');
+if(menuBtn&&panel){
+  function setMenu(o){menuBtn.setAttribute('aria-expanded',String(o));menuBtn.setAttribute('aria-label',o?'Close menu':'Open menu');menuBtn.classList.toggle('open',o);panel.classList.toggle('open',o);panel.setAttribute('aria-hidden',String(!o));}
+  menuBtn.addEventListener('click',function(){setMenu(menuBtn.getAttribute('aria-expanded')!=='true');});
+  panel.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setMenu(false);});});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel.classList.contains('open'))setMenu(false);});
+  document.addEventListener('click',function(e){if(panel.classList.contains('open')&&!panel.contains(e.target)&&!menuBtn.contains(e.target))setMenu(false);});
+  window.addEventListener('resize',function(){if(window.innerWidth>760&&panel.classList.contains('open'))setMenu(false);});
+}
+// reveal
+(function(){
+  var els=document.querySelectorAll('.rv:not(.in)');
+  if('IntersectionObserver' in window&&!reduced){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.08});
+    els.forEach(function(el,i){el.style.transitionDelay=(Math.min(i,5)*50)+'ms';io.observe(el);});
+  }else els.forEach(function(el){el.classList.add('in');});
+})();
+// OS tabs
+var osBtns=document.querySelectorAll('.os-tabs .pill, .os-btns .pill');
+osBtns.forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var os=btn.getAttribute('data-os');
+    osBtns.forEach(function(b){b.classList.remove('on');b.setAttribute('aria-selected','false');});
+    btn.classList.add('on');btn.setAttribute('aria-selected','true');
+    document.querySelectorAll('.os-panel').forEach(function(p){
+      p.classList.toggle('show',p.getAttribute('data-panel')===os);
     });
   });
-  // copy install
-  var copyInstall = document.getElementById('copy-install');
-  if(copyInstall){
-    copyInstall.addEventListener('click', function(){
-      var code = document.getElementById('install-code-0');
-      var txt = code ? code.textContent : 'claude-system install example-system';
-      navigator.clipboard.writeText(txt).then(function(){
-        var orig=copyInstall.textContent;
-        copyInstall.textContent='Copied';
-        setTimeout(function(){ copyInstall.textContent=orig; },1200);
-      });
-    });
-  }
+});
+// copy
+document.querySelectorAll('.code-head .copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var pre=btn.closest('.codeblock').querySelector('pre');
+    if(!pre) pre=btn.closest('.codeblock').querySelector('pre code');
+    var txt=pre?pre.textContent:'';
+    if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent='Copied ✓';setTimeout(function(){btn.textContent='Copy';},1600);});}
+    else{prompt('Copy code:',txt);}
+  });
+});
+// shortcuts
+var sideFilter=document.getElementById('sideFilter');
+document.addEventListener('keydown',function(e){
+  var t=(document.activeElement&&document.activeElement.tagName)||'';
+  if(e.key==='/'&&!/INPUT|TEXTAREA/.test(t)){e.preventDefault(); var q=document.getElementById('q'); if(q) q.focus(); else if(sideFilter) sideFilter.focus();}
+  if((e.key==='g'||e.key==='G')&&!/INPUT|TEXTAREA/.test(t)&&!e.metaKey&&!e.ctrlKey&&!e.altKey){window.open('https://github.com/hariomlohardev/claude-system','_blank','noopener');}
+});
+var topBtn=document.getElementById('topBtn'); if(topBtn) topBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});});
+// ham alias for old header
+var ham=document.getElementById('ham'); var mp=document.getElementById('mobile-panel');
+if(ham&&mp&&!menuBtn){
+  ham.addEventListener('click',function(){ var o=ham.getAttribute('aria-expanded')==='true'; ham.setAttribute('aria-expanded',String(!o)); mp.classList.toggle('open',!o); });
+}
 })();

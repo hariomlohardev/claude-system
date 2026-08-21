@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F6F4EE" />
 <meta name="color-scheme" content="light" />
-<title>Browse — claude-system</title>
-<meta name="description" content="Browse all Systems in the claude-system registry — live from /api/registry (Supabase). Filter, preview, and install with one command." />
+<title>Systems — Claude System</title>
+<meta name="description" content="All the systems in claude-system — Editorial, Ledger, Notebook, and Docs. Filter, preview, and install each one." />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400.css">
@@ -262,14 +262,14 @@ html:not(.js) .rv{opacity:1;transform:none}
             <circle cx="37" cy="7" r="3.4" fill="#B93A13"/>
           </svg>
         </span>
-        <span class="logo-word">claude-system<i>browse · registry</i></span>
+        <span class="logo-word">claude-system<i>systems index</i></span>
       </a>
       <nav class="desk" aria-label="Primary">
         <a href="/">Home</a>
-        <a href="/browse" class="active" aria-current="page">Browse</a>
-        <a href="/docs">Docs</a>
-        <a href="/docs/cli">CLI</a>
-        <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="/#install">Install</a>
+        <a href="/systems.html" class="active" aria-current="page">Systems</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/create.html">Create</a>
       </nav>
       <div class="head-right">
         <a class="gh-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><i aria-hidden="true"></i><span>Repo&nbsp;↗</span></a>
@@ -282,13 +282,13 @@ html:not(.js) .rv{opacity:1;transform:none}
   <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
     <nav aria-label="Mobile primary">
       <a href="/"><span>Home</span><span class="no">01</span></a>
-      <a href="/browse" class="active"><span>Browse</span><span class="no">02</span></a>
-      <a href="/docs"><span>Docs</span><span class="no">03</span></a>
-      <a href="/docs/cli"><span>CLI</span><span class="no">04</span></a>
-      <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><span>GitHub ↗</span><span class="no">05</span></a>
+      <a href="/#install"><span>Install</span><span class="no">02</span></a>
+      <a href="/systems.html" class="active"><span>Systems</span><span class="no">03</span></a>
+      <a href="/docs.html"><span>Docs</span><span class="no">04</span></a>
+      <a href="/create.html"><span>Create</span><span class="no">05</span></a>
     </nav>
     <div class="mp-actions">
-      <a href="/docs">Docs</a>
+      <a href="/DESIGN.md">DESIGN.md</a>
       <a class="alt" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">Repo ↗</a>
     </div>
   </div>
@@ -299,9 +299,9 @@ html:not(.js) .rv{opacity:1;transform:none}
   <!-- ══ HERO ══ -->
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow rv"><i aria-hidden="true"></i><span id="eyebrow" data-text="02 — Browse · Live from /api/registry">02 — Browse · Live from /api/registry</span></p>
-      <h1 class="rv">Browse <em>systems</em></h1>
-      <p class="lede rv">Every system in claude-system, in one place. Filter by kind, preview what's inside, and install any of them with a single command. Don't see what you need? <a href="/docs/creating-a-system">Create your own →</a></p>
+      <p class="eyebrow rv"><i aria-hidden="true"></i><span id="eyebrow" data-text="SYSTEMS · 4 BUILT-IN · VERSION 1.0">SYSTEMS · 4 BUILT-IN · VERSION 1.0</span></p>
+      <h1 class="rv">The <em>systems</em></h1>
+      <p class="lede rv">Every system in claude-system, in one place. Filter by kind, preview what's inside, and install any of them with a single command. Don't see what you need? <a href="/create.html">Create your own →</a></p>
     </div>
   </section>
 
@@ -389,74 +389,95 @@ html:not(.js) .rv{opacity:1;transform:none}
     <div class="wrap">
       <div class="sec-head rv"><span class="kicker"><i></i> In detail</span><h2>What's <em>inside</em></h2><span class="sec-tag">4 systems</span></div>
 
-      <!-- VALIDATE detail -->
-      <div class="detail rv" id="sys-validate">
+      <!-- EDITORIAL detail -->
+      <div class="detail rv" id="sys-editorial">
         <div>
-          <span class="d-num">STEP 01</span>
-          <h3>Validate <em>— before you ship</em></h3>
-          <p class="d-desc">Every <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">system.json</code> must pass <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">validate.yml</code>: schema, <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">name===folder</code>, required files, no unsafe hooks.</p>
+          <span class="d-num">SYSTEM 01</span>
+          <h3>Editorial <em>— the landing system</em></h3>
+          <p class="d-desc">The default face of a claude-system site. It pairs a large serif hero with a stats ledger strip and numbered content sections — calm, confident, and unmistakably editorial.</p>
           <ul class="d-includes">
-            <li><code style="font-family:var(--mono);font-size:.85em">claude-system validate</code> locally</li>
-            <li>PR checks must be green before merge</li>
-            <li><code style="font-family:var(--mono);font-size:.85em">additionalProperties: false</code></li>
-            <li>Permissions declared honestly</li>
+            <li>Hero with eyebrow, headline &amp; standfirst</li>
+            <li>Stats ledger strip with hover accent</li>
+            <li>Numbered section headers</li>
+            <li>Buttons, pills &amp; footer</li>
           </ul>
         </div>
         <div class="d-side">
-          <span class="d-label"><i></i> Run</span>
+          <span class="d-label"><i></i> Use it</span>
           <div class="codeblock">
             <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>npm --prefix cli run build && node cli/dist/index.js validate</code></pre>
+            <pre><code>claude-system new editorial</code></pre>
           </div>
-          <p class="d-good"><b>Good for:</b> catching mismatches before CI does.</p>
+          <p class="d-good"><b>Good for:</b> home pages, product landings, and any page that needs a strong first impression.</p>
         </div>
       </div>
 
-      <!-- INSTALL detail -->
-      <div class="detail rv" id="sys-install">
+      <!-- LEDGER detail -->
+      <div class="detail rv" id="sys-ledger">
         <div>
-          <span class="d-num">STEP 02</span>
-          <h3>Install <em>— one command</em></h3>
-          <p class="d-desc">Fetch the CLI via <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">curl | sh</code> at <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">https://claude-system-tau.vercel.app/install</code>, then install any System in one shot.</p>
+          <span class="d-num">SYSTEM 02</span>
+          <h3>Ledger <em>— the list system</em></h3>
+          <p class="d-desc">Full-width rows with type icons, hairline separators, and a left accent line on hover. Built for anything you need to scan, filter, and click through.</p>
           <ul class="d-includes">
-            <li><code style="font-family:var(--mono);font-size:.85em">claude-system list</code> + <code style="font-family:var(--mono);font-size:.85em">search</code> — live</li>
-            <li><code style="font-family:var(--mono);font-size:.85em">claude-system info &lt;name&gt;</code> — permissions + WHY</li>
-            <li><code style="font-family:var(--mono);font-size:.85em">claude-system install &lt;name&gt;</code> → <code style="font-family:var(--mono);font-size:.85em">~/.claude-system/</code></li>
-            <li>Consent <code style="font-family:var(--mono);font-size:.85em">y/N</code> on first <code style="font-family:var(--mono);font-size:.85em">run</code></li>
+            <li>Search + pill filter toolbar</li>
+            <li>Ledger rows with type icons</li>
+            <li>Left accent line on hover</li>
+            <li>Pagination &amp; empty states</li>
           </ul>
         </div>
         <div class="d-side">
-          <span class="d-label"><i></i> Try</span>
+          <span class="d-label"><i></i> Use it</span>
           <div class="codeblock">
             <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh
-claude-system install example-system
-claude-system run example-system -- help</code></pre>
+            <pre><code>claude-system new ledger</code></pre>
           </div>
-          <p class="d-good"><b>Note:</b> <code style="font-family:var(--mono);font-size:.85em">setup.sh</code> runs once-only — you’ll see <code style="font-family:var(--mono);font-size:.85em"># WHY:</code> before you approve.</p>
+          <p class="d-good"><b>Good for:</b> blog indexes, contribution logs, inventories, and any record list.</p>
         </div>
       </div>
 
-      <!-- RUN detail -->
-      <div class="detail rv" id="sys-run">
+      <!-- NOTEBOOK detail -->
+      <div class="detail rv" id="sys-notebook">
         <div>
-          <span class="d-num">STEP 03</span>
-          <h3>Run <em>— shells out</em></h3>
-          <p class="d-desc">Systems don’t replace Claude Code — they prepare an environment and shell out to the real <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">claude</code> CLI. Thin, honest, no chat runtime.</p>
+          <span class="d-num">SYSTEM 03</span>
+          <h3>Notebook <em>— the reading system</em></h3>
+          <p class="d-desc">An airy reading column with §-numbered headings, dark code blocks, serif blockquotes, and a ◆ end-mark. Made for long-form that stays comfortable.</p>
           <ul class="d-includes">
-            <li><code style="font-family:var(--mono);font-size:.85em">claude-system run &lt;name&gt; -- &lt;args&gt;</code></li>
-            <li>Forwards <code style="font-family:var(--mono);font-size:.85em"> -- &lt;args&gt;</code> to <code style="font-family:var(--mono);font-size:.85em">claude</code></li>
-            <li><code style="font-family:var(--mono);font-size:.85em">setupDone</code> persisted — run again just calls <code style="font-family:var(--mono);font-size:.85em">claude</code></li>
-            <li>Keep CLI thin — features belong in a System</li>
+            <li>Prose column (~700px)</li>
+            <li>§-numbered headings with anchors</li>
+            <li>Code blocks with copy</li>
+            <li>Callouts &amp; prev/next pager</li>
           </ul>
         </div>
         <div class="d-side">
-          <span class="d-label"><i></i> Example</span>
+          <span class="d-label"><i></i> Use it</span>
           <div class="codeblock">
             <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>claude-system run example-system -- --help</code></pre>
+            <pre><code>claude-system new notebook</code></pre>
           </div>
-          <p class="d-good"><b>Trust:</b> <code style="font-family:var(--mono);font-size:.85em">info</code> shows permissions before you <code style="font-family:var(--mono);font-size:.85em">install</code>.</p>
+          <p class="d-good"><b>Good for:</b> blog posts, daily logs, tutorials, and any long-form article.</p>
+        </div>
+      </div>
+
+      <!-- DOCS detail -->
+      <div class="detail rv" id="sys-docs">
+        <div>
+          <span class="d-num">SYSTEM 04</span>
+          <h3>Docs <em>— the documentation system</em></h3>
+          <p class="d-desc">A three-zone layout — sticky sidebar, airy content, and on-this-page TOC — with callouts, tables, and copyable code. This very guide is built from it.</p>
+          <ul class="d-includes">
+            <li>Sidebar nav with filter + scroll-spy</li>
+            <li>On-this-page TOC</li>
+            <li>Tables, callouts &amp; kbd</li>
+            <li>Prev/next pager</li>
+          </ul>
+        </div>
+        <div class="d-side">
+          <span class="d-label"><i></i> Use it</span>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>claude-system new docs</code></pre>
+          </div>
+          <p class="d-good"><b>Good for:</b> documentation, guides, references, and anything that needs wayfinding.</p>
         </div>
       </div>
     </div>
@@ -467,12 +488,12 @@ claude-system run example-system -- help</code></pre>
     <div class="wrap">
       <div class="cta-band rv">
         <div>
-          <h3>Want to publish <em>yours?</em></h3>
-          <p>Copy <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">template/starter-system</code> → <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">system.json</code> → <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">validate</code> → PR. Registry regenerates via <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">scripts/generate-index.js</code>.</p>
+          <h3>Need something <em>different?</em></h3>
+          <p>Compose a new system from tokens and components, or start from a blank slate — the spec keeps you on-brand either way.</p>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a class="btn solid" href="/docs/creating-a-system">Create a system →</a>
-          <a class="btn" href="/docs">Read the docs ↗</a>
+          <a class="btn solid" href="/create.html">Create a system →</a>
+          <a class="btn" href="/docs.html">Read the docs ↗</a>
         </div>
       </div>
     </div>
@@ -486,15 +507,15 @@ claude-system run example-system -- help</code></pre>
         <p>"One design language, applied everywhere — paper, ink, and a single warm accent."</p>
         <div class="fsub">claude-system · systems index</div>
       </div>
-      <div class="fcol"><h4>Registry</h4><ul>
-        <li><a href="/browse">Browse</a></li>
-        <li><a href="/api/registry">/api/registry</a></li>
-        <li><a href="/api/search?q=example">/api/search</a></li>
+      <div class="fcol"><h4>System</h4><ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/#install">Install</a></li>
+        <li><a href="/systems.html">Systems</a></li>
+        <li><a href="/create.html">Create</a></li>
       </ul></div>
-      <div class="fcol"><h4>Docs</h4><ul>
-        <li><a href="/docs">Overview</a></li>
-        <li><a href="/docs/creating-a-system">Creating</a></li>
-        <li><a href="/docs/cli">CLI</a></li>
+      <div class="fcol"><h4>Spec</h4><ul>
+        <li><a href="/DESIGN.md">DESIGN.md</a></li>
+        <li><a href="/docs.html">Docs</a></li>
       </ul></div>
       <div class="fcol"><h4>Repo</h4><ul>
         <li><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub<span class="arr">↗</span></a></li>
@@ -600,95 +621,6 @@ document.addEventListener('keydown',function(e){
 });
 
 document.getElementById('topBtn').addEventListener('click',function(){window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});});
-
-/* live registry: enhance ledger with /api/registry + /api/search?q= */
-(function(){
-  var listEl=document.getElementById('list');
-  var qEl=document.getElementById('q');
-  var origRows = Array.prototype.slice.call(document.querySelectorAll('#list .row'));
-  var fallback=[{name:"example-system",displayName:"Example System (Reference Fixture)",version:"0.1.0",description:"Reference fixture used for CI validation and documentation \u2014 not intended for real installation or use.",keywords:["example","fixture","reference"],category:"other",license:"MIT",path:"systems/example-system"}];
-  function rowHtml(s, idx){
-    var cat=s.category||"other";
-    var tag=(cat==="other"?"":cat);
-    var kw=(s.keywords||[]).slice(0,4).map(function(k){return '<span>'+k+'</span>';}).join('');
-    var icon = cat==='other' ? 'docs' : cat==='open-source' ? 'list' : 'landing';
-    return '<a class="row" href="/system?name='+encodeURIComponent(s.name)+'" data-cat="'+cat+'" data-name="'+s.name.toLowerCase()+'">'
-      + '<div class="row-left"><span class="type-icon '+icon+'" aria-hidden="true"></span><span>No.'+String(idx+1).padStart(3,"0")+'</span></div>'
-      + '<div class="row-body">'
-      + '<div class="row-meta"><span class="tag primary">'+cat+'</span><span>v'+(s.version||"")+' \u00b7 '+(s.license||"")+'</span></div>'
-      + '<h3>'+(s.displayName||s.name)+'</h3>'
-      + '<p>'+(s.description||"")+'</p>'
-      + '<div class="row-tags">'+kw+'</div>'
-      + '<div class="row-cmd"><code>claude-system install '+s.name+'</code></div>'
-      + '</div>'
-      + '<div class="row-right"><span class="when">v'+(s.version||"")+'</span><span class="arrow">\u2192</span></div>'
-      + '</a>';
-  }
-  function renderLive(systems){
-    if(!listEl) return;
-    listEl.innerHTML = systems.map(function(s,i){ return rowHtml(s,i); }).join('');
-    // rebind filtering after render
-    if(window.applyLiveFilter) window.applyLiveFilter();
-  }
-  function fetchRegistry(){
-    fetch('/api/registry').then(function(r){return r.json();}).then(function(j){
-      var systems=(j.systems&&j.systems.length)?j.systems:fallback;
-      // expose globally for search
-      window.__liveSystems=systems;
-      renderLive(systems);
-      // update counts
-      var allPill=document.querySelector('[data-filter="all"] .n');
-      if(allPill) allPill.textContent=systems.length;
-      // init search from ?q=
-      var params=new URLSearchParams(location.search);
-      var q=params.get('q')||"";
-      if(q && qEl){ qEl.value=q; if(window.applyLiveFilter) window.applyLiveFilter(); }
-    }).catch(function(){ renderLive(fallback); });
-  }
-  // hook search to /api/search?q= with fallback
-  var _origApply = window.applyFilter;
-  window.applyLiveFilter = function(){
-    var q=(qEl? qEl.value.trim().toLowerCase() : "");
-    var FILTER=(typeof window.FILTER!=='undefined'? window.FILTER : "all");
-    var rows=document.querySelectorAll('#list .row');
-    var shown=0;
-    rows.forEach(function(r){
-      var cat=r.getAttribute('data-cat')||"";
-      var okCat=(FILTER==='all'||cat===FILTER);
-      var hay=(r.textContent||"").toLowerCase();
-      var okQ=!q||hay.indexOf(q)!==-1;
-      var show=okCat&&okQ;
-      r.classList.toggle('hidden',!show);
-      if(show) shown++;
-    });
-    var cnt=document.getElementById('qCount'); if(cnt) cnt.textContent=shown+'/'+rows.length;
-    var clr=document.getElementById('qClear'); if(clr) clr.classList.toggle('show',!!q);
-    var emp=document.getElementById('empty'); if(emp) emp.classList.toggle('show',shown===0);
-    if(q){
-      // also try live search for better ranking, but don't block
-      fetch('/api/search?q='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(j){
-        if(j.systems && j.systems.length && qEl.value.trim().toLowerCase()===q) {
-          // if search returns fewer, we keep filtered rows — already filtered
-        }
-      }).catch(function(){});
-      var url=new URL(location.href); if(q) url.searchParams.set('q',q); else url.searchParams.delete('q');
-      if(url.searchParams.get('q')!== new URLSearchParams(location.search).get('q')) history.replaceState(null,"",url);
-    }
-  };
-  // override pill handlers to use live filter
-  document.querySelectorAll('.pill').forEach(function(b){
-    b.addEventListener('click',function(){
-      window.FILTER=b.getAttribute('data-filter');
-      window.applyLiveFilter();
-    });
-  });
-  if(qEl){
-    qEl.addEventListener('input', function(){ window.applyLiveFilter(); });
-    qEl.addEventListener('keydown', function(e){ if(e.key==='Escape'){ qEl.value=''; window.applyLiveFilter(); }});
-  }
-  fetchRegistry();
-})();
-
 })();
 </script>
 </body>

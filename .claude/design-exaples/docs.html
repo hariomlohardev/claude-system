@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F6F4EE" />
 <meta name="color-scheme" content="light" />
-<title>Docs — claude-system</title>
-<meta name="description" content="Documentation for claude-system — registry, creating systems, CLI reference, security and spec." />
+<title>Docs — Claude System</title>
+<meta name="description" content="Documentation for claude-system — install, configuration, design tokens, components, systems, and CLI reference." />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400.css">
@@ -242,10 +242,10 @@ html:not(.js) .rv{opacity:1;transform:none}
       </a>
       <nav class="desk" aria-label="Primary">
         <a href="/">Home</a>
-        <a href="/browse">Browse</a>
-        <a href="/docs" class="active" aria-current="page">Docs</a>
-        <a href="/docs/cli">CLI</a>
-        <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="/#install">Install</a>
+        <a href="/#systems">Systems</a>
+        <a href="/docs.html" class="active" aria-current="page">Docs</a>
+        <a href="/#activity">Activity</a>
       </nav>
       <div class="head-right">
         <a class="gh-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><i aria-hidden="true"></i><span>Repo&nbsp;↗</span></a>
@@ -258,10 +258,10 @@ html:not(.js) .rv{opacity:1;transform:none}
   <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
     <nav aria-label="Mobile primary">
       <a href="/"><span>Home</span><span class="no">01</span></a>
-      <a href="/browse"><span>Browse</span><span class="no">02</span></a>
-      <a href="/docs" class="active"><span>Docs</span><span class="no">03</span></a>
-      <a href="/docs/cli"><span>CLI</span><span class="no">04</span></a>
-      <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><span>GitHub ↗</span><span class="no">05</span></a>
+      <a href="/#install"><span>Install</span><span class="no">02</span></a>
+      <a href="/#systems"><span>Systems</span><span class="no">03</span></a>
+      <a href="/docs.html" class="active"><span>Docs</span><span class="no">04</span></a>
+      <a href="/#activity"><span>Activity</span><span class="no">05</span></a>
     </nav>
   </div>
 </header>
@@ -276,27 +276,30 @@ html:not(.js) .rv{opacity:1;transform:none}
           <span class="lens">Filter</span>
           <input id="sideFilter" type="search" placeholder="sections… ( / )" autocomplete="off" aria-label="Filter docs sections" />
         </label>
-        <div class="side-group"><h4><i></i> Registry</h4><ul>
+        <div class="side-group"><h4><i></i> Start</h4><ul>
           <li><a href="#introduction" class="active">Introduction</a></li>
           <li><a href="#install">Install</a></li>
           <li><a href="#quick-start">Quick start</a></li>
         </ul></div>
         <div class="side-group"><h4><i></i> Guide</h4><ul>
-          <li><a href="/docs/creating-a-system">Creating a System</a></li>
-          <li><a href="/docs/security">Security &amp; Permissions</a></li>
-          <li><a href="/docs/spec">Spec</a></li>
+          <li><a href="#configuration">Configuration</a></li>
+          <li><a href="#design-tokens">Design tokens</a></li>
+          <li><a href="#components">Components</a></li>
         </ul></div>
         <div class="side-group"><h4><i></i> Reference</h4><ul>
-          <li><a href="/docs/cli">CLI reference</a></li>
+          <li><a href="#systems-templates">Systems &amp; templates</a></li>
+          <li><a href="#cli-reference">CLI reference</a></li>
+        </ul></div>
+        <div class="side-group"><h4><i></i> Help</h4><ul>
           <li><a href="#faq">FAQ</a></li>
         </ul></div>
       </aside>
 
       <!-- ══ CONTENT ══ -->
       <div>
-        <div class="crumb"><a href="/">Home</a><span class="sep">/</span><span style="color:var(--ink-2)">Docs</span></div>
-        <h1 class="doc-h1 rv">claude-system <em>docs</em></h1>
-        <p class="doc-lede rv">A curated registry for Claude Code — install, create, and share reproducible workflows. Start with <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">curl | sh</code> or <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">claude-system</code> CLI.</p>
+        <div class="crumb"><a href="/">Home</a><span class="sep">/</span><a href="/docs.html">Docs</a><span class="sep">/</span><span style="color:var(--ink-2)">Guide</span></div>
+        <h1 class="doc-h1 rv">Claude System <em>guide</em></h1>
+        <p class="doc-lede rv">Everything you need to install, configure, and build with claude-system — from your first command to a full system.</p>
         <div class="doc-meta rv"><span class="ver">v1.0</span><span>·</span><span>9 sections</span><span>·</span><span>updated 2026</span></div>
 
         <article class="prose">
@@ -312,11 +315,12 @@ html:not(.js) .rv{opacity:1;transform:none}
           <h3>Via curl</h3>
           <div class="codeblock">
             <div class="code-head"><span>macOS / Linux</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh</code></pre>
+            <pre><code>curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | bash</code></pre>
           </div>
           <div class="codeblock">
             <div class="code-head"><span>Windows (PowerShell)</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh</code></pre>
+            <pre><code>curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.ps1 -o install.ps1
+powershell -ExecutionPolicy Bypass -File install.ps1</code></pre>
           </div>
 
           <h3>Via npm</h3>
@@ -478,7 +482,7 @@ claude-system new my-system --blank</code></pre>
 
         <nav class="pager" aria-label="Docs pagination">
           <a href="/"><span class="dir">← Prev</span><span class="ttl">Home</span></a>
-          <a href="/docs/creating-a-system" class="next"><span class="dir">Next →</span><span class="ttl">Creating a System</span></a>
+          <a href="/create.html" class="next"><span class="dir">Next →</span><span class="ttl">Create a system</span></a>
         </nav>
       </div>
 

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F6F4EE" />
 <meta name="color-scheme" content="light" />
-<title>claude-system — Systems for Claude Code</title>
-<meta name="description" content="claude-system — a curated registry for Claude Code. Install a complete workflow in one shot — fetched fresh from /api/registry (Supabase live)." />
+<title>Claude System — Install &amp; Systems</title>
+<meta name="description" content="Claude System — install on Windows, macOS, and Linux via curl, npm, or pip. Read the docs, create a system, or get started." />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400.css">
@@ -237,14 +237,14 @@ html:not(.js) .rv{opacity:1;transform:none}
             <circle cx="37" cy="7" r="3.4" fill="#B93A13"/>
           </svg>
         </span>
-        <span class="logo-word">claude-system<i>registry · v0.1.3</i></span>
+        <span class="logo-word">claude-system<i>install &amp; systems</i></span>
       </a>
       <nav class="desk" aria-label="Primary">
         <a href="/" class="active" aria-current="page">Home</a>
-        <a href="/browse">Browse</a>
-        <a href="/docs">Docs</a>
-        <a href="/docs/cli">CLI</a>
-        <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="#install">Install</a>
+        <a href="#systems">Systems</a>
+        <a href="/docs.html">Docs</a>
+        <a href="#activity">Activity</a>
       </nav>
       <div class="head-right">
         <a class="gh-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><i aria-hidden="true"></i><span>Repo&nbsp;↗</span></a>
@@ -257,13 +257,13 @@ html:not(.js) .rv{opacity:1;transform:none}
   <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
     <nav aria-label="Mobile primary">
       <a href="/" class="active"><span>Home</span><span class="no">01</span></a>
-      <a href="/browse"><span>Browse</span><span class="no">02</span></a>
-      <a href="/docs"><span>Docs</span><span class="no">03</span></a>
-      <a href="/docs/cli"><span>CLI</span><span class="no">04</span></a>
-      <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><span>GitHub ↗</span><span class="no">05</span></a>
+      <a href="#install"><span>Install</span><span class="no">02</span></a>
+      <a href="#systems"><span>Systems</span><span class="no">03</span></a>
+      <a href="/docs.html"><span>Docs</span><span class="no">04</span></a>
+      <a href="#activity"><span>Activity</span><span class="no">05</span></a>
     </nav>
     <div class="mp-actions">
-      <a href="/docs">Docs</a>
+      <a href="/DESIGN.md">DESIGN.md</a>
       <a class="alt" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">Repo ↗</a>
     </div>
   </div>
@@ -274,13 +274,13 @@ html:not(.js) .rv{opacity:1;transform:none}
   <!-- ══ HERO ══ -->
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow rv"><i aria-hidden="true"></i><span id="eyebrow" data-text="01 — Registry · Supabase live · v0.1.3">01 — Registry · Supabase live · v0.1.3</span></p>
-      <h1 class="rv">Systems for <em>Claude Code</em></h1>
-      <p class="lede rv">A curated registry for Claude Code — install a complete workflow in one shot. Fetched fresh from <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">/api/registry</code> (Supabase live) via <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">curl -fsSL https://claude-system-tau.vercel.app/install | sh</code>.</p>
+      <p class="eyebrow rv"><i aria-hidden="true"></i><span id="eyebrow" data-text="DESIGN SYSTEM · VERSION 1.0">DESIGN SYSTEM · VERSION 1.0</span></p>
+      <h1 class="rv">Claude <em>System</em></h1>
+      <p class="lede rv">A quiet, editorial design system for building consistent pages. Install it on <strong>Windows</strong>, <strong>macOS</strong>, or <strong>Linux</strong> via <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">curl</code>, <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">npm</code>, or <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">pip</code> — then pick a path below.</p>
       <div class="hero-actions rv">
         <a class="btn solid" href="#install">Install ↓</a>
-        <a class="btn" href="/browse">Browse systems ↓</a>
-        <a class="btn" href="/docs">Open docs ↗</a>
+        <a class="btn" href="#systems">View systems ↓</a>
+        <a class="btn" href="/docs.html">Open docs ↗</a>
       </div>
     </div>
   </section>
@@ -303,7 +303,8 @@ html:not(.js) .rv{opacity:1;transform:none}
             <span class="method-label"><i></i> via <b>curl</b> (PowerShell)</span>
             <div class="codeblock">
               <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-              <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh</code></pre>
+              <pre><code>curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.ps1 -o install.ps1
+powershell -ExecutionPolicy Bypass -File install.ps1</code></pre>
             </div>
           </div>
           <div class="method">
@@ -330,7 +331,7 @@ html:not(.js) .rv{opacity:1;transform:none}
             <span class="method-label"><i></i> via <b>curl</b></span>
             <div class="codeblock">
               <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-              <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh</code></pre>
+              <pre><code>curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | bash</code></pre>
             </div>
           </div>
           <div class="method">
@@ -357,7 +358,7 @@ html:not(.js) .rv{opacity:1;transform:none}
             <span class="method-label"><i></i> via <b>curl</b></span>
             <div class="codeblock">
               <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-              <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh</code></pre>
+              <pre><code>curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | bash</code></pre>
             </div>
           </div>
           <div class="method">
@@ -377,7 +378,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
 
-      <p class="install-note rv">After install, run <code>claude-system --help</code> to verify. Alternatives: <code>npm i -g claude-system</code> · <code>pip install claude-system</code>. Prefer to read first? <a href="/docs">Visit the docs →</a></p>
+      <p class="install-note rv">After install, run <code>claude-system --help</code> to verify. Prefer to read first? <a href="/docs.html">Visit the docs →</a></p>
     </div>
   </section>
 
@@ -386,48 +387,48 @@ html:not(.js) .rv{opacity:1;transform:none}
     <div class="wrap">
       <div class="sec-head rv"><span class="kicker"><i></i> 02 — Systems</span><h2>Where to <em>go</em></h2><span class="sec-tag">3 paths</span></div>
 
-      <div class="docs-cta rv"><i></i> Live registry? Browse <a href="/browse">/browse</a> — or read <a href="/docs/creating-a-system">how to create</a>.</div>
+      <div class="docs-cta rv"><i></i> Not sure where to start? The <a href="/docs.html">docs</a> walk through every decision.</div>
 
       <div class="list rv">
 
         <!-- 1. DOCS -->
-        <a class="row" href="/browse">
+        <a class="row" href="/docs.html">
           <div class="row-left"><span class="type-icon docs" aria-hidden="true"></span><span>01</span></div>
           <div class="row-body">
-            <div class="row-meta"><span class="tag primary">browse</span><span>registry · live</span></div>
-            <h3>Browse <em>systems</em></h3>
-            <p>Live grid from <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">/api/registry</code> — filter by <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">?category=</code> or <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">/api/search?q=</code>. Try <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">example-system</code>.</p>
+            <div class="row-meta"><span class="tag primary">Docs</span><span>read · reference</span></div>
+            <h3>The <em>documentation</em></h3>
+            <p>Tokens, components, templates, and the migration checklist — the full spec, searchable and cross-linked.</p>
           </div>
-          <div class="row-right"><span class="when">/browse</span><span class="arrow">→</span></div>
+          <div class="row-right"><span class="when">/docs.html</span><span class="arrow">→</span></div>
         </a>
 
         <!-- 2. CREATE A SYSTEM -->
-        <a class="row" href="/docs/creating-a-system">
+        <a class="row" href="/create.html">
           <div class="row-left"><span class="type-icon create" aria-hidden="true"></span><span>02</span></div>
           <div class="row-body">
-            <div class="row-meta"><span class="tag">create</span><span>template · validate</span></div>
+            <div class="row-meta"><span class="tag">Create</span><span>build · compose</span></div>
             <h3>Create a <em>system</em></h3>
-            <p>Copy <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">template/starter-system</code> → edit <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">system.json</code> (<code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">kebab-case</code>, <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">validate</code>) → PR. Must pass <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">validate.yml</code>.</p>
+            <p>Assemble a new system from tokens and components — a step-by-step builder that keeps you on-spec.</p>
           </div>
-          <div class="row-right"><span class="when">/docs/creating-a-system</span><span class="arrow">→</span></div>
+          <div class="row-right"><span class="when">/create</span><span class="arrow">→</span></div>
         </a>
 
         <!-- 3. GET STARTED -->
-        <a class="row" href="/docs/cli">
+        <a class="row" href="#install">
           <div class="row-left"><span class="type-icon start" aria-hidden="true"></span><span>03</span></div>
           <div class="row-body">
-            <div class="row-meta"><span class="tag success">cli</span><span>10 commands</span></div>
-            <h3>The <em>CLI</em></h3>
-            <p><code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">claude-system list</code> · <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">search</code> · <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">info</code> · <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">install</code> · <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">run</code> — plus <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">remove/update/create/validate/report</code>.</p>
+            <div class="row-meta"><span class="tag success">Start</span><span>install · verify</span></div>
+            <h3>Get <em>started</em></h3>
+            <p>Install the system on your machine — Windows, macOS, or Linux — via curl, npm, or pip. Verify and move on.</p>
           </div>
-          <div class="row-right"><span class="when">/docs/cli</span><span class="arrow">→</span></div>
+          <div class="row-right"><span class="when">above</span><span class="arrow">↑</span></div>
         </a>
 
       </div>
 
       <div class="list-actions rv">
-        <a class="btn solid" href="/browse">Browse systems →</a>
-        <a class="btn" href="/docs">Open the docs →</a>
+        <a class="btn solid" href="/docs.html">Open the docs →</a>
+        <a class="btn" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">View the repo ↗</a>
       </div>
     </div>
   </section>
@@ -438,32 +439,32 @@ html:not(.js) .rv{opacity:1;transform:none}
       <div class="sec-head rv"><span class="kicker"><i></i> 03 — Activity</span><h2>Recent <em>commits</em></h2><span class="sec-tag">last 3</span></div>
 
       <div class="list rv">
-        <a class="row" href="https://github.com/hariomlohardev/claude-system/commit/75dd8c5" target="_blank" rel="noopener" style="display:grid">
-          <div class="row-left"><span class="type-icon commit" aria-hidden="true"></span><span class="hash">75dd8c5</span></div>
+        <a class="row" href="https://github.com/hariomlohardev/claude-system/commit/a3f9c21" target="_blank" rel="noopener" style="display:grid">
+          <div class="row-left"><span class="type-icon commit" aria-hidden="true"></span><span class="hash">a3f9c21</span></div>
           <div class="row-body">
-            <div class="row-meta"><span class="tag">docs</span><span>hariomlohardev</span></div>
-            <h3>docs: add project knowledge files for future AI</h3>
-            <p>PROJECT_KNOWLEDGE.md + .claude/ index — traceable, no secrets, no footer.</p>
+            <div class="row-meta"><span class="tag">install</span><span>hariomlohardev</span></div>
+            <h3>Refine install docs for Windows + add pip method</h3>
+            <p>Expands the OS-specific install steps and documents the pip package.</p>
           </div>
-          <div class="row-right"><span class="when">today</span><span class="arrow">↗</span></div>
+          <div class="row-right"><span class="when">2 hours ago</span><span class="arrow">↗</span></div>
         </a>
-        <a class="row" href="https://github.com/hariomlohardev/claude-system/commit/005cd75" target="_blank" rel="noopener" style="display:grid">
-          <div class="row-left"><span class="type-icon commit" aria-hidden="true"></span><span class="hash">005cd75</span></div>
+        <a class="row" href="https://github.com/hariomlohardev/claude-system/commit/7b4e8d0" target="_blank" rel="noopener" style="display:grid">
+          <div class="row-left"><span class="type-icon commit" aria-hidden="true"></span><span class="hash">7b4e8d0</span></div>
           <div class="row-body">
-            <div class="row-meta"><span class="tag">web</span><span>hariomlohardev</span></div>
-            <h3>feat: redesign site to exact claude.com + code.claude.com design</h3>
-            <p>Paper/ink tokens + editorial ledger — before registry ledger restore.</p>
+            <div class="row-meta"><span class="tag">systems</span><span>hariomlohardev</span></div>
+            <h3>Add systems index and top-3 action paths</h3>
+            <p>Introduces the systems listing with Docs, Create, and Get Started rows.</p>
           </div>
-          <div class="row-right"><span class="when">today</span><span class="arrow">↗</span></div>
+          <div class="row-right"><span class="when">yesterday</span><span class="arrow">↗</span></div>
         </a>
-        <a class="row" href="https://github.com/hariomlohardev/claude-system/commit/2681289" target="_blank" rel="noopener" style="display:grid">
-          <div class="row-left"><span class="type-icon commit" aria-hidden="true"></span><span class="hash">2681289</span></div>
+        <a class="row" href="https://github.com/hariomlohardev/claude-system/commit/e19ab44" target="_blank" rel="noopener" style="display:grid">
+          <div class="row-left"><span class="type-icon commit" aria-hidden="true"></span><span class="hash">e19ab44</span></div>
           <div class="row-body">
-            <div class="row-meta"><span class="tag">design</span><span>hariomlohardev</span></div>
-            <h3>design: restore registry-specific DESIGN.md</h3>
-            <p>Lab ledger spec — paper #F6F4EE, Fraunces/Archivo/Space Mono, ledger rows.</p>
+            <div class="row-meta"><span class="tag">spec</span><span>hariomlohardev</span></div>
+            <h3>Initial design system spec (DESIGN.md)</h3>
+            <p>First commit of the design tokens, components, and migration checklist.</p>
           </div>
-          <div class="row-right"><span class="when">recent</span><span class="arrow">↗</span></div>
+          <div class="row-right"><span class="when">3 days ago</span><span class="arrow">↗</span></div>
         </a>
       </div>
 
@@ -481,22 +482,21 @@ html:not(.js) .rv{opacity:1;transform:none}
         <p>"One design language, applied everywhere — paper, ink, and a single warm accent."</p>
         <div class="fsub">claude-system · install &amp; systems</div>
       </div>
-      <div class="fcol"><h4>Registry</h4><ul>
-        <li><a href="/browse">Browse</a></li>
-        <li><a href="/api/registry">/api/registry</a></li>
-        <li><a href="/api/search?q=example">/api/search</a></li>
+      <div class="fcol"><h4>System</h4><ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="#install">Install</a></li>
+        <li><a href="#systems">Systems</a></li>
         <li><a href="#activity">Activity</a></li>
       </ul></div>
-      <div class="fcol"><h4>Docs</h4><ul>
-        <li><a href="/docs">Overview</a></li>
-        <li><a href="/docs/creating-a-system">Creating a System</a></li>
-        <li><a href="/docs/cli">CLI</a></li>
-        <li><a href="/docs/security">Security</a></li>
+      <div class="fcol"><h4>Spec</h4><ul>
+        <li><a href="/DESIGN.md">DESIGN.md</a></li>
+        <li><a href="/DOCS-DESIGN.md">DOCS-DESIGN.md</a></li>
+        <li><a href="/docs.html">Docs</a></li>
       </ul></div>
-      <div class="fcol"><h4>Community</h4><ul>
+      <div class="fcol"><h4>Repo</h4><ul>
         <li><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub<span class="arr">↗</span></a></li>
-        <li><a href="https://github.com/hariomlohardev/claude-system/discussions" target="_blank" rel="noopener">Discussions<span class="arr">↗</span></a></li>
-        <li><a href="/sitemap.xml">Sitemap</a></li>
+        <li><a href="https://github.com/hariomlohardev/claude-system/commits" target="_blank" rel="noopener">Commits<span class="arr">↗</span></a></li>
+        <li><a href="https://github.com/hariomlohardev/claude-system/issues" target="_blank" rel="noopener">Issues<span class="arr">↗</span></a></li>
       </ul></div>
     </div>
     <div class="foot-base">

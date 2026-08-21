@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#F6F4EE" />
 <meta name="color-scheme" content="light" />
-<title>Docs — claude-system</title>
-<meta name="description" content="Documentation for claude-system — registry, creating systems, CLI reference, security and spec." />
+<title>Create a System — Claude System Guide</title>
+<meta name="description" content="A complete step-by-step guide to creating a system with claude-system — from init to deploy." />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400.css">
@@ -238,14 +238,14 @@ html:not(.js) .rv{opacity:1;transform:none}
             <circle cx="37" cy="7" r="3.4" fill="#B93A13"/>
           </svg>
         </span>
-        <span class="logo-word">claude-system<i>documentation</i></span>
+        <span class="logo-word">claude-system<i>create guide</i></span>
       </a>
       <nav class="desk" aria-label="Primary">
         <a href="/">Home</a>
-        <a href="/browse">Browse</a>
-        <a href="/docs" class="active" aria-current="page">Docs</a>
-        <a href="/docs/cli">CLI</a>
-        <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="/#install">Install</a>
+        <a href="/#systems">Systems</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/create.html" class="active" aria-current="page">Create</a>
       </nav>
       <div class="head-right">
         <a class="gh-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><i aria-hidden="true"></i><span>Repo&nbsp;↗</span></a>
@@ -258,10 +258,10 @@ html:not(.js) .rv{opacity:1;transform:none}
   <div class="mobile-panel" id="mobilePanel" aria-hidden="true">
     <nav aria-label="Mobile primary">
       <a href="/"><span>Home</span><span class="no">01</span></a>
-      <a href="/browse"><span>Browse</span><span class="no">02</span></a>
-      <a href="/docs" class="active"><span>Docs</span><span class="no">03</span></a>
-      <a href="/docs/cli"><span>CLI</span><span class="no">04</span></a>
-      <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><span>GitHub ↗</span><span class="no">05</span></a>
+      <a href="/#install"><span>Install</span><span class="no">02</span></a>
+      <a href="/#systems"><span>Systems</span><span class="no">03</span></a>
+      <a href="/docs.html"><span>Docs</span><span class="no">04</span></a>
+      <a href="/create.html" class="active"><span>Create</span><span class="no">05</span></a>
     </nav>
   </div>
 </header>
@@ -271,126 +271,98 @@ html:not(.js) .rv{opacity:1;transform:none}
     <div class="docs">
 
       <!-- ══ SIDEBAR ══ -->
-      <aside class="side" aria-label="Docs navigation">
+      <aside class="side" aria-label="Guide navigation">
         <label class="side-search">
           <span class="lens">Filter</span>
-          <input id="sideFilter" type="search" placeholder="sections… ( / )" autocomplete="off" aria-label="Filter docs sections" />
+          <input id="sideFilter" type="search" placeholder="steps… ( / )" autocomplete="off" aria-label="Filter guide steps" />
         </label>
-        <div class="side-group"><h4><i></i> Registry</h4><ul>
-          <li><a href="#introduction" class="active">Introduction</a></li>
-          <li><a href="#install">Install</a></li>
-          <li><a href="#quick-start">Quick start</a></li>
+        <div class="side-group"><h4><i></i> Start</h4><ul>
+          <li><a href="#before-you-start" class="active">Before you start</a></li>
+          <li><a href="#initialize">Initialize</a></li>
         </ul></div>
-        <div class="side-group"><h4><i></i> Guide</h4><ul>
-          <li><a href="/docs/creating-a-system">Creating a System</a></li>
-          <li><a href="/docs/security">Security &amp; Permissions</a></li>
-          <li><a href="/docs/spec">Spec</a></li>
+        <div class="side-group"><h4><i></i> Build</h4><ul>
+          <li><a href="#configure">Configure</a></li>
+          <li><a href="#design-tokens">Design tokens</a></li>
+          <li><a href="#components">Components</a></li>
         </ul></div>
-        <div class="side-group"><h4><i></i> Reference</h4><ul>
-          <li><a href="/docs/cli">CLI reference</a></li>
-          <li><a href="#faq">FAQ</a></li>
+        <div class="side-group"><h4><i></i> Assemble</h4><ul>
+          <li><a href="#pages">Pages</a></li>
+          <li><a href="#preview">Preview</a></li>
+        </ul></div>
+        <div class="side-group"><h4><i></i> Ship</h4><ul>
+          <li><a href="#build">Build</a></li>
+          <li><a href="#deploy">Deploy</a></li>
+          <li><a href="#verify">Verify</a></li>
+          <li><a href="#next-steps">Next steps</a></li>
         </ul></div>
       </aside>
 
       <!-- ══ CONTENT ══ -->
       <div>
-        <div class="crumb"><a href="/">Home</a><span class="sep">/</span><span style="color:var(--ink-2)">Docs</span></div>
-        <h1 class="doc-h1 rv">claude-system <em>docs</em></h1>
-        <p class="doc-lede rv">A curated registry for Claude Code — install, create, and share reproducible workflows. Start with <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">curl | sh</code> or <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:1px 5px">claude-system</code> CLI.</p>
-        <div class="doc-meta rv"><span class="ver">v1.0</span><span>·</span><span>9 sections</span><span>·</span><span>updated 2026</span></div>
+        <div class="crumb"><a href="/">Home</a><span class="sep">/</span><a href="/docs.html">Docs</a><span class="sep">/</span><span style="color:var(--ink-2)">Create a system</span></div>
+        <h1 class="doc-h1 rv">Create a <em>system</em></h1>
+        <p class="doc-lede rv">A complete walkthrough — from your first <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">init</code> to a deployed, spec-checked system. Eleven steps, no shortcuts skipped.</p>
+        <div class="doc-meta rv"><span class="ver">guide</span><span>·</span><span>11 steps</span><span>·</span><span>~15 min</span></div>
 
         <article class="prose">
 
-          <h2 id="introduction">Introduction<a class="anchor" href="#introduction" aria-label="Link to Introduction">#</a></h2>
-          <p><strong>claude-system</strong> is a minimal, editorial design system for building consistent pages. It ships a small set of tokens, components, and page templates — plus a CLI to scaffold and build them. The goal: every page reads like it came from the same notebook.</p>
-          <p>This guide walks through installation, configuration, and the core concepts. If you prefer to jump straight in, run the quick start below.</p>
-          <div class="callout"><span class="co-label">Note</span><p>claude-system is a specification + tooling, not a runtime framework. Output is static HTML that conforms to <code>DESIGN.md</code>.</p></div>
-
-          <h2 id="install">Install<a class="anchor" href="#install" aria-label="Link to Install">#</a></h2>
-          <p>Install on <strong>Windows</strong>, <strong>macOS</strong>, or <strong>Linux</strong> using any of the three methods. All install the same <code>claude-system</code> command.</p>
-
-          <h3>Via curl</h3>
+          <h2 id="before-you-start">Before you start<a class="anchor" href="#before-you-start" aria-label="Link to Before you start">#</a></h2>
+          <p>You need three things: <strong>Node.js 18+</strong>, a <strong>terminal</strong>, and <strong>git</strong>. If you haven't installed claude-system yet, do that first.</p>
           <div class="codeblock">
-            <div class="code-head"><span>macOS / Linux</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh</code></pre>
+            <div class="code-head"><span>terminal — check</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>node --version          # v18 or newer
+claude-system --version # should print a version</code></pre>
           </div>
-          <div class="codeblock">
-            <div class="code-head"><span>Windows (PowerShell)</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh</code></pre>
-          </div>
+          <div class="callout"><span class="co-label">Note</span><p>If <code>claude-system</code> isn't found, install it via <a href="/docs.html#install">curl, npm, or pip</a>, then restart your terminal.</p></div>
 
-          <h3>Via npm</h3>
+          <h2 id="initialize">Initialize<a class="anchor" href="#initialize" aria-label="Link to Initialize">#</a></h2>
+          <p>Scaffold a fresh project. This creates the folder structure, a starter config, and the token file.</p>
           <div class="codeblock">
             <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>npm install -g claude-system</code></pre>
+            <pre><code>claude-system init my-system
+cd my-system</code></pre>
           </div>
-
-          <h3>Via pip</h3>
+          <p>You'll get this structure:</p>
           <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>pip install claude-system</code></pre>
+            <div class="code-head"><span>project structure</span></div>
+            <pre><code>my-system/
+├─ claude-system.config.json   # project settings
+├─ src/
+│  ├─ tokens.css               # design tokens
+│  ├─ components/              # reusable pieces
+│  └─ pages/                   # page templates
+└─ dist/                       # build output (generated)</code></pre>
           </div>
 
-          <p>Verify the install:</p>
-          <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>claude-system --version
-claude-system --help</code></pre>
-          </div>
-          <div class="callout tip"><span class="co-label">Tip</span><p>The install script adds the binary to your PATH automatically. Restart your terminal if <code>claude-system</code> isn't found.</p></div>
-
-          <h2 id="quick-start">Quick start<a class="anchor" href="#quick-start" aria-label="Link to Quick start">#</a></h2>
-          <p>Scaffold a new project, start the dev server, and build for production — four commands.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code># 1. create a new project
-claude-system init my-site
-cd my-site
-
-# 2. start the local dev server
-claude-system serve
-
-# 3. add a system
-claude-system new editorial
-
-# 4. build for production
-claude-system build</code></pre>
-          </div>
-          <p>Your site is generated into <code>dist/</code> and ready to deploy as static files.</p>
-          <div class="callout warn"><span class="co-label">Warning</span><p>Never hand-edit files inside <code>dist/</code>. They are regenerated on every build — make changes in <code>src/</code> instead.</p></div>
-
-          <h2 id="configuration">Configuration<a class="anchor" href="#configuration" aria-label="Link to Configuration">#</a></h2>
-          <p>Project settings live in <code>claude-system.config.json</code> at the project root. Every key is optional; defaults follow <code>DESIGN.md</code>.</p>
+          <h2 id="configure">Configure<a class="anchor" href="#configure" aria-label="Link to Configure">#</a></h2>
+          <p>Open <code>claude-system.config.json</code> and set your project's identity. Every key is optional — defaults follow <code>DESIGN.md</code>.</p>
           <div class="codeblock">
             <div class="code-head"><span>claude-system.config.json</span><button class="copy" type="button">Copy</button></div>
             <pre><code>{
-  "name": "my-site",
+  "name":   "my-system",
   "accent": "#B93A13",
   "paper":  "#F6F4EE",
   "fonts":  { "display": "Fraunces", "body": "Archivo", "mono": "Space Mono" },
   "build":  { "out": "dist", "minify": true },
-  "pages":  ["index", "docs", "blog"]
+  "pages":  ["index"]
 }</code></pre>
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
+              <thead><tr><th>Key</th><th>Purpose</th><th>Change it when…</th></tr></thead>
               <tbody>
-                <tr><td>name</td><td>string</td><td>"site"</td><td>Project name used in generated metadata.</td></tr>
-                <tr><td>accent</td><td>color</td><td>#B93A13</td><td>The single warm accent color.</td></tr>
-                <tr><td>paper</td><td>color</td><td>#F6F4EE</td><td>Page background tone.</td></tr>
-                <tr><td>fonts</td><td>object</td><td>Fraunces / Archivo / Space Mono</td><td>Display, body, and mono families.</td></tr>
-                <tr><td>build.out</td><td>string</td><td>"dist"</td><td>Output directory for builds.</td></tr>
-                <tr><td>build.minify</td><td>bool</td><td>true</td><td>Minify CSS/JS in production builds.</td></tr>
-                <tr><td>pages</td><td>string[]</td><td>["index"]</td><td>Pages to generate.</td></tr>
+                <tr><td>name</td><td>Project identity in metadata</td><td>Always — set it to your system's name.</td></tr>
+                <tr><td>accent</td><td>The single warm accent</td><td>You want a different brand accent (keep contrast ≥ 4.5:1).</td></tr>
+                <tr><td>fonts</td><td>Display / body / mono families</td><td>You're rebranding typography.</td></tr>
+                <tr><td>pages</td><td>Pages to generate</td><td>You add a new page template.</td></tr>
               </tbody>
             </table>
           </div>
 
           <h2 id="design-tokens">Design tokens<a class="anchor" href="#design-tokens" aria-label="Link to Design tokens">#</a></h2>
-          <p>All color, type, and spacing resolve to a small set of CSS custom properties. Do not introduce raw values in components.</p>
+          <p>All color, type, and spacing live in <code>src/tokens.css</code>. This is the source of truth — components reference these, never raw values.</p>
           <div class="codeblock">
-            <div class="code-head"><span>:root — tokens</span><button class="copy" type="button">Copy</button></div>
+            <div class="code-head"><span>src/tokens.css</span><button class="copy" type="button">Copy</button></div>
             <pre><code>:root{
   --paper:#F6F4EE;  --sheet:#FBFAF6;  --paper-2:#EFECE2;
   --ink:#181611;    --body:#3B382E;   --muted:#5F594A;
@@ -400,85 +372,110 @@ claude-system build</code></pre>
   --ease:cubic-bezier(.22,1,.36,1);
 }</code></pre>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Token</th><th>Role</th><th>Contrast on paper</th></tr></thead>
-              <tbody>
-                <tr><td>--ink</td><td>headings, strong borders</td><td>~15:1</td></tr>
-                <tr><td>--body</td><td>body copy</td><td>~11:1</td></tr>
-                <tr><td>--muted</td><td>meta, labels</td><td>6.3:1</td></tr>
-                <tr><td>--accent</td><td>links, bullets, accent lines</td><td>5.2:1</td></tr>
-                <tr><td>--green</td><td>success / verified only</td><td>~4.8:1</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="callout warn"><span class="co-label">Warning</span><p>Don't add new hues here. If you need a color that isn't covered, you're likely reaching for decoration — the system is intentionally limited.</p></div>
 
           <h2 id="components">Components<a class="anchor" href="#components" aria-label="Link to Components">#</a></h2>
-          <p>Build pages only from these. Each keeps sharp corners and hairline-or-ink borders.</p>
-          <ul>
-            <li><strong>Buttons</strong> — mono, uppercase, ≥46px tall; solid and ghost variants.</li>
-            <li><strong>Cards</strong> — sheet bg + ink border; lift on hover with a corner arrow.</li>
-            <li><strong>Ledger rows</strong> — full-width list rows with type icons and a left accent line.</li>
-            <li><strong>Stats ledger strip</strong> — framed metric cells for landing pages.</li>
-            <li><strong>Pills / tags</strong> — filter controls and inline metadata.</li>
-            <li><strong>Forms</strong> — underline or bordered inputs; accent on focus.</li>
-            <li><strong>FAQ</strong> — details/summary with a rotating chevron.</li>
-            <li><strong>Modal + lightbox</strong> — centered paper card over a blurred backdrop.</li>
-          </ul>
-          <div class="callout"><span class="co-label">Note</span><p>Content areas stay flat and borderless. Add a box only when an element is interactive.</p></div>
-
-          <h2 id="systems-templates">Systems &amp; templates<a class="anchor" href="#systems-templates" aria-label="Link to Systems and templates">#</a></h2>
-          <p>A <strong>system</strong> is a named bundle of tokens + components + templates. Compose one with <code>claude-system new</code>, or pick from the built-ins.</p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>System</th><th>Template</th><th>Best for</th></tr></thead>
-              <tbody>
-                <tr><td>editorial</td><td>home / landing</td><td>Hero, stats, numbered sections.</td></tr>
-                <tr><td>ledger</td><td>list index</td><td>Searchable rows — logs, contributions.</td></tr>
-                <tr><td>notebook</td><td>article / post</td><td>Airy prose, § headings, end-marks.</td></tr>
-                <tr><td>docs</td><td>documentation</td><td>Sidebar + content + TOC.</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <p>Generate a component, then edit it. Components are the reusable pieces your pages assemble.</p>
           <div class="codeblock">
             <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code># create a new system from a built-in
-claude-system new editorial
-
-# or scaffold a blank one
-claude-system new my-system --blank</code></pre>
+            <pre><code># generate a component scaffold
+claude-system new button --type component</code></pre>
           </div>
+          <p>This creates <code>src/components/button.html</code> with the base styles from <code>DESIGN.md</code>:</p>
+          <div class="codeblock">
+            <div class="code-head"><span>src/components/button.html</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>&lt;a class="btn solid" href="#"&gt;Solid button&lt;/a&gt;
+&lt;a class="btn" href="#"&gt;Ghost button&lt;/a&gt;
 
-          <h2 id="cli-reference">CLI reference<a class="anchor" href="#cli-reference" aria-label="Link to CLI reference">#</a></h2>
-          <p>All commands available after install. Run any with <code>--help</code> for flags.</p>
+&lt;style&gt;
+.btn{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;
+  text-transform:uppercase;padding:14px 20px;border:1px solid var(--ink);
+  color:var(--ink);min-height:46px;display:inline-flex;align-items:center}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--accent);border-color:var(--accent)}
+&lt;/style&gt;</code></pre>
+          </div>
+          <div class="callout tip"><span class="co-label">Tip</span><p>Keep components small and single-purpose. If a component grows past ~60 lines, split it.</p></div>
+
+          <h2 id="pages">Pages<a class="anchor" href="#pages" aria-label="Link to Pages">#</a></h2>
+          <p>A page composes components into a layout. Start from a built-in template, then customize.</p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code># create a landing page from the editorial template
+claude-system new index --template editorial</code></pre>
+          </div>
+          <p>Available templates:</p>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Command</th><th>Description</th><th>Common flags</th></tr></thead>
+              <thead><tr><th>Template</th><th>Layout</th><th>Use for</th></tr></thead>
               <tbody>
-                <tr><td>init &lt;dir&gt;</td><td>Scaffold a new project.</td><td>--blank, --template</td></tr>
-                <tr><td>serve</td><td>Start the local dev server.</td><td>--port, --open</td></tr>
-                <tr><td>build</td><td>Build static output to <code>dist/</code>.</td><td>--out, --minify</td></tr>
-                <tr><td>new &lt;name&gt;</td><td>Create a system or component.</td><td>--blank, --type</td></tr>
-                <tr><td>check</td><td>Lint pages against DESIGN.md.</td><td>--strict</td></tr>
-                <tr><td>--version</td><td>Print the installed version.</td><td>—</td></tr>
+                <tr><td>editorial</td><td>hero · stats · sections</td><td>Landing pages</td></tr>
+                <tr><td>ledger</td><td>filter · rows</td><td>List / index pages</td></tr>
+                <tr><td>notebook</td><td>prose · § headings</td><td>Articles / posts</td></tr>
+                <tr><td>docs</td><td>sidebar · content · toc</td><td>Documentation</td></tr>
               </tbody>
             </table>
           </div>
-          <div class="callout tip"><span class="co-label">Tip</span><p><code>claude-system check</code> runs the DESIGN.md checklist and reports any off-system color, font, or spacing — use it before every deploy.</p></div>
+          <p>Add the page to the <code>pages</code> array in your config so it gets built.</p>
 
-          <h2 id="faq">FAQ<a class="anchor" href="#faq" aria-label="Link to FAQ">#</a></h2>
-          <p><strong>Do I need a build step?</strong><br>Only when publishing. Generated output is static HTML; you can open any page directly while developing.</p>
-          <p><strong>Can I change the accent color?</strong><br>Yes — set <code>accent</code> in the config. Keep contrast ≥ 4.5:1 on paper.</p>
-          <p><strong>Does it work with my framework?</strong><br>claude-system outputs plain HTML/CSS, so it drops into any static host or pipeline.</p>
-          <p><strong>Where do I report issues?</strong><br>Open an issue on <a href="https://github.com/hariomlohardev/claude-system/issues" target="_blank" rel="noopener">GitHub</a> — include the output of <code>claude-system check</code>.</p>
+          <h2 id="preview">Preview<a class="anchor" href="#preview" aria-label="Link to Preview">#</a></h2>
+          <p>Start the dev server and open your browser. Changes hot-reload as you edit <code>src/</code>.</p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>claude-system serve
+# → http://localhost:4000</code></pre>
+          </div>
+          <div class="callout"><span class="co-label">Note</span><p>The dev server reads <code>src/</code> directly — you don't need to rebuild while iterating.</p></div>
+
+          <h2 id="build">Build<a class="anchor" href="#build" aria-label="Link to Build">#</a></h2>
+          <p>When you're happy, build for production. Output goes to <code>dist/</code> as static, minified files.</p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>claude-system build
+# → wrote dist/index.html (+ tokens, components)</code></pre>
+          </div>
+          <div class="callout warn"><span class="co-label">Warning</span><p>Never hand-edit <code>dist/</code>. It's regenerated on every build — make all changes in <code>src/</code>.</p></div>
+
+          <h2 id="deploy">Deploy<a class="anchor" href="#deploy" aria-label="Link to Deploy">#</a></h2>
+          <p>The output is fully static, so it deploys anywhere. Push <code>dist/</code> to any static host.</p>
+          <div class="codeblock">
+            <div class="code-head"><span>GitHub Pages</span><button class="copy" type="button">Copy</button></div>
+            <pre><code># point GitHub Pages at dist/
+git add dist -f
+git commit -m "deploy"
+git subtree push --prefix dist origin gh-pages</code></pre>
+          </div>
+          <p>Or drag-and-drop <code>dist/</code> onto Netlify, Vercel, or Cloudflare Pages — no config needed.</p>
+
+          <h2 id="verify">Verify<a class="anchor" href="#verify" aria-label="Link to Verify">#</a></h2>
+          <p>Before you ship, run the spec checker. It lints every page against <code>DESIGN.md</code> and reports off-system colors, fonts, spacing, and contrast.</p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>claude-system check
+# ✓ tokens      all on-system
+# ✓ contrast    all pairs ≥ AA
+# ✓ typography  no off-spec fonts
+# ✓ spacing     scale respected
+# 0 errors · 0 warnings</code></pre>
+          </div>
+          <div class="callout tip"><span class="co-label">Tip</span><p>Add <code>claude-system check</code> to your CI so every pull request is verified automatically.</p></div>
+
+          <h2 id="next-steps">Next steps<a class="anchor" href="#next-steps" aria-label="Link to Next steps">#</a></h2>
+          <p>You've built and shipped a system. From here:</p>
+          <ul>
+            <li>Read the <a href="/docs.html">full documentation</a> for every option.</li>
+            <li>Browse the <a href="/#systems">built-in systems</a> for inspiration.</li>
+            <li>Contribute a component or template on <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub</a>.</li>
+          </ul>
 
         </article>
 
         <div class="endmark" aria-hidden="true">◆</div>
 
-        <nav class="pager" aria-label="Docs pagination">
-          <a href="/"><span class="dir">← Prev</span><span class="ttl">Home</span></a>
-          <a href="/docs/creating-a-system" class="next"><span class="dir">Next →</span><span class="ttl">Creating a System</span></a>
+        <nav class="pager" aria-label="Guide pagination">
+          <a href="/docs.html"><span class="dir">← Prev</span><span class="ttl">Documentation</span></a>
+          <a href="/#systems" class="next"><span class="dir">Next →</span><span class="ttl">Browse systems</span></a>
         </nav>
       </div>
 
@@ -486,15 +483,17 @@ claude-system new my-system --blank</code></pre>
       <aside class="toc" aria-label="On this page">
         <h5><i></i> On this page</h5>
         <ul id="tocList">
-          <li><a href="#introduction" class="active">Introduction</a></li>
-          <li><a href="#install">Install</a></li>
-          <li><a href="#quick-start">Quick start</a></li>
-          <li><a href="#configuration">Configuration</a></li>
+          <li><a href="#before-you-start" class="active">Before you start</a></li>
+          <li><a href="#initialize">Initialize</a></li>
+          <li><a href="#configure">Configure</a></li>
           <li><a href="#design-tokens">Design tokens</a></li>
           <li><a href="#components">Components</a></li>
-          <li><a href="#systems-templates">Systems &amp; templates</a></li>
-          <li><a href="#cli-reference">CLI reference</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#pages">Pages</a></li>
+          <li><a href="#preview">Preview</a></li>
+          <li><a href="#build">Build</a></li>
+          <li><a href="#deploy">Deploy</a></li>
+          <li><a href="#verify">Verify</a></li>
+          <li><a href="#next-steps">Next steps</a></li>
         </ul>
       </aside>
     </div>
@@ -503,8 +502,8 @@ claude-system new my-system --blank</code></pre>
 
 <footer>
   <div class="wrap foot-in">
-    <span>© <span id="yr"></span> claude-system — documentation</span>
-    <span><a href="/">Home</a> · <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">Repo ↗</a> · press <kbd>G</kbd> → repo</span>
+    <span>© <span id="yr"></span> claude-system — create guide</span>
+    <span><a href="/docs.html">Docs</a> · <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">Repo ↗</a> · press <kbd>G</kbd> → repo</span>
     <button class="top-btn" id="topBtn" type="button">Back to top ↑</button>
   </div>
 </footer>
