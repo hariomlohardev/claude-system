@@ -1,0 +1,19 @@
+{
+  "eligibility": {
+    "min_stars": 50,
+    "min_forks": 10,
+    "max_repo_staleness_days": 180
+  },
+  "review": {
+    "max_shadow_review_rounds": 2
+  },
+  "safety": {
+    "require_confirmation_before_pr": true,
+    "never_push_to_upstream": true,
+    "never_force_push": true
+  },
+  "search": {
+    "rate_limit_backoff_seconds": 60,
+    "max_retries_on_rate_limit": 3
+  }
+}
