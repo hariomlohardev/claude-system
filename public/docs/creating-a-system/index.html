@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Creating a System — claude-system</title>
-<meta name="description" content="How to create a System — required files, system.json fields, permissions and PR flow.">
-<meta name="keywords" content="claude-system, creating a system, system.json, permissions, contribute">
-<meta name="theme-color" content="#F6F4EE">
+<title>Creating a System — claude-system Docs</title>
+<meta name="description" content="How to create a System — required files, system.json fields, permissions, local validation and PR flow.">
+<meta name="keywords" content="claude-system, creating a system, system.json, permissions, validate">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="canonical" href="https://claude-system-tau.vercel.app/docs/creating-a-system">
 <meta property="og:title" content="Creating a System — claude-system">
 <meta property="og:description" content="Folder rule name === folder, required files, field-by-field manifest and local validation.">
@@ -14,147 +14,142 @@
 <meta property="og:url" content="https://claude-system-tau.vercel.app/docs/creating-a-system">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M7 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M23 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M7 22 H23' stroke='%23B93A13' stroke-width='5'/%3E%3Cpath d='M23 38 H38' stroke='%23181611' stroke-width='5'/%3E%3Ccircle cx='37' cy='7' r='3.4' fill='%23B93A13'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/docs.css">
 </head>
-<body>
-<div id="prog" aria-hidden="true"></div>
-<a class="skip" href="#main">Skip to content</a>
-<header class="hdr" role="banner">
-  <div class="hdr-inner">
-    <a class="brand" href="/" aria-label="claude-system home">
-      <svg class="monogram" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M7 6 V38" stroke="#181611" stroke-width="5"/><path d="M23 6 V38" stroke="#181611" stroke-width="5"/><path d="M7 22 H23" stroke="#B93A13" stroke-width="5"/><path d="M23 38 H38" stroke="#181611" stroke-width="5"/><circle cx="37" cy="7" r="3.4" fill="#B93A13"/></svg>
-      <span class="wordmark">CLAUDE-SYSTEM</span>
-    </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="/browse">Browse</a>
-      <a href="/docs" aria-current="page">Docs</a>
-      <a href="https://github.com/hariomlohardev/claude-system">GitHub</a>
-      <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a>
-      <a class="btn solid sm nav-cta" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star on GitHub ↗</a>
-    </nav>
-    <button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span></button>
+<body class="docs-body">
+<header class="docs-top" role="banner">
+  <div class="docs-top-left">
+    <button class="docs-ham" id="docs-ham" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar"><span></span><span></span><span></span></button>
+    <a href="/" style="text-decoration:none;display:flex;align-items:center;gap:10px"><span class="docs-wordmark">claude-system</span><span class="docs-badge">Docs</span></a>
   </div>
-  <div class="mobile-panel" id="mobile-panel" aria-hidden="true">
-    <a href="/"><span>Home</span><span class="idx">00</span></a>
-    <a href="/browse"><span>Browse</span><span class="idx">01</span></a>
-    <a href="/docs"><span>Docs</span><span class="idx">02</span></a>
+  <div class="docs-top-center">
+    <label class="docs-search" aria-label="Search docs"><span class="sicon" aria-hidden="true">⌕</span><input id="docs-search" type="search" placeholder="Search docs… ⌘K" autocomplete="off" aria-label="Search docs"><kbd>⌘K</kbd><div id="docs-search-results" class="docs-search-results" role="listbox"></div></label>
   </div>
+  <div class="docs-top-right"><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a><a class="primary" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star</a></div>
 </header>
-<main id="main">
-  <div class="wrap" style="padding-top:22px">
-    <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><a href="/docs">Docs</a><span class="sep">/</span><span class="cur">Creating a System</span></nav>
-  </div>
-  <section class="wrap" style="padding-top:8px;border:none;padding-bottom:18px">
-    <div class="kicker rv">Docs · Guide</div>
-    <h1 class="rv" style="font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.03em;line-height:.95;color:var(--ink);margin-top:8px">Creating a <em style="font-style:italic;font-weight:400;color:var(--ink-2)">System</em></h1>
-    <p class="rv" style="font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.55;color:var(--muted);margin-top:10px;max-width:48ch">Copy the starter, fill the manifest, validate locally — then open a PR. The spec wins over convenience.</p>
-    <div class="accent-rule rv" aria-hidden="true"></div>
-  </section>
-  <article class="read prose rv">
-    <p>A <strong>System</strong> is a versioned, distributable bundle of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks, and config that together form a reproducible, purpose-built Claude Code environment — for example an “open-source contributor” setup or a “frontend development” setup. The formal contract is defined in <a href="/docs/spec">SYSTEM_SPEC.md</a>; this guide is the contributor-facing how-to. When in doubt, the spec wins.</p>
-    <blockquote>Scope reminder: <code class="inline">claude-system</code> is the ecosystem/package layer <em>around</em> Claude Code. It never replaces Claude Code — it prepares an environment and shells out to the real <code class="inline">claude</code> CLI.</blockquote>
-    <h2>Minimum required files</h2>
-    <p>Every System lives under <code class="inline">systems/&lt;name&gt;/</code> where <code class="inline">&lt;name&gt;</code> is the kebab-case id. <strong>Folder name must exactly equal the <code class="inline">"name"</code> field in <code class="inline">system.json</code></strong> — CI enforces this and will fail your PR on a mismatch.</p>
-    <p>A valid System must contain at minimum:</p>
-<pre><code>systems/&lt;name&gt;/
+<div id="docs-overlay" class="docs-overlay" aria-hidden="true"></div>
+<div class="docs-layout">
+  <nav id="docs-sidebar" class="docs-sidebar" aria-label="Docs navigation">
+    <h4>Getting Started</h4>
+    <a href="/docs">Overview</a>
+    <a href="/#install">Install</a>
+    <a href="/browse">Browse Systems</a>
+    <h4>Guides</h4>
+    <a href="/docs/creating-a-system" class="active" aria-current="page">Creating a System</a>
+    <a href="/docs/cli">CLI Reference</a>
+    <h4>Reference</h4>
+    <a href="/docs/spec">Spec</a>
+    <a href="/docs/security">Security & Permissions</a>
+    <a href="/docs/contributing">Contributing</a>
+    <h4>Links</h4>
+    <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a>
+    <a href="https://github.com/hariomlohardev/claude-system/discussions" target="_blank" rel="noreferrer">Discussions ↗</a>
+  </nav>
+  <main class="docs-content" id="main">
+    <h1>Creating a System</h1>
+    <p class="lead">A System is a versioned bundle of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks and config that together form a reproducible Claude Code environment. Copy the template, fill the manifest, validate locally — then open a PR.</p>
+    <article class="docs-prose">
+      <blockquote>Scope reminder from <code class="inline">CLAUDE.md</code>: <code class="inline">claude-system</code> is the ecosystem/package layer <em>around</em> Claude Code. It never replaces Claude Code — it prepares an environment and shells out to the real <code class="inline">claude</code> CLI.</blockquote>
+      <h2 id="minimum-required-files">Minimum required files</h2>
+      <p>Every System lives under <code class="inline">systems/&lt;name&gt;/</code> where <code class="inline">&lt;name&gt;</code> is kebab-case. <strong>Folder name must exactly equal the <code class="inline">"name"</code> field in <code class="inline">system.json</code></strong> — CI fails on mismatch.</p>
+      <p>A valid System must contain at minimum:</p>
+      <pre><code class="language-sh">systems/&lt;name&gt;/
 ├── system.json   # required — manifest, validates against schemas/system.schema.json
-├── CLAUDE.md     # required — prompt injected into Claude Code at session start
-└── README.md     # required — human docs for browsing on GitHub</code></pre>
-    <p>Additional folders are optional — add them only if you need them:</p>
-<pre><code>├── skills/       # optional — Claude Code skills
+├── CLAUDE.md     # required — prompt injected at session start
+└── README.md     # required — human docs for GitHub</code></pre>
+      <p>Optional:</p>
+      <pre><code class="language-sh">├── skills/       # optional — Claude Code skills
 ├── agents/       # optional — subagents
 ├── commands/     # optional — slash commands
 ├── hooks/        # optional — hooks
 └── settings.json # optional — Claude Code settings overrides</code></pre>
-    <p>Both <code class="inline">template/starter-system/</code> (the copy-me template) and <code class="inline">systems/example-system/</code> (a permanently-valid CI fixture) demonstrate the minimal structure. Prefer copying the template:</p>
-<pre><code>cp -r template/starter-system systems/my-new-system</code></pre>
-    <h2>system.json — field by field</h2>
-    <p><code class="inline">system.json</code> validates against <code class="inline">schemas/system.schema.json</code> (JSON Schema draft-07, <code class="inline">additionalProperties: false</code> at every level — unknown fields are rejected). The schema and this doc, plus <code class="inline">template/starter-system/</code>, must never drift apart.</p>
-    <h3>Required fields</h3>
-    <table>
-      <thead><tr><th>Field</th><th>Constraints</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td><code class="inline">name</code></td><td>kebab-case <code class="inline">^[a-z0-9]+(?:-[a-z0-9]+)*$</code>, 1–64 chars, must equal folder name</td><td>Unique across the registry. CI checks uniqueness and folder equality.</td></tr>
-        <tr><td><code class="inline">displayName</code></td><td>1–80 chars</td><td>Human title shown in <code class="inline">list</code>/<code class="inline">info</code>/<code class="inline">search</code>.</td></tr>
-        <tr><td><code class="inline">version</code></td><td>semver 2.0.0</td><td><code class="inline">1.0.0</code>, <code class="inline">0.1.0</code>, <code class="inline">2.3.1-beta.1</code>. Bump following semver.</td></tr>
-        <tr><td><code class="inline">description</code></td><td>10–300 chars</td><td>One-to-two-sentence summary shown in registry.</td></tr>
-        <tr><td><code class="inline">keywords</code></td><td>1–15 items, 1–32 chars, unique</td><td>Lowercase terms, e.g. <code class="inline">["open-source","review","pr"]</code>.</td></tr>
-        <tr><td><code class="inline">author</code></td><td><code class="inline">{name, github?, url?}</code></td><td><code class="inline">name</code> 1–80 chars required; <code class="inline">github</code> handle without @; <code class="inline">url</code> https URI.</td></tr>
-        <tr><td><code class="inline">license</code></td><td>SPDX 1–64 chars</td><td>e.g. <code class="inline">MIT</code>, <code class="inline">Apache-2.0</code>.</td></tr>
-        <tr><td><code class="inline">claudeSystem.specVersion</code></td><td>semver</td><td>Spec version, e.g. <code class="inline">"1.0.0"</code>.</td></tr>
-        <tr><td><code class="inline">permissions</code></td><td>enum, unique</td><td>See next section — honest superset.</td></tr>
-      </tbody>
-    </table>
-    <h3>Optional fields</h3>
-    <table>
-      <thead><tr><th>Field</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td><code class="inline">category</code></td><td>Enum: <code class="inline">open-source</code>, <code class="inline">frontend</code>, <code class="inline">backend</code>, <code class="inline">testing</code>, <code class="inline">security</code>, <code class="inline">docs</code>, <code class="inline">research</code>, <code class="inline">devops</code>, <code class="inline">other</code>.</td></tr>
-        <tr><td><code class="inline">repository</code></td><td>Optional https URI of author's own repo. Omit if you live only in this monorepo — that's normal.</td></tr>
-        <tr><td><code class="inline">bugs.url</code></td><td>Where issues for this System should go. If omitted, default is this monorepo's issues.</td></tr>
-        <tr><td><code class="inline">homepage</code></td><td>Docs or landing page.</td></tr>
-        <tr><td><code class="inline">dependencies</code></td><td><code class="inline">{name,version}[]</code> — keep empty unless you truly depend. Multi-system resolution beyond simple case is out of scope for v1.</td></tr>
-      </tbody>
-    </table>
-    <blockquote><strong>repository / bugs fallback:</strong> <code class="inline">repository</code> is optional. If you maintain only in this monorepo, omit it. If <code class="inline">bugs</code> is omitted, tooling treats default as <code class="inline">this monorepo /issues</code> tagged with the System name — it does NOT assume <code class="inline">repository + "/issues"</code>.</blockquote>
-    <h2>Permissions — declare honestly</h2>
-    <p><code class="inline">permissions</code> is a <strong>self-declared</strong> list — reviewed during PR but not sandboxed at runtime (see <a href="/docs/security">Security</a>). Declare the honest superset:</p>
-    <table>
-      <thead><tr><th>Permission</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code class="inline">filesystem:read</code></td><td>Reads files outside the installed System folder</td></tr>
-        <tr><td><code class="inline">filesystem:write</code></td><td>Writes or mutates files</td></tr>
-        <tr><td><code class="inline">network:read</code></td><td>Makes outbound network requests (fetch, clone)</td></tr>
-        <tr><td><code class="inline">network:write</code></td><td>Sends data out / pushes</td></tr>
-        <tr><td><code class="inline">shell:exec</code></td><td>Executes shell commands or scripts</td></tr>
-        <tr><td><code class="inline">credentials:read</code></td><td>Accesses credentials, tokens, or secrets</td></tr>
-      </tbody>
-    </table>
-    <p>Rules: default to least privilege (start with <code class="inline">[]</code>), if hooks run <code class="inline">exec</code> you need <code class="inline">shell:exec</code>, reviewers will compare <code class="inline">permissions</code> against <code class="inline">skills/</code>, <code class="inline">agents/</code>, <code class="inline">commands/</code>, <code class="inline">hooks/</code>, and <code class="inline">CLAUDE.md</code>.</p>
-    <h2>Testing locally before a PR</h2>
-<pre><code># schema
+      <p>Both <code class="inline">template/starter-system/</code> (copy-me template) and <code class="inline">systems/example-system/</code> (CI fixture) demonstrate minimal structure. Prefer copying the template:</p>
+      <pre><code class="language-sh">cp -r template/starter-system systems/my-new-system</code></pre>
+      <h2 id="system-json">system.json — field by field</h2>
+      <p><code class="inline">system.json</code> validates against <code class="inline">schemas/system.schema.json</code> (draft-07, <code class="inline">additionalProperties: false</code> — unknown fields rejected). Keep it in sync with the template.</p>
+      <h3 id="required-fields">Required fields</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Constraints</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">name</code></td><td>kebab-case <code class="inline">^[a-z0-9]+(?:-[a-z0-9]+)*$</code>, 1–64, must equal folder</td><td>Unique across registry. CI checks folder equality.</td></tr>
+          <tr><td><code class="inline">displayName</code></td><td>1–80 chars</td><td>Human title in <code class="inline">list</code>/<code class="inline">info</code>/<code class="inline">search</code>.</td></tr>
+          <tr><td><code class="inline">version</code></td><td>semver 2.0.0</td><td><code class="inline">1.0.0</code>, <code class="inline">0.1.0</code>, <code class="inline">2.3.1-beta.1</code>.</td></tr>
+          <tr><td><code class="inline">description</code></td><td>10–300 chars</td><td>One-to-two-sentence summary for registry.</td></tr>
+          <tr><td><code class="inline">keywords</code></td><td>1–15 items, 1–32 chars, unique</td><td>e.g. <code class="inline">["open-source","review"]</code> — used by <code class="inline">search</code>.</td></tr>
+          <tr><td><code class="inline">author</code></td><td><code class="inline">{name, github?, url?}</code></td><td><code class="inline">name</code> required 1–80; <code class="inline">github</code> handle without @; <code class="inline">url</code> https.</td></tr>
+          <tr><td><code class="inline">license</code></td><td>SPDX 1–64</td><td><code class="inline">MIT</code>, <code class="inline">Apache-2.0</code>.</td></tr>
+          <tr><td><code class="inline">claudeSystem.specVersion</code></td><td>semver</td><td>Spec version, e.g. <code class="inline">1.0.0</code>.</td></tr>
+          <tr><td><code class="inline">permissions</code></td><td>enum unique</td><td>Honest superset — see next section.</td></tr>
+        </tbody>
+      </table>
+      <h3 id="optional-fields">Optional fields</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">category</code></td><td>Enum: <code class="inline">open-source</code>, <code class="inline">frontend</code>, <code class="inline">backend</code>, <code class="inline">testing</code>, <code class="inline">security</code>, <code class="inline">docs</code>, <code class="inline">research</code>, <code class="inline">devops</code>, <code class="inline">other</code>.</td></tr>
+          <tr><td><code class="inline">repository</code></td><td>Optional https URI of author's own repo. Omit if you live only in this monorepo — that's normal.</td></tr>
+          <tr><td><code class="inline">bugs.url</code></td><td>Where issues for this System go. If omitted, default is this monorepo's issues.</td></tr>
+          <tr><td><code class="inline">homepage</code></td><td>Docs or landing page.</td></tr>
+          <tr><td><code class="inline">dependencies</code></td><td><code class="inline">{name,version}[]</code> — keep empty unless you truly depend.</td></tr>
+        </tbody>
+      </table>
+      <blockquote class="warn"><strong>repository / bugs fallback:</strong> <code class="inline">repository</code> is optional. If you maintain only in this monorepo, omit it. <code class="inline">bugs.url</code> default is <code class="inline">this monorepo /issues</code> tagged with System name — not <code class="inline">repository + "/issues"</code>.</blockquote>
+      <h2 id="permissions">Permissions — declare honestly</h2>
+      <p><code class="inline">permissions</code> is <strong>self-declared</strong> — reviewed during PR but not sandboxed at runtime (see <a href="/docs/security">Security</a>). Declare the honest superset:</p>
+      <table>
+        <thead><tr><th>Permission</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">filesystem:read</code></td><td>Reads files outside installed folder</td></tr>
+          <tr><td><code class="inline">filesystem:write</code></td><td>Writes or mutates files</td></tr>
+          <tr><td><code class="inline">network:read</code></td><td>Outbound fetch/clone</td></tr>
+          <tr><td><code class="inline">network:write</code></td><td>Pushes data out</td></tr>
+          <tr><td><code class="inline">shell:exec</code></td><td>Executes shell commands/scripts</td></tr>
+          <tr><td><code class="inline">credentials:read</code></td><td>Accesses credentials/tokens</td></tr>
+        </tbody>
+      </table>
+      <h2 id="testing-locally">Testing locally before a PR</h2>
+      <p>Validate at least these checks before pushing — they mirror <code class="inline">validate.yml</code> in CI:</p>
+      <pre><code class="language-sh"># schema
 node cli/dist/index.js validate systems/&lt;name&gt;
 # folder-name rule
 name=$(jq -r .name systems/&lt;name&gt;/system.json); [ "$name" = "&lt;name&gt;" ] && echo ok
 # required files
 test -f systems/&lt;name&gt;/system.json && test -f systems/&lt;name&gt;/CLAUDE.md && test -f systems/&lt;name&gt;/README.md && echo "required files ok"
-# preview registry
+# preview registry (restore before committing)
 node scripts/generate-index.js
 cat registry/index.json | jq '.systems[] | select(.name=="&lt;name&gt;")'
 git restore registry/index.json</code></pre>
-    <h2>PR flow</h2>
-    <table>
-      <thead><tr><th>Step</th><th>What happens</th></tr></thead>
-      <tbody>
-        <tr><td>1 · Fork & branch</td><td><code class="inline">git checkout -b system/&lt;your-name&gt;</code></td></tr>
-        <tr><td>2 · Copy template</td><td><code class="inline">cp -r template/starter-system systems/&lt;your-name&gt;</code></td></tr>
-        <tr><td>3 · Edit</td><td><code class="inline">system.json</code>, <code class="inline">CLAUDE.md</code>, <code class="inline">README.md</code> — change all placeholder values.</td></tr>
-        <tr><td>4 · Validate</td><td>Schema, folder rule, required files, security scan — mirror what <code class="inline">validate.yml</code> does.</td></tr>
-        <tr><td>5 · Open PR</td><td>Title <code class="inline">Add system: &lt;your-name&gt;</code>. Fill the template, describe permissions.</td></tr>
-        <tr><td>6 · CI</td><td><code class="inline">validate.yml</code> must be green — never ask to bypass.</td></tr>
-        <tr><td>7 · Merge</td><td><code class="inline">registry/index.json</code> regenerated; users can <code class="inline">search</code>/<code class="inline">install</code>/<code class="inline">run</code>.</td></tr>
-      </tbody>
-    </table>
-    <p>Full source of this guide is <a href="https://github.com/hariomlohardev/claude-system/blob/main/docs/creating-a-system.md">docs/creating-a-system.md</a> on GitHub.</p>
-    <div class="endmark" aria-hidden="true">◆</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;border-top:1px solid var(--line);padding-top:18px">
-      <a class="btn sm" href="/docs">← Docs overview</a>
-      <a class="btn ghost sm" href="/docs/security">Next: Security →</a>
-      <a class="btn ghost sm" href="https://github.com/hariomlohardev/claude-system/blob/main/docs/creating-a-system.md" target="_blank" rel="noreferrer">View markdown ↗</a>
-    </div>
-  </article>
-</main>
-<footer class="footer" role="contentinfo">
-  <div class="footer-grid">
-    <div class="footer-brand">The guide is the checklist — if CI would fail it, the guide already says so.</div>
-    <div class="footer-col"><h4>Docs</h4><a href="/docs">Overview</a><a href="/docs/security">Security</a><a href="/docs/spec">Spec</a></div>
-    <div class="footer-col"><h4>Systems</h4><a href="/browse">Browse</a></div>
-    <div class="footer-col"><h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a></div>
-  </div>
-  <div class="footer-bar"><span>© 2026 claude-system</span><span id="live-clock"></span><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top ↑</a></div>
-</footer>
-<script src="/app.js"></script>
+      <h2 id="pr-flow">PR flow</h2>
+      <table>
+        <thead><tr><th>Step</th><th>What happens</th></tr></thead>
+        <tbody>
+          <tr><td>1 · Fork & branch</td><td><code class="inline">git checkout -b system/&lt;your-name&gt;</code></td></tr>
+          <tr><td>2 · Copy template</td><td><code class="inline">cp -r template/starter-system systems/&lt;your-name&gt;</code></td></tr>
+          <tr><td>3 · Edit</td><td><code class="inline">system.json</code>, <code class="inline">CLAUDE.md</code>, <code class="inline">README.md</code> — change all placeholders.</td></tr>
+          <tr><td>4 · Validate</td><td>Schema, folder rule, required files, security scan — mirror <code class="inline">validate.yml</code>.</td></tr>
+          <tr><td>5 · Open PR</td><td>Title <code class="inline">Add system: &lt;your-name&gt;</code>, describe permissions.</td></tr>
+          <tr><td>6 · CI</td><td><code class="inline">validate.yml</code> must be green — never bypass.</td></tr>
+          <tr><td>7 · Merge</td><td><code class="inline">registry/index.json</code> regenerated; users <code class="inline">search</code>/<code class="inline">install</code>/<code class="inline">run</code>.</td></tr>
+        </tbody>
+      </table>
+      <h2 id="registry-generated">registry/index.json is generated — never hand-edit</h2>
+      <p>Built by <code class="inline">scripts/generate-index.js</code> from <code class="inline">systems/*/system.json</code>. The small file the CLI fetches. Do not edit in a System PR — edit your <code class="inline">system.json</code> instead; restore before committing (<code class="inline">git restore registry/index.json</code>).</p>
+      <p>Full source is <a href="https://github.com/hariomlohardev/claude-system/blob/main/docs/creating-a-system.md">docs/creating-a-system.md</a> on GitHub.</p>
+    </article>
+  </main>
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+    <a href="#minimum-required-files">Minimum required files</a>
+    <a href="#system-json">system.json</a>
+    <a href="#permissions">Permissions</a>
+    <a href="#testing-locally">Testing locally</a>
+    <a href="#pr-flow">PR flow</a>
+    <a href="#registry-generated">registry/index.json</a>
+  </aside>
+</div>
+<footer class="docs-footer" role="contentinfo"><span>© 2026 claude-system · MIT</span><span><a href="https://github.com/hariomlohardev/claude-system">GitHub</a> · <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top</a></span></footer>
+<script id="docs-search-data" type="application/json">[{"title":"Minimum required files","url":"/docs/creating-a-system#minimum-required-files","snip":"systems/<name>/system.json CLAUDE.md README.md"},{"title":"system.json","url":"/docs/creating-a-system#system-json","snip":"field-by-field, required and optional"},{"title":"Permissions","url":"/docs/creating-a-system#permissions","snip":"self-declared, filesystem:read etc"},{"title":"Testing locally","url":"/docs/creating-a-system#testing-locally","snip":"validate, folder rule, required files"},{"title":"PR flow","url":"/docs/creating-a-system#pr-flow","snip":"fork → copy template → validate → PR"}]</script>
+<script src="/docs.js"></script>
 </body>
 </html>

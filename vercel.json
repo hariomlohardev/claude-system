@@ -33,6 +33,10 @@
       "destination": "/docs/cli/index.html"
     },
     {
+      "source": "/docs/contributing",
+      "destination": "/docs/contributing/index.html"
+    },
+    {
       "source": "/docs/spec",
       "destination": "/docs/spec/index.html"
     }

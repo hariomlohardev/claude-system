@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contributing — claude-system Docs</title>
+<meta name="description" content="How to contribute a System — prerequisites, scaffold, local checks, PR flow and troubleshooting.">
+<meta name="keywords" content="claude-system contributing, pr flow, validate, troubleshooting">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="canonical" href="https://claude-system-tau.vercel.app/docs/contributing">
+<meta property="og:title" content="Contributing — claude-system">
+<meta property="og:description" content="Fork → system/<name> → scaffold → validate → PR.">
+<meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
+<meta property="og:url" content="https://claude-system-tau.vercel.app/docs/contributing">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M7 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M23 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M7 22 H23' stroke='%23B93A13' stroke-width='5'/%3E%3Cpath d='M23 38 H38' stroke='%23181611' stroke-width='5'/%3E%3Ccircle cx='37' cy='7' r='3.4' fill='%23B93A13'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/docs.css">
+</head>
+<body class="docs-body">
+<header class="docs-top" role="banner">
+  <div class="docs-top-left"><button class="docs-ham" id="docs-ham" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar"><span></span><span></span><span></span></button><a href="/" style="text-decoration:none;display:flex;align-items:center;gap:10px"><span class="docs-wordmark">claude-system</span><span class="docs-badge">Docs</span></a></div>
+  <div class="docs-top-center"><label class="docs-search" aria-label="Search docs"><span class="sicon" aria-hidden="true">⌕</span><input id="docs-search" type="search" placeholder="Search docs… ⌘K" autocomplete="off" aria-label="Search docs"><kbd>⌘K</kbd><div id="docs-search-results" class="docs-search-results" role="listbox"></div></label></div>
+  <div class="docs-top-right"><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a><a class="primary" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star</a></div>
+</header>
+<div id="docs-overlay" class="docs-overlay" aria-hidden="true"></div>
+<div class="docs-layout">
+  <nav id="docs-sidebar" class="docs-sidebar" aria-label="Docs navigation">
+    <h4>Getting Started</h4><a href="/docs">Overview</a><a href="/#install">Install</a><a href="/browse">Browse Systems</a>
+    <h4>Guides</h4><a href="/docs/creating-a-system">Creating a System</a><a href="/docs/cli">CLI Reference</a>
+    <h4>Reference</h4><a href="/docs/spec">Spec</a><a href="/docs/security">Security & Permissions</a><a href="/docs/contributing" class="active" aria-current="page">Contributing</a>
+    <h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a>
+  </nav>
+  <main class="docs-content" id="main">
+    <h1>Contributing</h1>
+    <p class="lead">A System is a versioned bundle of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks and config — contributed via fork + PR. No direct pushes for Systems.</p>
+    <article class="docs-prose">
+      <h2 id="prerequisites">Prerequisites</h2>
+      <ul>
+        <li><strong>Node.js ≥18</strong> and <strong>npm</strong> (<code class="inline">node -v</code>, <code class="inline">npm -v</code>)</li>
+        <li><strong>git</strong> and a GitHub account (fork + PR workflow)</li>
+        <li><strong>gh CLI (optional)</strong> — only for Systems that use <code class="inline">gh</code> auth in <code class="inline">setup.sh</code></li>
+        <li>No other toolchain — registry is plain JSON; CLI is TypeScript on <code class="inline">commander</code>/<code class="inline">zod</code>.</li>
+      </ul>
+      <h2 id="how-to-contribute-a-system">How to contribute a System</h2>
+      <p>All Systems live under <code class="inline">systems/&lt;name&gt;/</code> and are contributed via pull requests. Direct pushes to <code class="inline">main</code> are not accepted.</p>
+      <pre><code class="language-sh"># 1. Fork on GitHub, then clone your fork
+git clone https://github.com/&lt;you&gt;/claude-system.git
+cd claude-system
+
+# 2. Create a branch
+git checkout -b system/&lt;my-system&gt;
+
+# 3. Scaffold from the starter template
+cp -r template/starter-system systems/&lt;my-system&gt;
+
+# 4. Edit the scaffold
+#  - systems/&lt;my-system&gt;/system.json  — set "name" === folder name (kebab-case),
+#    fill displayName, version (semver), description (10-300 chars), keywords,
+#    author, license (SPDX), claudeSystem.specVersion, permissions[] (honest!),
+#    and optional repository/bugs/homepage/category/dependencies
+#  - systems/&lt;my-system&gt;/CLAUDE.md    — real instructions for the System
+#  - systems/&lt;my-system&gt;/README.md    — human docs for browsing
+#  - Add setup.sh with a "# WHY:" comment/echo if the System needs shell setup
+#    (must then include "shell:exec" in permissions)
+#  - Add skills/, agents/, commands/, hooks/ as needed (delete empty placeholder dirs)
+
+# 5. Local checks (must all be green before pushing)
+npm --prefix cli ci
+npm --prefix cli run build
+npm --prefix cli test
+node cli/dist/index.js validate systems/&lt;my-system&gt;
+node scripts/generate-index.js   # do NOT commit registry/index.json — it is generated
+# restore the generated file if you ran the generator locally:
+git restore registry/index.json
+
+# 6. Commit and push — PR must touch only systems/&lt;my-system&gt;/
+git add systems/&lt;my-system&gt;
+git commit -m "feat(system): add &lt;my-system&gt;"
+git push origin system/&lt;my-system&gt;
+# Open PR on GitHub into hariomlohardev/claude-system:main
+# Target: systems/&lt;my-system&gt;/ only — never touch cli/, schemas/, workflows/, or registry/index.json directly</code></pre>
+      <h3 id="what-to-get-right">What to get right</h3>
+      <ul>
+        <li><strong><code class="inline">name</code> === folder name, kebab-case</strong> — <code class="inline">systems/my-system/system.json</code> must have <code class="inline">"name": "my-system"</code>. #1 CI failure.</li>
+        <li><strong>Required files</strong> — every System must have <code class="inline">system.json</code>, <code class="inline">CLAUDE.md</code>, <code class="inline">README.md</code>.</li>
+        <li><strong><code class="inline">permissions[]</code> honestly declared</strong> — if <code class="inline">setup.sh</code> or any hook runs shell code, you <strong>must</strong> include <code class="inline">"shell:exec"</code>; if you fetch network, include <code class="inline">"network:read"</code>/<code class="inline">"network:write"</code>. See <a href="/docs/security">Security</a>.</li>
+        <li><strong><code class="inline">setup.sh</code> WHY message</strong> — if <code class="inline">setup.sh</code> exists, it must contain <code class="inline"># WHY: installs claude and checks gh auth</code> — what <code class="inline">claude-system run</code> surfaces. Missing WHY → CI fails.</li>
+        <li><strong>Do not hand-edit <code class="inline">registry/index.json</code></strong> — rebuilt by <code class="inline">scripts/generate-index.js</code>. Hand-edit → CI fails.</li>
+      </ul>
+      <h2 id="pr-flow">PR flow</h2>
+      <ol>
+        <li><strong>CI <code class="inline">validate.yml</code> runs</strong> on every PR touching <code class="inline">systems/**</code>, <code class="inline">schemas/**</code>, <code class="inline">template/**</code>, <code class="inline">scripts/**</code>, <code class="inline">registry/index.json</code>. It validates <code class="inline">system.json</code> against <code class="inline">schemas/system.schema.json</code> (strict, <code class="inline">additionalProperties: false</code>), checks <code class="inline">name === folder</code>, required files, semver bump, cross-checks <code class="inline">permissions</code> vs <code class="inline">setup.sh</code>, checks WHY, emits warnings for <code class="inline">curl | sh</code> etc, guards hand-edited registry, validates template itself. <strong>All checks must be green before merge.</strong></li>
+        <li><strong>Maintainer review</strong> — reviews <code class="inline">setup.sh</code> WHY, <code class="inline">permissions</code>, content quality, policy.</li>
+        <li><strong>Merge</strong> — on merge to <code class="inline">main</code>, <code class="inline">registry/index.json</code> is regenerated and System becomes available via <code class="inline">claude-system list/search/info/install</code> (always fresh fetch).</li>
+      </ol>
+      <h2 id="local-checks-before-every-pr">Local checks before every PR</h2>
+      <pre><code class="language-sh">npm --prefix cli ci
+npm --prefix cli run build
+npm --prefix cli test
+node cli/dist/index.js validate
+node cli/dist/index.js validate template/starter-system
+node cli/dist/index.js validate systems/&lt;my-system&gt;
+node scripts/generate-index.js
+node cli/dist/index.js --help   # should render in theme (respects NO_COLOR)</code></pre>
+      <p><code class="inline">registry/index.json</code> must remain sorted by <code class="inline">name</code> and validate against <code class="inline">schemas/registry-index.schema.json</code> — the generator does this.</p>
+      <h2 id="troubleshooting">Troubleshooting</h2>
+      <table>
+        <thead><tr><th>Error</th><th>Cause</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">name must exactly match folder name (kebab-case)</code></td><td><code class="inline">system.json</code> <code class="inline">name</code> !== folder</td><td>Set <code class="inline">"name"</code> to folder or <code class="inline">mv systems/old systems/new</code></td></tr>
+          <tr><td><code class="inline">Missing CLAUDE.md / README.md</code></td><td>Required files absent</td><td><code class="inline">cp template/starter-system/CLAUDE.md systems/&lt;name&gt;/</code></td></tr>
+          <tr><td><code class="inline">setup.sh exists but permissions does not include shell:exec</code></td><td><code class="inline">setup.sh</code> needs <code class="inline">shell:exec</code></td><td>Add <code class="inline">"shell:exec"</code> to <code class="inline">permissions[]</code></td></tr>
+          <tr><td><code class="inline">WHY message missing</code></td><td><code class="inline">setup.sh</code> without <code class="inline"># WHY:</code></td><td>Add <code class="inline"># WHY: ...</code> to <code class="inline">setup.sh</code></td></tr>
+          <tr><td><code class="inline">registry/index.json is generated — do not hand-edit</code></td><td>Hand-edited generated file</td><td><code class="inline">git restore registry/index.json && node scripts/generate-index.js</code></td></tr>
+        </tbody>
+      </table>
+      <h2 id="branch-protection">Branch protection</h2>
+      <p><code class="inline">main</code> requires <code class="inline">validate.yml</code> to pass before merge. No direct pushes for Systems — use fork + PR. Never bypass CI.</p>
+      <h2 id="trust-model">Trust model</h2>
+      <p><code class="inline">permissions</code> are <strong>self-declared by authors and reviewed by maintainers, not independently verified at runtime</strong>. <code class="inline">setup.sh</code> is reviewed and gated by a <strong>one-time consent prompt on first <code class="inline">claude-system run</code></strong> — never silently executed. See <a href="/docs/security">Security</a> and <a href="https://github.com/hariomlohardev/claude-system/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+    </article>
+  </main>
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+    <a href="#prerequisites">Prerequisites</a>
+    <a href="#how-to-contribute-a-system">How to contribute</a>
+    <a href="#pr-flow">PR flow</a>
+    <a href="#local-checks-before-every-pr">Local checks</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+    <a href="#branch-protection">Branch protection</a>
+  </aside>
+</div>
+<footer class="docs-footer" role="contentinfo"><span>© 2026 claude-system · MIT</span><span><a href="https://github.com/hariomlohardev/claude-system">GitHub</a> · <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top</a></span></footer>
+<script id="docs-search-data" type="application/json">[{"title":"Prerequisites","url":"/docs/contributing#prerequisites","snip":"Node ≥18, git, gh CLI"},{"title":"How to contribute a System","url":"/docs/contributing#how-to-contribute-a-system","snip":"fork → system/<name> → scaffold"},{"title":"PR flow","url":"/docs/contributing#pr-flow","snip":"validate.yml, maintainer review, merge"},{"title":"Troubleshooting","url":"/docs/contributing#troubleshooting","snip":"name mismatch, missing files, WHY"}]</script>
+<script src="/docs.js"></script>
+</body>
+</html>

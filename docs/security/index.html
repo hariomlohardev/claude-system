@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Security — claude-system</title>
+<title>Security — claude-system Docs</title>
 <meta name="description" content="Security model — permissions are self-declared and reviewed, not sandboxed. Read before you install.">
-<meta name="keywords" content="claude-system security, permissions, setup.sh, WHY, trust">
-<meta name="theme-color" content="#F6F4EE">
+<meta name="keywords" content="claude-system security, permissions, setup.sh, WHY">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="canonical" href="https://claude-system-tau.vercel.app/docs/security">
 <meta property="og:title" content="Security — claude-system">
 <meta property="og:description" content="Permissions are self-declared and reviewed. How to read them and handle setup.sh.">
@@ -14,124 +14,99 @@
 <meta property="og:url" content="https://claude-system-tau.vercel.app/docs/security">
 <meta property="og:type" content="article">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M7 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M23 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M7 22 H23' stroke='%23B93A13' stroke-width='5'/%3E%3Cpath d='M23 38 H38' stroke='%23181611' stroke-width='5'/%3E%3Ccircle cx='37' cy='7' r='3.4' fill='%23B93A13'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/docs.css">
 </head>
-<body>
-<div id="prog" aria-hidden="true"></div>
-<a class="skip" href="#main">Skip to content</a>
-<header class="hdr" role="banner">
-  <div class="hdr-inner">
-    <a class="brand" href="/" aria-label="claude-system home">
-      <svg class="monogram" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M7 6 V38" stroke="#181611" stroke-width="5"/><path d="M23 6 V38" stroke="#181611" stroke-width="5"/><path d="M7 22 H23" stroke="#B93A13" stroke-width="5"/><path d="M23 38 H38" stroke="#181611" stroke-width="5"/><circle cx="37" cy="7" r="3.4" fill="#B93A13"/></svg>
-      <span class="wordmark">CLAUDE-SYSTEM</span>
-    </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="/browse">Browse</a>
-      <a href="/docs" aria-current="page">Docs</a>
-      <a href="https://github.com/hariomlohardev/claude-system">GitHub</a>
-      <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a>
-      <a class="btn solid sm nav-cta" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star on GitHub ↗</a>
-    </nav>
-    <button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span></button>
-  </div>
-  <div class="mobile-panel" id="mobile-panel" aria-hidden="true">
-    <a href="/"><span>Home</span><span class="idx">00</span></a>
-    <a href="/browse"><span>Browse</span><span class="idx">01</span></a>
-    <a href="/docs"><span>Docs</span><span class="idx">02</span></a>
-  </div>
+<body class="docs-body">
+<header class="docs-top" role="banner">
+  <div class="docs-top-left"><button class="docs-ham" id="docs-ham" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar"><span></span><span></span><span></span></button><a href="/" style="text-decoration:none;display:flex;align-items:center;gap:10px"><span class="docs-wordmark">claude-system</span><span class="docs-badge">Docs</span></a></div>
+  <div class="docs-top-center"><label class="docs-search" aria-label="Search docs"><span class="sicon" aria-hidden="true">⌕</span><input id="docs-search" type="search" placeholder="Search docs… ⌘K" autocomplete="off" aria-label="Search docs"><kbd>⌘K</kbd><div id="docs-search-results" class="docs-search-results" role="listbox"></div></label></div>
+  <div class="docs-top-right"><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a><a class="primary" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star</a></div>
 </header>
-<main id="main">
-  <div class="wrap" style="padding-top:22px">
-    <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><a href="/docs">Docs</a><span class="sep">/</span><span class="cur">Security</span></nav>
-  </div>
-  <section class="wrap" style="padding-top:8px;border:none;padding-bottom:18px">
-    <div class="kicker rv">Docs · Trust</div>
-    <h1 class="rv" style="font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.03em;line-height:.95;color:var(--ink);margin-top:8px">Security <em style="font-style:italic;font-weight:400;color:var(--ink-2)">model</em></h1>
-    <p class="rv" style="font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.55;color:var(--muted);margin-top:10px;max-width:48ch">Install with eyes open — <code class="inline">permissions</code> is a disclosure, not a sandbox.</p>
-    <div class="accent-rule rv" aria-hidden="true"></div>
-  </section>
-  <article class="read prose rv">
-    <p><code class="inline">claude-system</code> installs third-party <strong>Systems</strong> — bundles of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks, and settings that are executed via Claude Code. Treat installing a System with the same scrutiny as installing any third-party package (npm, pip, Homebrew, etc.).</p>
-    <h2>Permissions are self-declared</h2>
-    <p>Every System's <code class="inline">system.json</code> contains a <code class="inline">permissions</code> array:</p>
-<pre><code>{
+<div id="docs-overlay" class="docs-overlay" aria-hidden="true"></div>
+<div class="docs-layout">
+  <nav id="docs-sidebar" class="docs-sidebar" aria-label="Docs navigation">
+    <h4>Getting Started</h4><a href="/docs">Overview</a><a href="/#install">Install</a><a href="/browse">Browse Systems</a>
+    <h4>Guides</h4><a href="/docs/creating-a-system">Creating a System</a><a href="/docs/cli">CLI Reference</a>
+    <h4>Reference</h4><a href="/docs/spec">Spec</a><a href="/docs/security" class="active" aria-current="page">Security & Permissions</a><a href="/docs/contributing">Contributing</a>
+    <h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a><a href="https://github.com/hariomlohardev/claude-system/discussions" target="_blank" rel="noreferrer">Discussions ↗</a>
+  </nav>
+  <main class="docs-content" id="main">
+    <h1>Security</h1>
+    <p class="lead">Install with eyes open — <code class="inline">permissions</code> is a disclosure, not a sandbox. Reviewed during PR, not verified at runtime.</p>
+    <article class="docs-prose">
+      <p><code class="inline">claude-system</code> installs third-party <strong>Systems</strong> — bundles of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks and settings executed via Claude Code. Treat installing a System with the same scrutiny as any third-party package.</p>
+      <h2 id="permissions-are-self-declared">Permissions are self-declared</h2>
+      <p>Every <code class="inline">system.json</code> contains a <code class="inline">permissions</code> array:</p>
+      <pre><code class="language-json">{
   "permissions": ["filesystem:read", "network:read", "shell:exec"]
 }</code></pre>
-    <table>
-      <thead><tr><th>Permission</th><th>What it signals</th></tr></thead>
-      <tbody>
-        <tr><td><code class="inline">filesystem:read</code></td><td>May read files outside the installed System folder</td></tr>
-        <tr><td><code class="inline">filesystem:write</code></td><td>May write or mutate files</td></tr>
-        <tr><td><code class="inline">network:read</code></td><td>May make outbound network requests (fetch, clone)</td></tr>
-        <tr><td><code class="inline">network:write</code></td><td>May push data or make mutating network calls</td></tr>
-        <tr><td><code class="inline">shell:exec</code></td><td>May execute shell commands or scripts (hooks, skills)</td></tr>
-        <tr><td><code class="inline">credentials:read</code></td><td>May access credentials, tokens, or secrets</td></tr>
-      </tbody>
-    </table>
-    <blockquote>
-      <code class="inline">permissions</code> is declared by the author — you write the honest superset. An empty array <code class="inline">[]</code> is valid and means “no special capabilities declared.” <code class="inline">additionalProperties: false</code> is enforced, so unknown strings are rejected.
-    </blockquote>
-    <h2>setup.sh contract</h2>
-    <p>If a System ships <code class="inline">setup.sh</code>, it <strong>must</strong>:</p>
-    <ul>
-      <li>Include a <code class="inline"># WHY:</code> line (or an <code class="inline">echo</code> explaining why setup is needed) — this is shown in the <code class="inline">claude-system run</code> consent prompt.</li>
-      <li>Be gated by a one-time consent prompt on first <code class="inline">claude-system run</code> — <strong>never silently executed</strong>.</li>
-      <li>Set <code class="inline">setupDone</code> in <code class="inline">~/.claude-system/systems.json</code> only after successful <code class="inline">setup.sh</code> exit (0); on non-zero, <code class="inline">setupDone</code> stays <code class="inline">false</code> and next <code class="inline">run</code> re-prompts.</li>
-      <li>Declare <code class="inline">shell:exec</code> in <code class="inline">permissions</code> (enforced by <code class="inline">validate.yml</code> cross-check).</li>
-    </ul>
-    <p>Example <code class="inline">setup.sh</code> header:</p>
-<pre><code>#!/bin/sh
+      <table>
+        <thead><tr><th>Permission</th><th>What it signals</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline">filesystem:read</code></td><td>May read files outside installed folder</td></tr>
+          <tr><td><code class="inline">filesystem:write</code></td><td>May write or mutate files</td></tr>
+          <tr><td><code class="inline">network:read</code></td><td>May make outbound fetch/clone</td></tr>
+          <tr><td><code class="inline">network:write</code></td><td>May push data out</td></tr>
+          <tr><td><code class="inline">shell:exec</code></td><td>May execute shell commands/scripts</td></tr>
+          <tr><td><code class="inline">credentials:read</code></td><td>May access credentials/tokens</td></tr>
+        </tbody>
+      </table>
+      <blockquote><code class="inline">permissions</code> declared by author — honest superset. Empty <code class="inline">[]</code> means “no special capabilities.” <code class="inline">additionalProperties: false</code> rejects unknown strings.</blockquote>
+      <h2 id="setup-sh-contract">setup.sh contract</h2>
+      <p>If a System ships <code class="inline">setup.sh</code>, it <strong>must</strong>:</p>
+      <ul>
+        <li>Include a <code class="inline"># WHY:</code> line — shown in <code class="inline">claude-system run</code> consent prompt.</li>
+        <li>Be gated by one-time consent on first <code class="inline">run</code> — <strong>never silently executed</strong>.</li>
+        <li>Set <code class="inline">setupDone</code> in <code class="inline">~/.claude-system/systems.json</code> only after exit 0; on non-zero, stays <code class="inline">false</code> and re-prompts.</li>
+        <li>Declare <code class="inline">shell:exec</code> in <code class="inline">permissions</code> (enforced by <code class="inline">validate.yml</code>).</li>
+      </ul>
+      <pre><code class="language-sh">#!/bin/sh
 # WHY: installs claude and checks gh auth
 echo "Installing…"</code></pre>
-    <p><code class="inline">claude-system run</code> will show <code class="inline">WHY</code> and ask <code class="inline">Are you sure you want to continue? (y/N)</code> — no consent, no execution.</p>
-    <h2>Reviewed but not independently verified</h2>
-    <ul>
-      <li><strong>PR review:</strong> Every System PR must pass <code class="inline">validate.yml</code> and maintainer review before merge. Reviewers compare declared <code class="inline">permissions</code> against actual content in <code class="inline">skills/</code>, <code class="inline">agents/</code>, <code class="inline">commands/</code>, <code class="inline">hooks/</code>, and <code class="inline">CLAUDE.md</code> (e.g. a System declaring <code class="inline">[]</code> but shipping a hook that runs <code class="inline">curl | bash</code> will be rejected).</li>
-      <li><strong>Not a runtime sandbox guarantee:</strong> The review is human and static. <strong>There is no independent runtime verification or sandbox that enforces <code class="inline">permissions</code> at execution time.</strong> A malicious or compromised System that is merged could do more than it declared.</li>
-    </ul>
-    <blockquote>Do not treat <code class="inline">permissions: []</code> as a proof of safety — treat it as a <strong>self-declared and reviewed claim</strong>, not a security boundary.</blockquote>
-    <h2>How to read permissions before installing</h2>
-    <ol>
-      <li>Inspect the manifest directly — don't trust the display name alone:
-<pre><code>claude-system info &lt;name&gt;
+      <p><code class="inline">claude-system run</code> shows <code class="inline">WHY</code> and asks <code class="inline">Are you sure you want to continue? (y/N)</code> — no consent, no execution.</p>
+      <h2 id="reviewed-but-not-verified">Reviewed but not independently verified</h2>
+      <ul>
+        <li><strong>PR review:</strong> Every System PR must pass <code class="inline">validate.yml</code> and maintainer review. Reviewers compare <code class="inline">permissions</code> vs <code class="inline">skills/</code>, <code class="inline">agents/</code>, <code class="inline">commands/</code>, <code class="inline">hooks/</code>, <code class="inline">CLAUDE.md</code> (e.g. <code class="inline">[]</code> + <code class="inline">curl | bash</code> → rejected).</li>
+        <li><strong>Not a runtime sandbox:</strong> Review is human + static. <strong>No independent runtime verification or sandbox enforces <code class="inline">permissions</code> at execution.</strong></li>
+      </ul>
+      <blockquote class="warn">Do not treat <code class="inline">permissions: []</code> as proof of safety — treat it as a <strong>self-declared and reviewed claim</strong>, not a security boundary.</blockquote>
+      <h2 id="how-to-read-permissions">How to read permissions before installing</h2>
+      <pre><code class="language-sh">claude-system info &lt;name&gt;
 cat systems/&lt;name&gt;/system.json | jq .permissions
 cat systems/&lt;name&gt;/CLAUDE.md
 ls -R systems/&lt;name&gt;/skills systems/&lt;name&gt;/hooks</code></pre>
-      </li>
-      <li>Check the author and links: <code class="inline">author.github</code>, <code class="inline">repository</code>, <code class="inline">bugs.url</code>, <code class="inline">homepage</code>.</li>
-      <li>Read the diff on update: <code class="inline">claude-system update</code> will show if a new version adds permissions.</li>
-      <li>Assume least trust on first install. If you don't need <code class="inline">credentials:read</code> or <code class="inline">shell:exec</code>, prefer <code class="inline">[]</code> or only <code class="inline">filesystem:read</code>.</li>
-    </ol>
-    <p><em>Mental model:</em> <code class="inline">permissions</code> is like the permissions list on a browser extension — it's a <strong>disclosure you decide to accept</strong>, not a capability the platform enforces.</p>
-    <h2>For authors — how to keep trust</h2>
-    <ul>
-      <li>Declare the honest superset — if any skill, hook, or command <em>could</em> read the network, shell out, or touch credentials, include that permission even if conditional.</li>
-      <li>Don't hide <code class="inline">shell:exec</code> if <code class="inline">hooks/</code> or <code class="inline">skills/</code> contain executable code.</li>
-      <li>Minimize — start from <code class="inline">[]</code> and justify each addition in your PR description.</li>
-      <li>Never silently grant or escalate — users must see what's being requested before they accept.</li>
-    </ul>
-    <h2>Reporting concerns</h2>
-    <p>If you find a System that appears to under-declare permissions, contains obfuscated or unsafe hooks, or exfiltrates data: open an issue in this repository (or the System's <code class="inline">bugs.url</code> if it declares one) and label it with the System name. If sensitive, follow the disclosure process in <a href="https://github.com/hariomlohardev/claude-system/blob/main/SECURITY.md">SECURITY.md</a> instead of a public issue.</p>
-    <p>Full source of this guide is <a href="https://github.com/hariomlohardev/claude-system/blob/main/docs/security.md">docs/security.md</a> and <a href="https://github.com/hariomlohardev/claude-system/blob/main/SECURITY.md">SECURITY.md</a> on GitHub.</p>
-    <div class="endmark" aria-hidden="true">◆</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;border-top:1px solid var(--line);padding-top:18px">
-      <a class="btn sm" href="/docs">← Docs overview</a>
-      <a class="btn ghost sm" href="/docs/spec">Next: Spec →</a>
-      <a class="btn ghost sm" href="https://github.com/hariomlohardev/claude-system/blob/main/SECURITY.md" target="_blank" rel="noreferrer">SECURITY.md ↗</a>
-    </div>
-  </article>
-</main>
-<footer class="footer" role="contentinfo">
-  <div class="footer-grid">
-    <div class="footer-brand">Security is a shared responsibility: authors declare honestly, maintainers review carefully, users install with eyes open.</div>
-    <div class="footer-col"><h4>Docs</h4><a href="/docs">Overview</a><a href="/docs/creating-a-system">Creating</a><a href="/docs/spec">Spec</a></div>
-    <div class="footer-col"><h4>Trust</h4><a href="https://github.com/hariomlohardev/claude-system/blob/main/SECURITY.md">Security policy</a><a href="https://github.com/hariomlohardev/claude-system/blob/main/CODE_OF_CONDUCT.md">Code of Conduct</a></div>
-    <div class="footer-col"><h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a></div>
-  </div>
-  <div class="footer-bar"><span>© 2026 claude-system</span><span id="live-clock"></span><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top ↑</a></div>
-</footer>
-<script src="/app.js"></script>
+      <ol>
+        <li>Inspect manifest — don't trust display name alone.</li>
+        <li>Check author and links: <code class="inline">author.github</code>, <code class="inline">repository</code>, <code class="inline">bugs.url</code>.</li>
+        <li>Read diff on update: <code class="inline">claude-system update</code> shows if new version adds permissions.</li>
+        <li>Assume least trust on first install — prefer <code class="inline">[]</code> over <code class="inline">credentials:read</code>.</li>
+      </ol>
+      <p><em>Mental model:</em> like browser extension permissions — a <strong>disclosure you decide to accept</strong>, not a platform-enforced capability.</p>
+      <h2 id="for-authors">For authors — how to keep trust</h2>
+      <ul>
+        <li>Declare honest superset — if any skill/hook <em>could</em> read network/shell/credentials, include it even if conditional.</li>
+        <li>Don't hide <code class="inline">shell:exec</code> if <code class="inline">hooks/</code> has executable code.</li>
+        <li>Minimize — start from <code class="inline">[]</code> and justify each addition in PR.</li>
+        <li>Never silently grant or escalate.</li>
+      </ul>
+      <h2 id="reporting-concerns">Reporting concerns</h2>
+      <p>If you find a System that under-declares permissions, contains obfuscated hooks, or exfiltrates data: open an issue in this repo (or the System's <code class="inline">bugs.url</code>) and label it with System name. If sensitive, follow <a href="https://github.com/hariomlohardev/claude-system/blob/main/SECURITY.md">SECURITY.md</a> disclosure instead of a public issue.</p>
+      <p>Full source is <a href="https://github.com/hariomlohardev/claude-system/blob/main/docs/security.md">docs/security.md</a> and <a href="https://github.com/hariomlohardev/claude-system/blob/main/SECURITY.md">SECURITY.md</a> on GitHub.</p>
+    </article>
+  </main>
+  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
+    <h4>On this page</h4>
+    <a href="#permissions-are-self-declared">Permissions</a>
+    <a href="#setup-sh-contract">setup.sh contract</a>
+    <a href="#reviewed-but-not-verified">Reviewed but not verified</a>
+    <a href="#how-to-read-permissions">How to read</a>
+    <a href="#for-authors">For authors</a>
+    <a href="#reporting-concerns">Reporting</a>
+  </aside>
+</div>
+<footer class="docs-footer" role="contentinfo"><span>© 2026 claude-system · MIT</span><span><a href="https://github.com/hariomlohardev/claude-system">GitHub</a> · <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top</a></span></footer>
+<script id="docs-search-data" type="application/json">[{"title":"Permissions are self-declared","url":"/docs/security#permissions-are-self-declared","snip":"permissions array self-declared"},{"title":"setup.sh contract","url":"/docs/security#setup-sh-contract","snip":"# WHY:, consent y/N, setupDone"},{"title":"Reviewed but not verified","url":"/docs/security#reviewed-but-not-verified","snip":"PR review, not sandboxed"}]</script>
+<script src="/docs.js"></script>
 </body>
 </html>
