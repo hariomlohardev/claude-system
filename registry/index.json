@@ -1,6 +1,6 @@
 {
   "$schema": "../schemas/registry-index.schema.json",
-  "generatedAt": "2026-08-20T16:14:45.214Z",
+  "generatedAt": "2026-08-21T10:58:16.664Z",
   "systems": [
     {
       "name": "example-system",
@@ -20,6 +20,27 @@
       ],
       "path": "systems/example-system",
       "category": "other"
+    },
+    {
+      "name": "oss-contrib-finder",
+      "displayName": "OSS Contrib Finder",
+      "version": "0.1.0",
+      "description": "Beginner-friendly coach that finds, scores, and walks you through a real open-source GitHub issue — with verify, review, and portfolio steps.",
+      "author": {
+        "name": "Hariom Lohar",
+        "github": "hariomlohardev",
+        "url": "https://github.com/hariomlohardev"
+      },
+      "license": "MIT",
+      "keywords": [
+        "open-source",
+        "contribution",
+        "github",
+        "issue-finder",
+        "portfolio"
+      ],
+      "path": "systems/oss-contrib-finder",
+      "category": "open-source"
     }
   ]
 }

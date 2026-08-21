@@ -326,6 +326,13 @@ jobs:
             }
             console.log('✓ registry/index.json validates and is sorted');
           "
+          # Check registry is fresh
+          if ! git diff --exit-code registry/index.json; then
+            echo "::error::registry/index.json is stale — run node scripts/generate-index.js and commit the diff"
+            git diff registry/index.json --color | head -n 100
+            exit 1
+          fi
+          echo "✓ registry/index.json matches systems/* (count: $(node -p "require('./registry/index.json').systems.length"))"
           # Restore so PR doesn't commit generated file (unless the PR intentionally updates registry via merge)
           git restore registry/index.json
 

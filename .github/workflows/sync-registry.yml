@@ -11,11 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npm --prefix cli ci || npm --prefix cli install
-      - run: npm --prefix cli run build
-      - run: node scripts/generate-index.js
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: cli/package-lock.json
+      - name: Install CLI dependencies
+        working-directory: cli
+        run: npm ci
+      - name: Build CLI
+        working-directory: cli
+        run: npm run build
+      - name: Generate registry
+        run: node scripts/generate-index.js
       - name: Upsert Supabase
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

@@ -174,6 +174,13 @@ async function main() {
   // Sort by name for stable output
   systems.sort((a,b) => a.name.localeCompare(b.name));
 
+  // Guard: ensure every valid system folder with system.json is in output
+  const expectedCount = entries.filter(e => e.isDirectory() && !e.name.startsWith('.') && existsSync(join(systemsDir, e.name, 'system.json'))).length;
+  if (systems.length !== expectedCount) {
+    console.error(`::error::registry generation mismatch: expected ${expectedCount} systems but got ${systems.length}`);
+    process.exit(1);
+  }
+
   const index = {
     $schema: '../schemas/registry-index.schema.json',
     generatedAt: new Date().toISOString(),
