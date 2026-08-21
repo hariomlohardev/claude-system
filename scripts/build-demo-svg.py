@@ -194,6 +194,12 @@ svg_content = "\n".join(svg_lines)
 out_svg = ASSETS / "demo.svg"
 out_svg.write_text(svg_content, encoding="utf-8")
 print(f"[ok] wrote {out_svg} ({len(svg_content)} bytes)")
+# duplicate to web-vercel for Vercel serving (keep root docs/assets for GitHub README)
+web_assets = ROOT / "web-vercel" / "docs" / "assets"
+if web_assets.parent.exists() or web_assets.exists():
+    web_assets.mkdir(parents=True, exist_ok=True)
+    (web_assets / "demo.svg").write_text(svg_content, encoding="utf-8")
+    print(f"[ok] also wrote {web_assets / 'demo.svg'}")
 
 # Now build GIF via Pillow — static terminal render with cursor blink frames
 try:
@@ -327,6 +333,15 @@ try:
     )
     sz = out_gif.stat().st_size
     print(f"[ok] wrote {out_gif} ({sz} bytes, {len(p_frames)} frames)")
+    # duplicate gif to web-vercel
+    try:
+        import shutil
+        web_gif = ROOT / "web-vercel" / "docs" / "assets" / "demo.gif"
+        if web_gif.parent.exists():
+            shutil.copy2(out_gif, web_gif)
+            print(f"[ok] also wrote {web_gif} ({web_gif.stat().st_size} bytes)")
+    except Exception as e:
+        print(f"  web copy failed: {e}")
     if sz > 2*1024*1024:
         print(f"  WARNING: gif >2MB ({sz}), will recompress with fewer colors")
         # recompress with 64 colors

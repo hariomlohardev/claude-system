@@ -10,4 +10,5 @@ echo "› Generating demo assets (real outputs)…"
 python3 scripts/build-demo-svg.py
 echo "› Assets:"
 ls -lh docs/assets/demo.* 2>&1 | cat
-echo "✓ done — docs/assets/demo.svg + demo.gif ready"
+ls -lh web-vercel/docs/assets/demo.* 2>&1 | cat || echo "web-vercel/docs/assets not yet"
+echo "✓ done — docs/assets/demo.svg + demo.gif ready (both root for GitHub + web-vercel for Vercel)"

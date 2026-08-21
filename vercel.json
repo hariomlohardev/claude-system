@@ -1,4 +1,5 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/install",
@@ -6,39 +7,31 @@
     },
     {
       "source": "/browse",
-      "destination": "/browse/index.html"
+      "destination": "/web-vercel/browse/index.html"
     },
     {
       "source": "/system",
-      "destination": "/system/index.html"
+      "destination": "/web-vercel/system/index.html"
     },
     {
       "source": "/s/:name",
-      "destination": "/system/index.html"
+      "destination": "/web-vercel/system/index.html"
     },
     {
       "source": "/docs",
-      "destination": "/docs/index.html"
+      "destination": "/web-vercel/docs/index.html"
     },
     {
-      "source": "/docs/creating-a-system",
-      "destination": "/docs/creating-a-system/index.html"
+      "source": "/docs/:path*",
+      "destination": "/web-vercel/docs/:path*"
     },
     {
-      "source": "/docs/security",
-      "destination": "/docs/security/index.html"
+      "source": "/public/:path*",
+      "destination": "/web-vercel/public/:path*"
     },
     {
-      "source": "/docs/cli",
-      "destination": "/docs/cli/index.html"
-    },
-    {
-      "source": "/docs/contributing",
-      "destination": "/docs/contributing/index.html"
-    },
-    {
-      "source": "/docs/spec",
-      "destination": "/docs/spec/index.html"
+      "source": "/(.*)",
+      "destination": "/web-vercel/$1"
     }
   ],
   "headers": [
@@ -81,6 +74,5 @@
         }
       ]
     }
-  ],
-  "cleanUrls": true
+  ]
 }
