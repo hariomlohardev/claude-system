@@ -1,0 +1,25 @@
+{
+  "$schema": "../../schemas/system.schema.json",
+  "name": "oss-contrib-finder",
+  "displayName": "OSS Contrib Finder",
+  "version": "0.1.0",
+  "description": "Beginner-friendly coach that finds, scores, and walks you through a real open-source GitHub issue — with verify, review, and portfolio steps.",
+  "keywords": ["open-source", "contribution", "github", "issue-finder", "portfolio"],
+  "category": "open-source",
+  "author": {
+    "name": "Hariom Lohar",
+    "github": "hariomlohardev",
+    "url": "https://github.com/hariomlohardev"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/hariomlohardev/claude-system",
+  "bugs": {
+    "url": "https://github.com/hariomlohardev/claude-system/issues?q=is%3Aissue+is%3Aopen+label%3A%22oss-contrib-finder%22"
+  },
+  "homepage": "https://github.com/hariomlohardev/claude-system#readme",
+  "claudeSystem": {
+    "specVersion": "1.0.0"
+  },
+  "dependencies": [],
+  "permissions": ["filesystem:read", "filesystem:write", "network:read", "shell:exec"]
+}
