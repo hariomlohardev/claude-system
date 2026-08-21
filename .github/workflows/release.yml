@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -88,7 +91,11 @@ jobs:
           cp ../install.sh ../dist/ 2>/dev/null || true
           ls -lh dist/
 
+      - name: Build npm pack (dry-run check)
+        run: npm --prefix cli pack --dry-run 2>&1 | head -n 30
+
       - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -128,6 +135,8 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -140,7 +149,9 @@ jobs:
           npm ci || npm install
           npm run build
       - name: Publish to npm (provenance)
-        run: npm publish --provenance --access public
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then echo "skip npm — no NPM_TOKEN"; exit 0; fi
+          npm publish --provenance --access public || npm publish --access public
         working-directory: cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -153,6 +164,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -165,5 +178,8 @@ jobs:
           ls -lh dist/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        continue-on-error: true
         with:
           packages-dir: packaging/pip/dist
+          skip-existing: true
+          verbose: true
