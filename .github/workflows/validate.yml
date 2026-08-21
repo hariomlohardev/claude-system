@@ -326,10 +326,11 @@ jobs:
             }
             console.log('✓ registry/index.json validates and is sorted');
           "
-          # Check registry is fresh
-          if ! git diff --exit-code registry/index.json; then
+          # Check registry is fresh (ignore generatedAt timestamp)
+          if ! diff <(jq -S '.systems' registry/index.json) <(git show HEAD:registry/index.json | jq -S '.systems' 2>/dev/null || echo '[]') >/dev/null 2>&1; then
             echo "::error::registry/index.json is stale — run node scripts/generate-index.js and commit the diff"
-            git diff registry/index.json --color | head -n 100
+            diff <(jq -S '.systems' registry/index.json) <(git show HEAD:registry/index.json | jq -S '.systems' 2>/dev/null || echo '[]') | head -n 100 || true
+            git diff registry/index.json --stat | head -n 20 || true
             exit 1
           fi
           echo "✓ registry/index.json matches systems/* (count: $(node -p "require('./registry/index.json').systems.length"))"
