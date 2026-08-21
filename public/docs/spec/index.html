@@ -1,71 +1,7 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Spec — claude-system Docs</title>
-<meta name="description" content="Formal contract for Systems — what a System is, what the CLI guarantees, and what is out of scope for v1.">
-<meta name="keywords" content="claude-system spec, system spec, contract">
-<meta name="theme-color" content="#FFFFFF">
-<link rel="canonical" href="https://claude-system-tau.vercel.app/docs/spec">
-<meta property="og:title" content="Spec — claude-system">
-<meta property="og:description" content="Formal contract — Systems, registry, CLI and what is explicitly out of scope for v1.">
-<meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
-<meta property="og:url" content="https://claude-system-tau.vercel.app/docs/spec">
-<meta property="og:type" content="article">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M7 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M23 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M7 22 H23' stroke='%23B93A13' stroke-width='5'/%3E%3Cpath d='M23 38 H38' stroke='%23181611' stroke-width='5'/%3E%3Ccircle cx='37' cy='7' r='3.4' fill='%23B93A13'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="/docs.css">
-</head>
-<body class="docs-body">
-<header class="docs-top" role="banner">
-  <div class="docs-top-left"><button class="docs-ham" id="docs-ham" aria-label="Open navigation" aria-expanded="false" aria-controls="docs-sidebar"><span></span><span></span><span></span></button><a href="/" style="text-decoration:none;display:flex;align-items:center;gap:10px"><span class="docs-wordmark">claude-system</span><span class="docs-badge">Docs</span></a></div>
-  <div class="docs-top-center"><label class="docs-search" aria-label="Search docs"><span class="sicon" aria-hidden="true">⌕</span><input id="docs-search" type="search" placeholder="Search docs… ⌘K" autocomplete="off" aria-label="Search docs"><kbd>⌘K</kbd><div id="docs-search-results" class="docs-search-results" role="listbox"></div></label></div>
-  <div class="docs-top-right"><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a><a class="primary" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star</a></div>
-</header>
-<div id="docs-overlay" class="docs-overlay" aria-hidden="true"></div>
-<div class="docs-layout">
-  <nav id="docs-sidebar" class="docs-sidebar" aria-label="Docs navigation">
-    <h4>Getting Started</h4><a href="/docs">Overview</a><a href="/#install">Install</a><a href="/browse">Browse Systems</a>
-    <h4>Guides</h4><a href="/docs/creating-a-system">Creating a System</a><a href="/docs/cli">CLI Reference</a>
-    <h4>Reference</h4><a href="/docs/spec" class="active" aria-current="page">Spec</a><a href="/docs/security">Security & Permissions</a><a href="/docs/contributing">Contributing</a>
-    <h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a>
-  </nav>
-  <main class="docs-content" id="main">
-    <h1>System Spec</h1>
-    <p class="lead">Draft contract — what the registry and CLI guarantee, and where v1 stops. When in doubt, the spec wins over convenience.</p>
-    <article class="docs-prose">
-      <blockquote>Status: draft — see <code class="inline">CLAUDE.md</code> for scope (Systems layer around <code class="inline">claude</code>, not a replacement).</blockquote>
-      <h2 id="what-a-system-is">What a System is</h2>
-      <p>A System is a <strong>versioned, distributable bundle</strong> of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks and configuration that together form a reproducible, purpose-built Claude Code environment. Examples: “open-source contributor”, “frontend development”. It <em>configures</em> Claude Code; it does not replace it.</p>
-      <p>Each System lives under <code class="inline">systems/&lt;name&gt;/</code> where <code class="inline">&lt;name&gt;</code> is kebab-case and must equal <code class="inline">system.json:name</code>. Required files: <code class="inline">system.json</code> + <code class="inline">CLAUDE.md</code> + <code class="inline">README.md</code>. Optional: <code class="inline">skills/</code>, <code class="inline">agents/</code>, <code class="inline">commands/</code>, <code class="inline">hooks/</code>, <code class="inline">settings.json</code>.</p>
-      <h2 id="manifest-and-validation">Manifest and validation</h2>
-      <p><code class="inline">system.json</code> validates against <code class="inline">schemas/system.schema.json</code> (draft-07, <code class="inline">additionalProperties: false</code> everywhere). Unknown fields are rejected. Keep <code class="inline">schemas/system.schema.json</code>, <code class="inline">docs/creating-a-system.md</code> and <code class="inline">template/starter-system/</code> in sync.</p>
-      <p>CI (<code class="inline">validate.yml</code>) enforces: schema validity, <code class="inline">name === folder</code>, required files present, unsafe hooks/scripts, <code class="inline">registry/index.json</code> not hand-edited, <code class="inline">permissions</code> vs <code class="inline">setup.sh</code> and <code class="inline"># WHY:</code>.</p>
-      <h2 id="registry">Registry</h2>
-      <p><code class="inline">registry/index.json</code> is <strong>generated</strong> by <code class="inline">scripts/generate-index.js</code> from <code class="inline">systems/*/system.json</code> and validated against <code class="inline">schemas/registry-index.schema.json</code>. It is the only file the CLI fetches directly (via <code class="inline">/api/registry</code> on Vercel with <code class="inline">s-maxage=60</code> and fallback to <code class="inline">raw.githubusercontent</code>) — not the whole repo. Never hand-edit it in a System PR.</p>
-      <h2 id="install-and-run">Install and run</h2>
-      <p><code class="inline">claude-system install &lt;name&gt;</code> copies to <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code> and records <code class="inline">{version, installedAt, setupDone}</code> in <code class="inline">~/.claude-system/systems.json</code>. <code class="inline">claude-system run &lt;name&gt; [-- &lt;args&gt;]</code> opens the real <code class="inline">claude</code> CLI inside that directory, forwarding extra args.</p>
-      <p>If the System ships <code class="inline">setup.sh</code>, it must contain <code class="inline"># WHY:</code>, declares <code class="inline">shell:exec</code>, and is shown once with a <code class="inline">y/N</code> prompt. Only on exit 0 is <code class="inline">setupDone</code> set; otherwise next <code class="inline">run</code> re-prompts.</p>
-      <h2 id="what-is-out-of-scope-for-v1">What is out of scope for v1</h2>
-      <p>Per §46: no web marketplace, no cloud backend, no custom AI runtime, no full GUI, no multi-system dependency resolution beyond the simple case, no enterprise auth. MVP first — keep the CLI thin; what can be a System, a Skill, or a plugin, build as one of those.</p>
-      <h2 id="conventions">Conventions</h2>
-      <p>Language: TypeScript on Node, <code class="inline">commander</code> + <code class="inline">zod</code> + <code class="inline">simple-git</code>/<code class="inline">execa</code>, native <code class="inline">fetch</code>. Security is explicit — never silently grant permissions or execute scripts. Session/config integration uses only documented, supported Claude Code interfaces.</p>
-      <p>Full text is <a href="https://github.com/hariomlohardev/claude-system/blob/main/SYSTEM_SPEC.md">SYSTEM_SPEC.md</a> on GitHub — this page is a condensed, docs-style rendering.</p>
-    </article>
-  </main>
-  <aside class="docs-toc" id="docs-toc" aria-label="On this page">
-    <h4>On this page</h4>
-    <a href="#what-a-system-is">What a System is</a>
-    <a href="#manifest-and-validation">Manifest</a>
-    <a href="#registry">Registry</a>
-    <a href="#install-and-run">Install and run</a>
-    <a href="#what-is-out-of-scope-for-v1">Out of scope</a>
-    <a href="#conventions">Conventions</a>
-  </aside>
-</div>
-<footer class="docs-footer" role="contentinfo"><span>© 2026 claude-system · MIT</span><span><a href="https://github.com/hariomlohardev/claude-system">GitHub</a> · <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top</a></span></footer>
-<script id="docs-search-data" type="application/json">[{"title":"What a System is","url":"/docs/spec#what-a-system-is","snip":"versioned bundle CLAUDE.md skills"},{"title":"Manifest and validation","url":"/docs/spec#manifest-and-validation","snip":"system.json additionalProperties false"},{"title":"Registry","url":"/docs/spec#registry","snip":"registry/index.json generated"},{"title":"Install and run","url":"/docs/spec#install-and-run","snip":"~/.claude-system/systems/<name>"}]</script>
-<script src="/docs.js"></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Spec — claude-system Docs</title><link rel="stylesheet" href="/style.css"><script>document.documentElement.classList.add("js")</script></head><body><a class="skip" href="#main">Skip</a>
+<header class="hdr" role="banner"><div class="hdr-inner"><a class="brand" href="/"><span class="brand-mark">CS</span><span class="wordmark">claude-system <span>Docs</span></span></a><nav class="nav"><a href="/">Registry</a><a href="/browse">Browse</a><a href="/docs" aria-current="page">Docs</a></nav><div class="search-wrap"><input id="hdr-search" type="search" placeholder="Search docs... ⌘K" aria-label="Search docs"><kbd>⌘K</kbd><div id="hdr-search-results" class="search-results"></div></div><button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span><span></span></button></div></header>
+<div class="docs-shell" style="margin-top:18px"><nav class="docs-sidebar" id="docs-sidebar"><h4>Reference</h4><a href="/docs/spec" class="active">Spec</a><a href="/docs/security">Security</a><a href="/docs/cli">CLI</a></nav>
+<main class="docs-content" id="main"><nav class="bc"><a href="/">Home</a><span class="sep">/</span><a href="/docs">Docs</a><span class="sep">/</span><span class="cur">Spec</span></nav><h1>Spec</h1><p class="muted">Condensed SYSTEM_SPEC.md — the contract.</p>
+<article class="prose"><h2 id="what-is-a-system">What is a System</h2><p>A System is a versioned bundle of CLAUDE.md, skills, agents, commands, hooks, MCP and config. Installed to <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code> and run via <code class="inline">claude-system run &lt;name&gt;</code> which shells out to the real <code class="inline">claude</code> CLI.</p>
+<h2 id="manifest">Manifest</h2><p>system.json validates against schemas/system.schema.json — strict, additionalProperties false. Required: name (kebab, == folder), displayName, version semver, description, keywords, author, license, claudeSystem.specVersion, permissions[].</p>
+<h2 id="registry">Registry</h2><p>registry/index.json is generated from systems/*/system.json via scripts/generate-index.js. Never hand-edit. CLI fetches /api/registry (Supabase) with fallback to raw GitHub.</p></article></main><aside class="docs-toc" id="docs-toc"><h4>On this page</h4><a href="#what-is-a-system">What is a System</a><a href="#manifest">Manifest</a><a href="#registry">Registry</a></aside></div><footer class="footer"><div class="footer-bar"><span>© 2026</span></div></footer><div class="docs-overlay" id="docs-overlay"></div><script src="/app.js"></script></body></html>

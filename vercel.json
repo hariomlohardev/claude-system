@@ -81,5 +81,6 @@
         }
       ]
     }
-  ]
+  ],
+  "cleanUrls": true
 }

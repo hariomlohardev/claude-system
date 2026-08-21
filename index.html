@@ -3,272 +3,140 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>claude-system — Systems for Claude Code</title>
-<meta name="description" content="Curated, opinionated Systems for Claude Code — install a complete workflow in one shot.">
-<meta name="keywords" content="claude-system, claude code systems, curated workflows, skills, agents, commands, hooks">
-<meta name="theme-color" content="#F6F4EE">
+<title>claude-system — Curated Systems for Claude Code</title>
+<meta name="description" content="Curated, opinionated Systems — install a workflow in one shot. Browse, search and install Systems for Claude Code.">
+<meta name="theme-color" content="#FDFDF7">
 <link rel="canonical" href="https://claude-system-tau.vercel.app/">
-<meta property="og:title" content="claude-system — Curated Systems for Claude Code">
-<meta property="og:description" content="Curated, opinionated Systems for Claude Code — install a complete workflow in one shot.">
+<meta property="og:title" content="claude-system — Systems for Claude Code">
+<meta property="og:description" content="Curated, opinionated Systems — install a workflow in one shot.">
 <meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
-<meta property="og:url" content="https://claude-system-tau.vercel.app/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="sitemap" type="application/xml" href="/sitemap.xml">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M7 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M23 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M7 22 H23' stroke='%23B93A13' stroke-width='5'/%3E%3Cpath d='M23 38 H38' stroke='%23181611' stroke-width='5'/%3E%3Ccircle cx='37' cy='7' r='3.4' fill='%23B93A13'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-600.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400-italic.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-600-italic.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/archivo/latin-400.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/archivo/latin-500.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/archivo/latin-600.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-mono/latin-400.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-mono/latin-400-italic.css">
+<link rel="icon" href="/og.png">
 <link rel="stylesheet" href="/style.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
-<div id="prog" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="hdr" role="banner">
   <div class="hdr-inner">
-    <a class="brand" href="/" aria-label="claude-system home">
-      <svg class="monogram" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M7 6 V38" stroke="#181611" stroke-width="5"/><path d="M23 6 V38" stroke="#181611" stroke-width="5"/><path d="M7 22 H23" stroke="#B93A13" stroke-width="5"/><path d="M23 38 H38" stroke="#181611" stroke-width="5"/><circle cx="37" cy="7" r="3.4" fill="#B93A13"/></svg>
-      <span class="wordmark">CLAUDE-SYSTEM</span>
-    </a>
+    <a class="brand" href="/" aria-label="claude-system home"><span class="brand-mark">CS</span><span class="wordmark">claude-system <span>Registry</span></span></a>
     <nav class="nav" aria-label="Primary">
+      <a href="/" aria-current="page">Registry</a>
       <a href="/browse">Browse</a>
       <a href="/docs">Docs</a>
-      <a href="https://github.com/hariomlohardev/claude-system">GitHub</a>
-      <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a>
-      <a class="btn solid sm nav-cta" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star on GitHub ↗</a>
+      <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <a class="btn primary sm" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star on GitHub ↗</a>
     </nav>
-    <button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span></button>
+    <button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span><span></span></button>
   </div>
   <div class="mobile-panel" id="mobile-panel" aria-hidden="true">
-    <a href="/browse"><span>Browse Systems</span><span class="idx">01</span></a>
-    <a href="/docs"><span>Documentation</span><span class="idx">02</span></a>
-    <a href="/docs/creating-a-system"><span>Creating a System</span><span class="idx">03</span></a>
-    <a href="/docs/cli"><span>CLI Reference</span><span class="idx">04</span></a>
-    <a href="/docs/security"><span>Security</span><span class="idx">05</span></a>
-    <a href="https://github.com/hariomlohardev/claude-system"><span>GitHub ↗</span><span class="idx">06</span></a>
-    <a href="https://github.com/hariomlohardev/claude-system/discussions"><span>Discussions ↗</span><span class="idx">07</span></a>
+    <a href="/"><span>Registry</span></a>
+    <a href="/browse"><span>Browse</span></a>
+    <a href="/docs"><span>Docs</span></a>
+    <a href="https://github.com/hariomlohardev/claude-system"><span>GitHub ↗</span></a>
   </div>
 </header>
 <main id="main">
-  <!-- HERO -->
-  <section class="wrap" style="padding-top:clamp(40px,6vw,72px);padding-bottom:0;border:none">
-    <div class="eyebrow" data-scramble="01 — Systems for Claude Code"><span class="diamond" aria-hidden="true"></span> 01 — Systems for Claude Code</div>
-    <h1 class="rv"><span class="line-mask"><span>Systems</span></span><span class="line-mask"><span>for <em>Claude Code</em></span></span></h1>
-    <p class="standfirst rv">Curated, opinionated Systems for Claude Code — install a <span class="hl">complete workflow</span> in one shot.</p>
-    <div class="hero-actions rv">
-      <a class="btn solid" href="#install">Install →</a>
-      <a class="btn" href="/browse">Browse Systems →</a>
-    </div>
-    <div class="term rv" aria-live="polite"><span class="prompt">~/ $</span> <span data-type="claude-system list — 1 system · always fresh"></span></div>
-    <div class="accent-rule rv" aria-hidden="true"></div>
-  </section>
-  <!-- STATS -->
-  <div class="stats rv" role="list" aria-label="Site stats">
-    <div class="stat"><div class="stat-num" data-count="1">1</div><div class="stat-label"><span class="diamond" aria-hidden="true"></span> Systems</div></div>
-    <div class="stat"><div class="stat-num" data-count="9">9</div><div class="stat-label"><span class="diamond" aria-hidden="true"></span> Categories</div></div>
-    <div class="stat"><div class="stat-num">MIT</div><div class="stat-label"><span class="diamond" aria-hidden="true"></span> License</div></div>
-    <div class="stat"><div class="stat-num">1.0<sup style="color:var(--accent);font-style:italic">.0</sup></div><div class="stat-label"><span class="diamond" aria-hidden="true"></span> Spec</div></div>
-  </div>
-  <!-- ABOUT -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <div>
-          <div class="kicker">02 — About</div>
-          <h2>Install a <em>workflow</em>, not plugins</h2>
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <h1>Systems for <span>Claude Code</span> — install a workflow in one shot</h1>
+        <p class="lead">Curated, opinionated Systems. Each is a versioned bundle of CLAUDE.md, skills, agents, commands and hooks — installed via <code class="inline">claude-system install</code> and run via <code class="inline">claude-system run</code> which shells out to the real <code class="inline">claude</code> CLI.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#install">Install →</a>
+          <a class="btn" href="/browse">Browse Systems →</a>
+          <a class="btn ghost" href="/docs">Docs →</a>
         </div>
-        <span class="sec-tag">Curated · Versioned · Reviewed</span>
+        <p class="small muted" style="margin-top:12px">Vercel Other + vanilla HTML/CSS/JS. Live from Supabase + <code class="inline">/api/registry</code>.</p>
       </div>
-      <div class="rv" style="max-width:62ch">
-        <p style="font-size:17px;line-height:1.85;color:var(--body)">A <strong style="color:var(--ink)">System</strong> is a versioned bundle of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks, and config that together form a reproducible Claude Code environment. One <code class="inline">curl | sh</code>, one <code class="inline">claude-system install</code>, and you run <code class="inline">claude</code> <em>inside</em> the System — not around it.</p>
-        <p style="font-size:15px;line-height:1.75;color:var(--muted);margin-top:14px">This project does not replace Claude Code. It prepares the environment and shells out to the real <code class="inline">claude</code> CLI. Stable, boring, honest — like a printed ledger.</p>
-        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn sm" href="/docs">Read the docs →</a><a class="btn ghost sm" href="https://github.com/hariomlohardev/claude-system">Source ↗</a></div>
-      </div>
-    </div>
-  </section>
-  <!-- AVAILABLE SYSTEMS -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <div>
-          <div class="kicker">03 — Available</div>
-          <h2>Systems <em>now live</em></h2>
-        </div>
-        <a class="sec-tag" href="/browse">View all →</a>
-      </div>
-      <div id="grid" class="grid rv" aria-live="polite"></div>
-      <p id="grid-status" class="small muted" style="margin-top:14px"></p>
-      <noscript><div class="grid"><article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> other · v0.1.0</span><span class="small muted">⬇ 0</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name=example-system">Example System (Reference Fixture)</a></h3><div class="name-line">example-system</div><p>Reference fixture used for CI validation and documentation — not intended for real installation or use.</p><div class="meta"><span>#example</span><span class="dot"></span><span>#fixture</span><span class="dot"></span><span>#reference</span></div><div class="perm-line"><span class="perm-badge"><span class="perm-dot muted" aria-hidden="true"></span> permissions: filesystem:read</span></div></article></div></noscript>
-    </div>
-  </section>
-  <!-- HOW IT WORKS -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <div>
-          <div class="kicker">04 — How it works</div>
-          <h2>From <em>PR</em> to run</h2>
-        </div>
-        <span class="sec-tag">5 steps · ledger</span>
-      </div>
-      <div class="ledger rv" role="list">
-        <div class="row"><div class="row-left"><span class="row-icon accent" aria-hidden="true"></span> No.001 · PR</div><div class="row-body"><h3>Propose a System</h3><p>Copy <code class="inline">template/starter-system</code> → <code class="inline">systems/&lt;name&gt;/</code>. Edit <code class="inline">system.json</code> (<code class="inline">name === folder</code>), <code class="inline">CLAUDE.md</code>, <code class="inline">README.md</code>.</p><div class="row-tags"><span class="tag">kebab-case</span><span class="tag">semver</span></div></div><div class="row-right"><span>template</span><span class="row-arrow" aria-hidden="true">→</span></div></div>
-        <div class="row"><div class="row-left"><span class="row-icon green" aria-hidden="true"></span> No.002 · Validate</div><div class="row-body"><h3>CI checks</h3><p><code class="inline">validate.yml</code> enforces schema, required files, <code class="inline">permissions</code> vs <code class="inline">setup.sh</code>, and <code class="inline"># WHY:</code> consent.</p></div><div class="row-right"><span>must be green</span><span class="row-arrow" aria-hidden="true">→</span></div></div>
-        <div class="row"><div class="row-left"><span class="row-icon muted" aria-hidden="true"></span> No.003 · Merge</div><div class="row-body"><h3>Merge → generate</h3><p><code class="inline">scripts/generate-index.js</code> rebuilds the single small <code class="inline">registry/index.json</code> that clients fetch.</p></div><div class="row-right"><span>generated</span><span class="row-arrow" aria-hidden="true">→</span></div></div>
-        <div class="row"><div class="row-left"><span class="row-icon accent" aria-hidden="true"></span> No.004 · Install</div><div class="row-body"><h3>Install in one shot</h3><p><code class="inline">claude-system install &lt;name&gt;</code> → <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code> + <code class="inline">systems.json</code> record.</p></div><div class="row-right"><span>Vercel + Supabase</span><span class="row-arrow" aria-hidden="true">→</span></div></div>
-        <div class="row"><div class="row-left"><span class="row-icon green" aria-hidden="true"></span> No.005 · Run</div><div class="row-body"><h3>Run inside</h3><p>First <code class="inline">claude-system run</code> shows <code class="inline"># WHY:</code> and asks <code class="inline">y/N</code>. On exit 0, <code class="inline">setupDone</code> is set.</p></div><div class="row-right"><span>claude ↗</span><span class="row-arrow" aria-hidden="true">→</span></div></div>
-      </div>
-    </div>
-  </section>
-  <!-- INSTALL — tabs per DESIGN.md 8.7 -->
-  <section class="section" id="install">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <div>
-          <div class="kicker">05 — Install</div>
-          <h2>One line <em>to start</em></h2>
-        </div>
-        <span class="sec-tag">Node ≥18 · claude CLI</span>
-      </div>
-      <div class="rv" style="max-width:68ch">
-        <p style="font-size:15px;color:var(--muted);margin-bottom:16px">Primary install is via Vercel — plain text, auditable. Thin wrappers on <code class="inline">npm</code> and <code class="inline">pip</code> delegate to the same CLI.</p>
-        <div class="install-tabs" role="tablist" aria-label="Install tabs">
-          <button class="pill active" role="tab" aria-selected="true">curl | sh</button>
-          <button class="pill" role="tab" aria-selected="false">npm</button>
-          <button class="pill" role="tab" aria-selected="false">pip</button>
-        </div>
-        <div class="install-panel active" role="tabpanel"><pre aria-label="curl install"><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh
-# then
+      <div class="hero-card" role="region" aria-label="Install demo">
+        <div class="hero-card-top"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span style="margin-left:auto;font-family:var(--mono);font-size:11px;color:#9CA3AF">bash — claude-system</span></div>
+        <pre>curl -fsSL https://claude-system-tau.vercel.app/install | sh
 claude-system list
-claude-system search &lt;keyword&gt;
-claude-system install &lt;name&gt;
-claude-system run &lt;name&gt;</code></pre></div>
-        <div class="install-panel" role="tabpanel"><pre><code>npm i -g claude-system
-claude-system list
-claude-system install &lt;name&gt;
-claude-system run &lt;name&gt;</code></pre></div>
-        <div class="install-panel" role="tabpanel"><pre><code>pip install claude-system
-claude-system list
-claude-system install &lt;name&gt;
-claude-system run &lt;name&gt;</code></pre></div>
-        <p class="small muted" style="margin-top:12px">Fallback: <code class="inline">curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | sh</code> · <a href="/docs/cli" style="color:var(--accent);text-decoration:underline">CLI reference →</a> · store <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code></p>
+claude-system search open-source
+claude-system info example-system
+claude-system install example-system
+claude-system run example-system -- help</pre>
+        <div style="font-family:var(--mono);font-size:11px;color:#9CA3AF;margin-top:8px">↗ curl | sh installs the CLI — then run any System</div>
       </div>
     </div>
   </section>
-  <!-- TRUST STRIP — permissions + WHY per DESIGN.md 8.8/8.9 -->
-  <section class="section" style="padding-top:0;border-top:none">
-    <div class="wrap">
-      <div class="validate-strip rv" role="list" aria-label="Trust checks">
-        <div class="validate-cell ok"><strong>✓ valid</strong><span>schema</span></div>
-        <div class="validate-cell ok"><strong>✓ name</strong><span>folder === name</span></div>
-        <div class="validate-cell warn"><strong># WHY:</strong><span>setup.sh consent y/N</span></div>
-        <div class="validate-cell ok"><strong>honest</strong><span>permissions[] reviewed</span></div>
-      </div>
-      <p class="small muted rv" style="text-align:center;margin-top:10px">Every System declares <code class="inline">permissions[]</code> honestly — read with <code class="inline">claude-system info &lt;name&gt;</code> before <code class="inline">install</code>. See <a href="/docs/security" style="color:var(--accent);text-decoration:underline">Security</a>.</p>
+  <section class="stats" aria-label="Stats">
+    <div class="stat"><div class="stat-num" id="stat-systems">1</div><div class="stat-label">Systems</div></div>
+    <div class="stat"><div class="stat-num">9</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-num">MIT</div><div class="stat-label">License</div></div>
+    <div class="stat"><div class="stat-num">1.0.0</div><div class="stat-label">Spec</div></div>
+  </section>
+  <section class="section wrap">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+      <div><h2 style="font-size:26px;letter-spacing:-.02em">Available Systems</h2><p class="muted" style="font-size:14px;margin-top:4px">Live from <code class="inline">/api/registry</code> — fallback to <code class="inline">example-system</code> without JS.</p></div>
+      <a class="btn sm" href="/browse">Browse all →</a>
+    </div>
+    <div id="grid" class="grid" role="list"></div>
+    <p id="grid-empty" class="muted" style="margin-top:12px;display:none">No systems yet. <a href="/docs/creating-a-system" style="color:var(--accent);text-decoration:underline">Create one</a>.</p>
+  </section>
+  <section class="section wrap" style="background:var(--bg-soft)">
+    <h2 style="font-size:26px;letter-spacing:-.02em;margin-bottom:8px">How it works</h2>
+    <p class="muted" style="max-width:60ch">Five steps — same as SYSTEM_SPEC.md. No silent permissions.</p>
+    <div class="ledger" style="margin-top:18px">
+      <div class="row"><div class="row-left"><span class="row-icon accent"></span> 01</div><div class="row-body"><h3>Browse</h3><p><code class="inline">claude-system list</code> and <code class="inline">search</code> via <code class="inline">/api/registry</code> + <code class="inline">/api/search?q=</code>.</p></div><div class="row-right">→</div></div>
+      <div class="row"><div class="row-left"><span class="row-icon accent"></span> 02</div><div class="row-body"><h3>Inspect</h3><p><code class="inline">claude-system info &lt;name&gt;</code> shows <code class="inline">system.json</code> + <code class="inline">permissions[]</code> + WHY.</p></div><div class="row-right">→</div></div>
+      <div class="row"><div class="row-left"><span class="row-icon green"></span> 03</div><div class="row-body"><h3>Install</h3><p><code class="inline">claude-system install &lt;name&gt;</code> to <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code>.</p></div><div class="row-right">→</div></div>
+      <div class="row"><div class="row-left"><span class="row-icon green"></span> 04</div><div class="row-body"><h3>Consent</h3><p>First <code class="inline">run</code> shows <code class="inline"># WHY:</code> from <code class="inline">setup.sh</code> → <code class="inline">y/N</code> → <code class="inline">setupDone</code> once-only.</p></div><div class="row-right">→</div></div>
+      <div class="row"><div class="row-left"><span class="row-icon muted"></span> 05</div><div class="row-body"><h3>Run</h3><p><code class="inline">claude-system run &lt;name&gt; -- &lt;args&gt;</code> shells out to the real <code class="inline">claude</code> CLI.</p></div><div class="row-right">→</div></div>
     </div>
   </section>
-  <!-- COMMUNITY -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <div>
-          <div class="kicker">06 — Community</div>
-          <h2>Stay <em>close</em></h2>
-        </div>
-        <span class="sec-tag">Open · Welcoming</span>
-      </div>
-      <div class="rv" style="display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:start">
-        <div>
-          <p style="font-size:15px;line-height:1.7;color:var(--body)">Ideas live in <a href="https://github.com/hariomlohardev/claude-system/discussions" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px">Discussions → Feature Requests</a>. Bugs and System issues go to <a href="https://github.com/hariomlohardev/claude-system/issues" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px">Issues</a>. Every PR gets a welcome comment and a checklist — green is the only gate.</p>
-          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn sm" href="https://github.com/hariomlohardev/claude-system/discussions">Open Discussions →</a><a class="btn ghost sm" href="https://github.com/hariomlohardev/claude-system/issues/new">New issue ↗</a></div>
-        </div>
-        <div>
-          <label class="kicker" for="newsletter" style="margin-bottom:10px">Newsletter — coming soon</label>
-          <div class="field"><input id="newsletter" type="email" placeholder="you@example.com — leave your email" aria-label="Email for updates" autocomplete="email"><button class="btn sm solid" type="button" onclick="var v=document.getElementById('newsletter').value.trim(); if(!v||!v.includes('@')){alert('Enter a valid email.');return} alert('Thanks — we will keep this address for updates (no backend yet).'); document.getElementById('newsletter').value='';">Notify →</button></div>
-          <p class="small muted" style="margin-top:8px">No spam. Unsubscribe anytime. For now this just acknowledges — we store nothing until the backend lands.</p>
-        </div>
-      </div>
+  <section class="section wrap" id="install">
+    <h2 style="font-size:26px;letter-spacing:-.02em">Install</h2>
+    <p class="muted" style="margin-top:6px">Pick your installer — all install the same CLI.</p>
+    <div class="install-tabs" style="margin-top:16px">
+      <button class="pill active" data-tab="0">curl | sh</button>
+      <button class="pill" data-tab="1">npm</button>
+      <button class="pill" data-tab="2">pip</button>
     </div>
+    <div class="install-panel active"><pre class="dark"><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh
+claude-system install example-system</code></pre></div>
+    <div class="install-panel"><pre class="dark"><code>npm i -g claude-system
+claude-system install example-system</code></pre></div>
+    <div class="install-panel"><pre class="dark"><code>pip install claude-system
+claude-system install example-system</code></pre></div>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn sm" id="copy-install">Copy install</button><a class="btn ghost sm" href="/docs">Docs →</a></div>
   </section>
-  <!-- FAQ -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <div>
-          <div class="kicker">07 — FAQ</div>
-          <h2>Answers <em>in brief</em></h2>
-        </div>
-      </div>
-      <div class="rv" style="max-width:62ch">
-        <details><summary>Is this a replacement for Claude Code? <span class="chev">›</span></summary><p>No. It is a Systems layer around the real <code class="inline">claude</code> CLI. Every <code class="inline">run</code> shells out to <code class="inline">claude</code> inside the installed System.</p></details>
-        <details><summary>What must a System contain? <span class="chev">›</span></summary><p><code class="inline">system.json</code> + <code class="inline">CLAUDE.md</code> + <code class="inline">README.md</code> under <code class="inline">systems/&lt;name&gt;/</code>, with <code class="inline">name === folder</code>. Optional <code class="inline">skills/</code>, <code class="inline">agents/</code>, <code class="inline">commands/</code>, <code class="inline">hooks/</code>, <code class="inline">settings.json</code>.</p></details>
-        <details><summary>How are permissions handled? <span class="chev">›</span></summary><p><code class="inline">permissions[]</code> is self-declared and reviewed, not sandboxed at runtime. See <a href="/docs/security" style="color:var(--accent)">Security</a> — read them with the same care as any package.</p></details>
-        <details><summary>What about <code class="inline">setup.sh</code>? <span class="chev">›</span></summary><p>If present it must have <code class="inline"># WHY:</code>, declares <code class="inline">shell:exec</code>, and is gated by a <code class="inline">y/N</code> prompt on first <code class="inline">run</code>. Only on exit 0 is <code class="inline">setupDone</code> set.</p></details>
-        <details><summary>How is the registry served? <span class="chev">›</span></summary><p>Generated from <code class="inline">systems/*/system.json</code> → <code class="inline">registry/index.json</code> → synced to Supabase. Clients fetch <code class="inline">/api/registry</code> (Vercel, <code class="inline">s-maxage=60</code>) with fallback to <code class="inline">raw.githubusercontent.com</code>.</p></details>
-      </div>
-    </div>
+  <section class="section wrap">
+    <h2 style="font-size:26px;letter-spacing:-.02em">FAQ</h2>
+    <details><summary>What is a System? <span class="chev">›</span></summary><p>A versioned bundle of <code class="inline">CLAUDE.md</code>, skills, agents, commands, hooks and config. Installed to <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code>.</p></details>
+    <details><summary>Does it replace Claude Code? <span class="chev">›</span></summary><p>No. It prepares an environment and shells out to the real <code class="inline">claude</code> CLI. No chat runtime.</p></details>
+    <details><summary>How are permissions handled? <span class="chev">›</span></summary><p>Each <code class="inline">system.json</code> declares <code class="inline">permissions[]</code> honestly. <code class="inline">setup.sh</code> must include <code class="inline"># WHY:</code> and is gated by a one-time consent prompt on first <code class="inline">run</code>.</p></details>
+    <details><summary>How do I contribute? <span class="chev">›</span></summary><p>Copy <code class="inline">template/starter-system</code> → <code class="inline">systems/&lt;name&gt;/</code> → <code class="inline">system.json</code> → <code class="inline">claude-system validate</code> → PR. See <a href="/docs/creating-a-system" style="color:var(--accent);text-decoration:underline">Creating a System</a>.</p></details>
   </section>
 </main>
 <footer class="footer" role="contentinfo">
   <div class="footer-grid">
-    <div class="footer-brand">An open, public notebook — work logged daily, shown honestly, presented like archival print material.</div>
-    <div class="footer-col"><h4>Systems</h4><a href="/browse">Browse all</a><a href="/system?name=example-system">Example system</a><a href="/api/registry">/api/registry</a><a href="/api/search?q=example">/api/search</a></div>
-    <div class="footer-col"><h4>Docs</h4><a href="/docs/creating-a-system">Creating a System</a><a href="/docs/cli">CLI Reference</a><a href="/docs/security">Security</a><a href="/docs/spec">Spec</a><a href="https://github.com/hariomlohardev/claude-system/blob/main/CONTRIBUTING.md">Contributing</a></div>
-    <div class="footer-col"><h4>Community</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a><a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions ↗</a><a href="https://github.com/hariomlohardev/claude-system/issues">Issues</a><a href="/sitemap.xml">Sitemap</a></div>
+    <div class="footer-brand">claude-system is a curated registry for Claude Code — minimal, warm, honest. No assistant bubble.</div>
+    <div class="footer-col"><h4>Systems</h4><a href="/browse">Browse</a><a href="/api/registry">/api/registry</a><a href="/api/search?q=example">/api/search</a></div>
+    <div class="footer-col"><h4>Docs</h4><a href="/docs">Overview</a><a href="/docs/creating-a-system">Creating</a><a href="/docs/cli">CLI</a><a href="/docs/security">Security</a></div>
+    <div class="footer-col"><h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a><a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions ↗</a><a href="/sitemap.xml">Sitemap</a></div>
   </div>
-  <div class="footer-bar">
-    <span>© 2026 claude-system · MIT · <span class="kbd">G</span> to browse</span>
-    <span id="live-clock" aria-live="polite">—</span>
-    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false" class="small">Back to top ↑</a>
-  </div>
+  <div class="footer-bar"><span>© 2026 claude-system · MIT</span><span><span class="kbd">⌘</span><span class="kbd">K</span> search · <span class="kbd">/</span> focus</span><a href="#" onclick="window.scrollTo(0,0);return false">Back to top ↑</a></div>
 </footer>
 <script src="/app.js"></script>
 <script>
 (function(){
-  var grid=document.getElementById('grid'), status=document.getElementById('grid-status');
-  function permBadge(perms){
-    if(!perms || !perms.length) return '<span class="perm-badge"><span class="perm-dot muted" aria-hidden="true"></span> permissions: []</span>';
-    var hasShell=perms.indexOf('shell:exec')!==-1, hasCred=perms.indexOf('credentials:read')!==-1;
-    if(hasShell||hasCred) return '<span class="perm-badge warn"><span class="perm-dot accent" aria-hidden="true"></span> '+(hasShell?'shell:exec':'')+(hasShell&&hasCred?' · ':'')+(hasCred?'credentials:read':'')+'</span>';
-    return '<span class="perm-badge"><span class="perm-dot green" aria-hidden="true"></span> '+perms.slice(0,2).join(' · ')+'</span>';
+  var grid=document.getElementById("grid");
+  var empty=document.getElementById("grid-empty");
+  var stat=document.getElementById("stat-systems");
+  function card(s){
+    var tags=(s.keywords||[]).slice(0,4).map(function(k){return "<span class=\"tag\">#"+k+"</span>";}).join("");
+    var perms=(s.permissions||[]).slice(0,1).map(function(p){return "<span class=\"tag accent\">"+p+"</span>";}).join("");
+    var cat=s.category||"other";
+    return "<article class=\"card\"><div class=\"card-head\"><span class=\"card-kicker\">"+cat+" · v"+(s.version||"")+"</span><span class=\"chip\">↗</span></div><h3><a href=\"/system?name="+s.name+"\">"+(s.displayName||s.name)+"</a></h3><p>"+(s.description||"")+"</p><div class=\"meta\"><span>"+s.name+"</span></div><div class=\"tags\">"+tags+"</div><div class=\"tags\">"+perms+"</div><div style=\"margin-top:6px;display:flex;gap:8px\"><a class=\"btn sm\" href=\"/system?name="+s.name+"\">View →</a></div></article>";
   }
-  function cardHTML(s){
-    var tags=(s.keywords||[]).slice(0,4).map(function(k){return '<span>#'+k+'</span>';}).join(' <span class="dot"></span> ');
-    var cat=s.category||'other';
-    var perms=s.permissions||[];
-    return '<article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> '+cat+' · v'+s.version+'</span><span class="small muted">'+(s.downloads!=null? '⬇ '+s.downloads : '⬇ 0')+'</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name='+s.name+'">'+(s.displayName||s.name)+'</a></h3><div class="name-line">'+s.name+'</div><p>'+ (s.description||'') +'</p><div class="meta">'+tags+'</div><div class="perm-line">'+permBadge(perms)+'</div><div style="margin-top:auto;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" onclick="navigator.clipboard.writeText(\'claude-system install '+s.name+'\').then(function(b){this.textContent=\'Copied!\'}).catch(function(){})" aria-label="Copy install '+s.name+'">Copy install</button><a class="btn solid sm" href="/system?name='+s.name+'">View →</a></div></article>';
+  var fallback=[{name:"example-system",displayName:"Example System",version:"0.1.0",description:"Minimal, valid System fixture for CI — a safe template to copy.",keywords:["example","template","fixture"],category:"other",license:"MIT",permissions:[]}];
+  function render(list){
+    if(!list.length){ grid.innerHTML=""; empty.style.display="block"; if(stat) stat.textContent="0"; return; }
+    grid.innerHTML = list.map(card).join("");
+    if(stat) stat.textContent = String(list.length);
   }
-  async function load(){
-    status.textContent='Loading…';
-    try{
-      var r=await fetch('/api/registry');
-      var j=await r.json();
-      var systems=j.systems||[];
-      // fallback: if supabase returns empty but registry has fixture, keep it
-      if(!systems.length) throw new Error('empty');
-      grid.innerHTML = systems.map(cardHTML).join('');
-      status.textContent = systems.length + ' system(s) · fresh from Supabase + Vercel — ' + (j.generatedAt? new Date(j.generatedAt).toLocaleDateString() : '');
-      if(window.observeReveals) window.observeReveals();
-      // trigger reveal check for new nodes
-      document.querySelectorAll('.card').forEach(function(c){ c.classList.add('rv'); });
-      setTimeout(function(){ document.querySelectorAll('.card.rv:not(.in)').forEach(function(c){ c.classList.add('in'); }); }, 60);
-    }catch(e){
-      // inline fallback
-      grid.innerHTML = '<article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> other · v0.1.0</span><span class="small muted">⬇ 0</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name=example-system">Example System (Reference Fixture)</a></h3><div class="name-line">example-system</div><p>Reference fixture used for CI validation and documentation — not intended for real installation or use.</p><div class="meta"><span>#example</span> <span class="dot"></span> <span>#fixture</span></div><div class="perm-line"><span class="perm-badge"><span class="perm-dot muted" aria-hidden="true"></span> permissions: filesystem:read</span></div><div style="margin-top:auto;display:flex;gap:8px"><a class="btn solid sm" href="/system?name=example-system">View →</a></div></article>';
-      status.textContent='Showing fallback — registry unavailable. Try /api/registry.';
-    }
-  }
-  load();
-  document.addEventListener('keydown', function(e){
-    if((e.key==='g' || e.key==='G') && !e.metaKey && !e.ctrlKey && document.activeElement.tagName!=='INPUT'){ window.location.href='/browse'; }
-  });
+  fetch("/api/registry").then(function(r){return r.json();}).then(function(j){ render(j.systems||fallback); }).catch(function(){ render(fallback); });
 })();
 </script>
 </body>

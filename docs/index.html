@@ -1,104 +1,28 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Docs — claude-system</title>
-<meta name="description" content="Documentation overview — creating a System, security, spec and contributing.">
-<meta name="keywords" content="claude-system docs, creating a system, security, spec">
-<meta name="theme-color" content="#F6F4EE">
-<link rel="canonical" href="https://claude-system-tau.vercel.app/docs">
-<meta property="og:title" content="Docs — claude-system">
-<meta property="og:description" content="Overview of all documentation — creating a System, permissions, spec.">
-<meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
-<meta property="og:url" content="https://claude-system-tau.vercel.app/docs">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="sitemap" type="application/xml" href="/sitemap.xml">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M7 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M23 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M7 22 H23' stroke='%23B93A13' stroke-width='5'/%3E%3Cpath d='M23 38 H38' stroke='%23181611' stroke-width='5'/%3E%3Ccircle cx='37' cy='7' r='3.4' fill='%23B93A13'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-600.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-400-italic.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/fraunces/latin-600-italic.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/archivo/latin-400.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/archivo/latin-500.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/archivo/latin-600.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-mono/latin-400.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-mono/latin-400-italic.css">
-<link rel="stylesheet" href="/style.css">
-<script>document.documentElement.classList.add('js')</script>
-</head>
-<body>
-<div id="prog" aria-hidden="true"></div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docs — claude-system</title><meta name="description" content="Documentation for claude-system — overview, creating a system, CLI, security, spec."><link rel="canonical" href="https://claude-system-tau.vercel.app/docs"><link rel="stylesheet" href="/style.css"><script>document.documentElement.classList.add("js")</script></head><body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="hdr" role="banner">
-  <div class="hdr-inner">
-    <a class="brand" href="/" aria-label="claude-system home">
-      <svg class="monogram" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M7 6 V38" stroke="#181611" stroke-width="5"/><path d="M23 6 V38" stroke="#181611" stroke-width="5"/><path d="M7 22 H23" stroke="#B93A13" stroke-width="5"/><path d="M23 38 H38" stroke="#181611" stroke-width="5"/><circle cx="37" cy="7" r="3.4" fill="#B93A13"/></svg>
-      <span class="wordmark">CLAUDE-SYSTEM</span>
-    </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="/browse">Browse</a>
-      <a href="/docs" aria-current="page">Docs</a>
-      <a href="https://github.com/hariomlohardev/claude-system">GitHub</a>
-      <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a>
-      <a class="btn solid sm nav-cta" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star on GitHub ↗</a>
-    </nav>
-    <button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span></button>
-  </div>
-  <div class="mobile-panel" id="mobile-panel" aria-hidden="true">
-    <a href="/"><span>Home</span><span class="idx">00</span></a>
-    <a href="/browse"><span>Browse</span><span class="idx">01</span></a>
-    <a href="/docs" aria-current="page"><span>Docs</span><span class="idx">02</span></a>
-  </div>
-</header>
-<main id="main">
-  <section class="wrap" style="padding-top:clamp(36px,5vw,56px);padding-bottom:clamp(22px,3vw,32px);border-bottom:1px solid var(--ink)">
-    <div class="eyebrow" data-scramble="03 — Documentation"><span class="diamond" aria-hidden="true"></span> 03 — Documentation</div>
-    <h1 class="rv" style="font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,6vw,4.2rem);letter-spacing:-.03em;line-height:.95;color:var(--ink)">Docs <em style="font-style:italic;font-weight:400;color:var(--ink-2)">overview</em></h1>
-    <p class="standfirst rv" style="font-family:var(--serif);font-style:italic;max-width:44ch;margin-top:12px">Short, concrete, copy-pasteable — the same source the CLI and the reviewers use.</p>
-    <div class="accent-rule rv" aria-hidden="true"></div>
-  </section>
-  <section class="wrap" style="padding-top:0">
-    <div class="ledger rv" role="list">
-      <a class="row" href="/docs/creating-a-system" role="listitem">
-        <div class="row-left"><span class="row-icon accent" aria-hidden="true"></span> No.001 · Guide</div>
-        <div class="row-body"><h3>Creating a System</h3><p>Folder rule <code class="inline">name === folder</code>, required files, <code class="inline">system.json</code> fields, permissions and local validation before a PR.</p><div class="row-tags"><span class="tag">#template</span><span class="tag">#validate</span></div></div>
-        <div class="row-right"><span>15 min read</span><span class="row-arrow" aria-hidden="true">→</span></div>
-      </a>
-      <a class="row" href="/docs/security" role="listitem">
-        <div class="row-left"><span class="row-icon green" aria-hidden="true"></span> No.002 · Trust</div>
-        <div class="row-body"><h3>Security</h3><p>Permissions are self-declared and reviewed — not sandboxed. How to read them, the <code class="inline">setup.sh</code> contract and <code class="inline"># WHY:</code>.</p><div class="row-tags"><span class="tag">#permissions</span><span class="tag">#why</span></div></div>
-        <div class="row-right"><span>6 sections</span><span class="row-arrow" aria-hidden="true">→</span></div>
-      </a>
-      <a class="row" href="/docs/cli" role="listitem">
-        <div class="row-left"><span class="row-icon accent" aria-hidden="true"></span> No.003 · CLI</div>
-        <div class="row-body"><h3>CLI Reference</h3><p>10 commands — <code class="inline">list</code> → <code class="inline">search</code> → <code class="inline">info</code> → <code class="inline">install</code> → <code class="inline">run</code>. Flags, copy buttons, and the thin-CLI principle.</p><div class="row-tags"><span class="tag">#list</span><span class="tag">#install</span><span class="tag">#run</span></div></div>
-        <div class="row-right"><span>10 commands</span><span class="row-arrow" aria-hidden="true">→</span></div>
-      </a>
-      <a class="row" href="/docs/spec" role="listitem">
-        <div class="row-left"><span class="row-icon muted" aria-hidden="true"></span> No.004 · Contract</div>
-        <div class="row-body"><h3>System Spec</h3><p>Formal contract (draft) — what a System is, what the CLI guarantees, and what is explicitly out of scope for v1.</p><div class="row-tags"><span class="tag">#spec</span><span class="tag">#draft</span></div></div>
-        <div class="row-right"><span>Spec</span><span class="row-arrow" aria-hidden="true">→</span></div>
-      </a>
-      <a class="row" href="https://github.com/hariomlohardev/claude-system/blob/main/CONTRIBUTING.md" target="_blank" rel="noreferrer" role="listitem">
-        <div class="row-left"><span class="row-icon muted" aria-hidden="true"></span> No.005 · Contribute</div>
-        <div class="row-body"><h3>Contributing</h3><p>Fork → branch <code class="inline">system/&lt;name&gt;</code> → scaffold → validate → PR. Troubleshooting table included.</p></div>
-        <div class="row-right"><span>GitHub ↗</span><span class="row-arrow" aria-hidden="true">↗</span></div>
-      </a>
-    </div>
-    <div class="rv" style="margin-top:22px"><a class="btn sm" href="/">Back to home →</a></div>
-  </section>
+<header class="hdr" role="banner"><div class="hdr-inner"><a class="brand" href="/"><span class="brand-mark">CS</span><span class="wordmark">claude-system <span>Docs</span></span></a><nav class="nav"><a href="/">Registry</a><a href="/browse">Browse</a><a href="/docs" aria-current="page">Docs</a><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a><a class="btn primary sm" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star ↗</a></nav><div class="search-wrap"><input id="hdr-search" type="search" placeholder="Search docs... ⌘K" aria-label="Search docs"><kbd>⌘K</kbd><div id="hdr-search-results" class="search-results"></div></div><button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span><span></span></button></div><div class="mobile-panel" id="mobile-panel" aria-hidden="true"><a href="/">Registry</a><a href="/browse">Browse</a><a href="/docs" aria-current="page">Docs</a></div></header>
+<div class="docs-shell" style="margin-top:18px">
+<nav class="docs-sidebar" id="docs-sidebar" aria-label="Docs navigation"><h4>Getting Started</h4><a href="/docs" class="active" aria-current="page">Overview</a><a href="/#install">Install</a><a href="/browse">Browse Systems</a><h4>Guides</h4><a href="/docs/creating-a-system">Creating a System</a><a href="/docs/cli">CLI Reference</a><h4>Reference</h4><a href="/docs/spec">Spec</a><a href="/docs/security">Security & Permissions</a><a href="/docs/contributing">Contributing</a><h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">GitHub ↗</a></nav>
+<main class="docs-content" id="main"><h1 style="font-size:28px;letter-spacing:-.02em">Documentation</h1><p class="muted" style="margin-top:8px">Everything you need to create, publish and run Systems for Claude Code.</p>
+<div class="grid" style="margin-top:18px">
+  <a class="card" href="/docs/creating-a-system"><div class="card-head"><span class="card-kicker">Guide</span><span class="chip">→</span></div><h3>Creating a System</h3><p>Folder layout, system.json fields, permissions, local validation and PR flow.</p></a>
+  <a class="card" href="/docs/security"><div class="card-head"><span class="card-kicker">Reference</span><span class="chip">→</span></div><h3>Security & Permissions</h3><p>What permissions mean, setup.sh contract, # WHY, and trust model.</p></a>
+  <a class="card" href="/docs/spec"><div class="card-head"><span class="card-kicker">Spec</span><span class="chip">→</span></div><h3>Spec</h3><p>Condensed SYSTEM_SPEC.md — what a System is, manifest, registry, install/run.</p></a>
+  <a class="card" href="/docs/cli"><div class="card-head"><span class="card-kicker">Reference</span><span class="chip">→</span></div><h3>CLI Reference</h3><p>All 10 commands + flags — list, search, info, install, run, create, validate, report and more.</p></a>
+  <a class="card" href="/docs/contributing"><div class="card-head"><span class="card-kicker">Guide</span><span class="chip">→</span></div><h3>Contributing</h3><p>Prerequisites, scaffold, local checks, PR flow and troubleshooting.</p></a>
+  <a class="card" href="/browse"><div class="card-head"><span class="card-kicker">Registry</span><span class="chip">↗</span></div><h3>Browse Systems</h3><p>Live catalog from Supabase — search by name, keyword or category.</p></a>
+</div>
+<div class="prose" style="margin-top:24px"><h2>Quickstart</h2><pre class="dark"><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh
+claude-system list
+claude-system search frontend
+claude-system info example-system
+claude-system install example-system
+claude-system run example-system -- help</code></pre><p>See <a href="/docs/creating-a-system">Creating a System</a> to publish your own.</p></div>
 </main>
-<footer class="footer" role="contentinfo">
-  <div class="footer-grid">
-    <div class="footer-brand">Documentation is the ledger — same text that CI enforces, set flat and airy for reading.</div>
-    <div class="footer-col"><h4>Docs</h4><a href="/docs/creating-a-system">Creating</a><a href="/docs/cli">CLI</a><a href="/docs/security">Security</a><a href="/docs/spec">Spec</a></div>
-    <div class="footer-col"><h4>Systems</h4><a href="/browse">Browse</a><a href="/system?name=example-system">Example</a></div>
-    <div class="footer-col"><h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a><a href="/sitemap.xml">Sitemap</a></div>
-  </div>
-  <div class="footer-bar"><span>© 2026 claude-system</span><span id="live-clock"></span><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top ↑</a></div>
-</footer>
+<aside class="docs-toc" id="docs-toc" aria-label="On this page"><h4>On this page</h4><a href="#quickstart">Quickstart</a></aside>
+</div>
+<footer class="footer"><div class="footer-grid"><div class="footer-brand">Docs for a curated registry — minimal, warm, honest.</div><div class="footer-col"><h4>Systems</h4><a href="/browse">Browse</a></div><div class="footer-col"><h4>Docs</h4><a href="/docs">Overview</a><a href="/docs/cli">CLI</a></div><div class="footer-col"><h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a></div></div><div class="footer-bar"><span>© 2026 claude-system</span><a href="#" onclick="window.scrollTo(0,0);return false">Back to top ↑</a></div></footer>
+<div class="docs-overlay" id="docs-overlay" aria-hidden="true"></div>
 <script src="/app.js"></script>
-</body>
-</html>
+</body></html>
