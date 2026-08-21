@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import { findInRegistry } from '../lib/registry.js';
-import { getSystemInstallPath, isInstalled, recordInstall, getSetupDone } from '../lib/storage.js';
+import { getSystemInstallPath, isInstalled, recordInstall, getSetupDone, saveInstalledFiles } from '../lib/storage.js';
 import { findRepoSystemSource } from '../lib/repo.js';
 import { theme } from '../utils/theme.js';
 import { handleError } from '../utils/errors.js';
@@ -153,6 +153,10 @@ async function runInstall(name: string): Promise<void> {
   }
 
   await recordInstall(name, entry.version);
+  // Save manifest for update detection
+  try {
+    await saveInstalledFiles(name);
+  } catch {}
 
   // Fire-and-forget analytics — do not block install on failure
   try {

@@ -127,8 +127,8 @@ hand-edit `registry/index.json`.
 | `search <query>` | Keyword search over `name`, `displayName`, `description`, `keywords` |
 | `info <system>` | Show manifest, permissions, links, and install status |
 | `install <system>` | Copy to `~/.claude-system/systems/<name>/` and record in `systems.json` |
-| `remove <system>` | Remove the System and its entry in `systems.json` |
-| `update [<system>\|--all]` | Update to the latest registry version (preserves `setupDone`) |
+| `remove <system>` | Remove the System — deletes the entire `~/.claude-system/systems/<name>/` folder (flat delete, including any files you added there) and its entry in `systems.json` — back up first. |
+| `update [<system>\|--all]` | Update to the latest registry version (preserves `setupDone`). Detects local edits via hash manifest and prompts `[o]verwrite / [b]ackup to .bak.<timestamp> then overwrite / [a]bort` (default abort). |
 | `report <system>` | Open the tracker's issue page (`bugs.url` → `repository/issues` → monorepo) |
 | `run <system> [-- <args>]` | Open `claude` inside the System (one-time `setup.sh` consent) |
 | `create <name>` | Scaffold `systems/<name>/` from `template/starter-system` |
