@@ -7,7 +7,7 @@ export function registerRemove(program: Command): void {
   program
     .command('remove')
     .alias('uninstall')
-    .description('Remove an installed System')
+    .description('Remove an installed System — deletes ~/.claude-system/systems/<name>/ and its entry in systems.json. This deletes everything in that folder, including any files you added there. Back up first if needed.')
     .argument('<system>', 'System name (kebab-case)')
     .action(async (name: string) => {
       try {

@@ -1,17 +1,24 @@
 /**
  * storage.ts — local state in ~/.claude-system
  * - ~/.claude-system/systems/<name>/  full copy of systems/<name>/
- * - ~/.claude-system/systems.json     bookkeeping: { systems: { <name>: { version, installedAt, setupDone } } }
+ * - ~/.claude-system/systems.json     bookkeeping: { systems: { <name>: { version, installedAt, setupDone, installedFiles } } }
  */
 import { homedir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join, relative, sep, posix } from 'node:path';
 import { mkdir, readFile, writeFile, rm, readdir, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+
+export interface InstalledFileEntry {
+  path: string; // POSIX relative from System root
+  sha256: string; // hex
+}
 
 export interface InstalledSystemMeta {
   version: string;
   installedAt: string; // ISO timestamp
   setupDone: boolean;
+  installedFiles?: InstalledFileEntry[];
 }
 
 export interface SystemsJson {
@@ -98,6 +105,8 @@ export async function listInstalled(): Promise<Array<{ name: string; meta: Insta
     const entries = await readdir(getSystemsDir(), { withFileTypes: true });
     for (const e of entries) {
       if (e.isDirectory() && !meta.systems[e.name]) {
+        // Skip .bak directories
+        if (e.name.includes('.bak.')) continue;
         // Try to read system.json for version
         try {
           const raw = await readFile(join(getSystemsDir(), e.name, 'system.json'), 'utf-8');
@@ -175,4 +184,53 @@ export async function removeSystem(name: string): Promise<void> {
 export async function getSetupDone(name: string): Promise<boolean> {
   const data = await readSystemsJson();
   return data.systems[name]?.setupDone ?? false;
+}
+
+// --- installedFiles manifest helpers ---
+
+export async function hashFile(filePath: string): Promise<string> {
+  const data = await readFile(filePath);
+  return createHash('sha256').update(data).digest('hex');
+}
+
+export async function collectInstalledFiles(systemPath: string): Promise<InstalledFileEntry[]> {
+  const files: InstalledFileEntry[] = [];
+  async function walk(dir: string): Promise<void> {
+    let entries;
+    try {
+      entries = await readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      const full = join(dir, e.name);
+      if (e.isDirectory()) {
+        await walk(full);
+      } else if (e.isFile()) {
+        const rel = relative(systemPath, full).split(sep).join(posix.sep);
+        // Skip if rel is empty or outside (should not happen)
+        if (!rel || rel.startsWith('..')) continue;
+        const sha256 = await hashFile(full);
+        files.push({ path: rel, sha256 });
+      }
+    }
+  }
+  await walk(systemPath);
+  files.sort((a, b) => a.path.localeCompare(b.path));
+  return files;
+}
+
+export async function saveInstalledFiles(name: string): Promise<void> {
+  const systemPath = getSystemInstallPath(name);
+  const files = await collectInstalledFiles(systemPath);
+  const data = await readSystemsJson();
+  if (data.systems[name]) {
+    data.systems[name].installedFiles = files;
+    await writeSystemsJson(data);
+  }
+}
+
+export async function getInstalledFiles(name: string): Promise<InstalledFileEntry[] | undefined> {
+  const data = await readSystemsJson();
+  return data.systems[name]?.installedFiles;
 }
