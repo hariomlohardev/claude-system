@@ -15,23 +15,8 @@ export function registerRun(program: Command): void {
     .allowExcessArguments(true)
     .action(async (name: string, _opts: unknown, command: Command) => {
       try {
-        // Passthrough args after --
-        const rawArgs = process.argv.slice(process.argv.indexOf('run') + 2);
-        // If user passed --, everything after it is for claude
-        const dashIndex = rawArgs.indexOf('--');
-        const passthrough = dashIndex >= 0 ? rawArgs.slice(dashIndex + 1) : rawArgs.slice(1);
-        // But rawArgs includes system name as first; if dashIndex >=0, we already sliced correctly
-        // Safer: get args after system name, handling --
-        // commander already parsed, so we reconstruct:
-        // Actually we want: claude-system run <name> [-- <claude-args>]
-        // So passthrough is args after -- if present, else empty
-        const argsAfterRun = process.argv.slice(process.argv.findIndex((a) => a === 'run') + 1);
-        const systemIndex = argsAfterRun.indexOf(name);
-        let claudeArgs: string[] = [];
-        const dashInArgs = argsAfterRun.indexOf('--');
-        if (dashInArgs >= 0) {
-          claudeArgs = argsAfterRun.slice(dashInArgs + 1);
-        }
+        // commander strips --, so args after <name> are passthrough
+        const claudeArgs = command.args.slice(1);
         await runSystem(name, claudeArgs);
       } catch (err) {
         handleError(err);
