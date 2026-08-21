@@ -15,11 +15,11 @@
     },
     {
       "source": "/s/:name",
-      "destination": "/web-vercel/system/index.html"
+      "destination": "/web-vercel/system"
     },
     {
       "source": "/docs",
-      "destination": "/web-vercel/docs/index.html"
+      "destination": "/web-vercel/docs"
     },
     {
       "source": "/docs/:path*",
