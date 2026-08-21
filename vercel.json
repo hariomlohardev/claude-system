@@ -29,6 +29,10 @@
       "destination": "/docs/security/index.html"
     },
     {
+      "source": "/docs/cli",
+      "destination": "/docs/cli/index.html"
+    },
+    {
       "source": "/docs/spec",
       "destination": "/docs/spec/index.html"
     }

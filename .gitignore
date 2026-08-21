@@ -80,6 +80,7 @@ tmp/
 .claude/
 !.claude/commands/
 !.claude/commands/**
+!.claude/DESIGN.md
 
 # Python
 __pycache__/

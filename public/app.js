@@ -131,4 +131,17 @@
     c.textContent = d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) + ' · ' + d.toLocaleDateString([], {year:'numeric', month:'short', day:'2-digit'}).toUpperCase();
   }
   tickClock(); setInterval(tickClock, 60000);
+  // install tabs
+  document.querySelectorAll('.install-tabs').forEach(function(tabs){
+    var pills=tabs.querySelectorAll('.pill');
+    var panels=document.querySelectorAll('.install-panel');
+    pills.forEach(function(p,i){
+      p.addEventListener('click', function(){
+        pills.forEach(function(x){ x.classList.remove('active'); x.setAttribute('aria-selected','false'); });
+        p.classList.add('active'); p.setAttribute('aria-selected','true');
+        panels.forEach(function(pn){ pn.classList.remove('active'); });
+        if(panels[i]) panels[i].classList.add('active');
+      });
+    });
+  });
 })();

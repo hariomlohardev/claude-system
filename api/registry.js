@@ -9,7 +9,8 @@ export default async function handler(req, res) {
     res.status(200).json({ generatedAt: new Date().toISOString(), systems: data.map(s => ({
       name: s.name, displayName: s.display_name, version: s.version,
       description: s.description, keywords: s.keywords, category: s.category,
-      author: s.author, license: s.license, path: s.path
+      author: s.author, license: s.license, path: s.path,
+      permissions: s.permissions, downloads: s.downloads
     }))});
   } catch (e) {
     res.status(500).json({ error: e.message });

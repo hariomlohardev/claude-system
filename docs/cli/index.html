@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CLI Reference — claude-system</title>
+<meta name="description" content="CLI reference — 10 commands: list, search, info, install, remove, update, run, create, validate, report. Copy-pasteable.">
+<meta name="keywords" content="claude-system cli, list, search, info, install, run, create, validate">
+<meta name="theme-color" content="#F6F4EE">
+<link rel="canonical" href="https://claude-system-tau.vercel.app/docs/cli">
+<meta property="og:title" content="CLI Reference — claude-system">
+<meta property="og:description" content="10 commands — list → search → info → install → run. Thin CLI, keep the CLI thin.">
+<meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
+<meta property="og:url" content="https://claude-system-tau.vercel.app/docs/cli">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Cpath d='M7 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M23 6 V38' stroke='%23181611' stroke-width='5'/%3E%3Cpath d='M7 22 H23' stroke='%23B93A13' stroke-width='5'/%3E%3Cpath d='M23 38 H38' stroke='%23181611' stroke-width='5'/%3E%3Ccircle cx='37' cy='7' r='3.4' fill='%23B93A13'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div id="prog" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hdr" role="banner">
+  <div class="hdr-inner">
+    <a class="brand" href="/" aria-label="claude-system home">
+      <svg class="monogram" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M7 6 V38" stroke="#181611" stroke-width="5"/><path d="M23 6 V38" stroke="#181611" stroke-width="5"/><path d="M7 22 H23" stroke="#B93A13" stroke-width="5"/><path d="M23 38 H38" stroke="#181611" stroke-width="5"/><circle cx="37" cy="7" r="3.4" fill="#B93A13"/></svg>
+      <span class="wordmark">CLAUDE-SYSTEM</span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="/browse">Browse</a>
+      <a href="/docs" aria-current="page">Docs</a>
+      <a href="https://github.com/hariomlohardev/claude-system">GitHub</a>
+      <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a>
+      <a class="btn solid sm nav-cta" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Star on GitHub ↗</a>
+    </nav>
+    <button class="ham" id="ham" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-panel"><span></span><span></span></button>
+  </div>
+  <div class="mobile-panel" id="mobile-panel" aria-hidden="true">
+    <a href="/"><span>Home</span><span class="idx">00</span></a>
+    <a href="/browse"><span>Browse</span><span class="idx">01</span></a>
+    <a href="/docs"><span>Docs</span><span class="idx">02</span></a>
+    <a href="/docs/cli" aria-current="page"><span>CLI Reference</span><span class="idx">03</span></a>
+  </div>
+</header>
+<main id="main">
+  <div class="wrap" style="padding-top:22px">
+    <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a><span class="sep">/</span><a href="/docs">Docs</a><span class="sep">/</span><span class="cur">CLI Reference</span></nav>
+  </div>
+  <section class="wrap" style="padding-top:8px;border:none;padding-bottom:18px">
+    <div class="kicker rv">Docs · CLI</div>
+    <h1 class="rv" style="font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.03em;line-height:.95;color:var(--ink);margin-top:8px">CLI <em style="font-style:italic;font-weight:400;color:var(--ink-2)">reference</em></h1>
+    <p class="rv" style="font-family:var(--serif);font-style:italic;font-size:1.15rem;line-height:1.55;color:var(--muted);margin-top:10px;max-width:48ch">10 commands — <code class="inline">list</code> → <code class="inline">search</code> → <code class="inline">info</code> → <code class="inline">install</code> → <code class="inline">run</code>. Keep the CLI thin; what can be a System, build as a System.</p>
+    <div class="accent-rule rv" aria-hidden="true"></div>
+    <p class="small muted rv" style="margin-top:14px">Global: <code class="inline">--help</code> <code class="inline">--version</code> themed via <code class="inline">commander</code> · store <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code> + <code class="inline">systems.json</code></p>
+  </section>
+  <section class="wrap" style="padding-top:0">
+    <div class="ledger rv" role="list">
+      <!-- list -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon accent" aria-hidden="true"></span> No.001 · list</div>
+        <div class="row-body">
+          <h3>list</h3>
+          <p>List Systems from the registry or only installed ones.</p>
+          <pre><code>claude-system list [--installed|--available] [--category &lt;cat&gt;] [--json]</code></pre>
+          <div class="cli-meta">Always fresh — <code class="inline">Cache-Control: no-cache</code> · <code class="inline">/api/registry</code> → <code class="inline">raw.githubusercontent</code> fallback</div>
+          <div class="row-tags"><span class="tag">--installed</span><span class="tag">--category</span></div>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system list')">Copy</button><a class="row-arrow" href="/browse" aria-label="Browse">→</a></div>
+      </div>
+      <!-- search -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon green" aria-hidden="true"></span> No.002 · search</div>
+        <div class="row-body">
+          <h3>search</h3>
+          <p>Keyword search over <code class="inline">name</code>, <code class="inline">displayName</code>, <code class="inline">description</code>, <code class="inline">keywords</code>.</p>
+          <pre><code>claude-system search &lt;query&gt;</code></pre>
+          <div class="cli-meta">Live via <code class="inline">/api/search?q=</code> (Supabase <code class="inline">search_vector</code> + <code class="inline">pg_trgm</code>)</div>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system search open-source')">Copy</button><a class="row-arrow" href="/browse?q=frontend" aria-label="Try search">→</a></div>
+      </div>
+      <!-- info -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon muted" aria-hidden="true"></span> No.003 · info</div>
+        <div class="row-body">
+          <h3>info</h3>
+          <p>Show manifest, permissions, links, and install status for one System.</p>
+          <pre><code>claude-system info &lt;system&gt;</code></pre>
+          <div class="cli-meta">Shows <code class="inline">permissions[]</code> and <code class="inline">setup.sh</code> note — read before <code class="inline">install</code></div>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system info example-system')">Copy</button><a class="row-arrow" href="/system?name=example-system" aria-label="View system">→</a></div>
+      </div>
+      <!-- install -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon accent" aria-hidden="true"></span> No.004 · install</div>
+        <div class="row-body">
+          <h3>install</h3>
+          <p>Copy to <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code> and record in <code class="inline">systems.json</code>. Fires <code class="inline">POST /api/systems/:name/install</code> for downloads.</p>
+          <pre><code>claude-system install &lt;system&gt;</code></pre>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system install example-system')">Copy</button><span class="row-arrow" aria-hidden="true">→</span></div>
+      </div>
+      <!-- remove -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon muted" aria-hidden="true"></span> No.005 · remove</div>
+        <div class="row-body">
+          <h3>remove</h3>
+          <p>Remove the System and its entry in <code class="inline">systems.json</code>.</p>
+          <pre><code>claude-system remove &lt;system&gt;</code></pre>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system remove example-system')">Copy</button><span class="row-arrow" aria-hidden="true">→</span></div>
+      </div>
+      <!-- update -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon green" aria-hidden="true"></span> No.006 · update</div>
+        <div class="row-body">
+          <h3>update</h3>
+          <p>Update to latest registry version (preserves <code class="inline">setupDone</code>).</p>
+          <pre><code>claude-system update [&lt;system&gt;|--all]</code></pre>
+          <div class="cli-meta">Shows permission escalation diff if new <code class="inline">permissions[]</code> added</div>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system update --all')">Copy</button><span class="row-arrow" aria-hidden="true">→</span></div>
+      </div>
+      <!-- run -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon accent" aria-hidden="true"></span> No.007 · run</div>
+        <div class="row-body">
+          <h3>run</h3>
+          <p>Open <code class="inline">claude</code> inside the System. First run shows <code class="inline"># WHY:</code> and asks <code class="inline">y/N</code>; on exit 0 sets <code class="inline">setupDone</code>.</p>
+          <pre><code>claude-system run &lt;system&gt; [-- &lt;args&gt;]</code></pre>
+          <div class="cli-meta">Forwards <code class="inline">-- &lt;args&gt;</code> to <code class="inline">claude</code></div>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system run example-system')">Copy</button><span class="row-arrow" aria-hidden="true">↗</span></div>
+      </div>
+      <!-- create -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon muted" aria-hidden="true"></span> No.008 · create</div>
+        <div class="row-body">
+          <h3>create</h3>
+          <p>Scaffold <code class="inline">systems/&lt;name&gt;/</code> from <code class="inline">template/starter-system</code>.</p>
+          <pre><code>claude-system create &lt;name&gt;</code></pre>
+          <div class="cli-meta"><code class="inline">kebab-case</code> · <code class="inline">name === folder</code></div>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system create my-new-system')">Copy</button><span class="row-arrow" aria-hidden="true">→</span></div>
+      </div>
+      <!-- validate -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon green" aria-hidden="true"></span> No.009 · validate</div>
+        <div class="row-body">
+          <h3>validate</h3>
+          <p>Validate <code class="inline">system.json</code> + <code class="inline">name===folder</code> + required files + security.</p>
+          <pre><code>claude-system validate [path]
+node cli/dist/index.js validate systems/&lt;name&gt;</code></pre>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system validate')">Copy</button><span class="row-arrow" aria-hidden="true">→</span></div>
+      </div>
+      <!-- report + doctor -->
+      <div class="row cli-row" role="listitem">
+        <div class="row-left"><span class="row-icon muted" aria-hidden="true"></span> No.010 · report</div>
+        <div class="row-body">
+          <h3>report</h3>
+          <p>Open tracker's issue page (<code class="inline">bugs.url</code> → <code class="inline">repository/issues</code> → monorepo).</p>
+          <pre><code>claude-system report &lt;system&gt;
+claude-system doctor
+claude-system --help --version</code></pre>
+        </div>
+        <div class="row-right"><button class="btn sm ghost" onclick="navigator.clipboard.writeText('claude-system --help')">Copy</button><span class="row-arrow" aria-hidden="true">→</span></div>
+      </div>
+    </div>
+    <div class="rv" style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn sm" href="/docs">← Docs overview</a>
+      <a class="btn ghost sm" href="/docs/creating-a-system">Create →</a>
+      <a class="btn ghost sm" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noreferrer">Source ↗</a>
+    </div>
+    <div class="endmark" aria-hidden="true">◆</div>
+  </section>
+</main>
+<footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+    <div class="footer-brand">The CLI is thin by design — if it could be a System, a Skill, or a plugin, build it there.</div>
+    <div class="footer-col"><h4>Docs</h4><a href="/docs">Overview</a><a href="/docs/creating-a-system">Creating</a><a href="/docs/security">Security</a><a href="/docs/spec">Spec</a></div>
+    <div class="footer-col"><h4>Systems</h4><a href="/browse">Browse</a><a href="/system?name=example-system">Example</a></div>
+    <div class="footer-col"><h4>Links</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a></div>
+  </div>
+  <div class="footer-bar"><span>© 2026 claude-system</span><span id="live-clock"></span><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false">Back to top ↑</a></div>
+</footer>
+<script src="/app.js"></script>
+</body>
+</html>

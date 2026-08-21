@@ -40,9 +40,10 @@
     <a href="/browse"><span>Browse Systems</span><span class="idx">01</span></a>
     <a href="/docs"><span>Documentation</span><span class="idx">02</span></a>
     <a href="/docs/creating-a-system"><span>Creating a System</span><span class="idx">03</span></a>
-    <a href="/docs/security"><span>Security</span><span class="idx">04</span></a>
-    <a href="https://github.com/hariomlohardev/claude-system"><span>GitHub ↗</span><span class="idx">05</span></a>
-    <a href="https://github.com/hariomlohardev/claude-system/discussions"><span>Discussions ↗</span><span class="idx">06</span></a>
+    <a href="/docs/cli"><span>CLI Reference</span><span class="idx">04</span></a>
+    <a href="/docs/security"><span>Security</span><span class="idx">05</span></a>
+    <a href="https://github.com/hariomlohardev/claude-system"><span>GitHub ↗</span><span class="idx">06</span></a>
+    <a href="https://github.com/hariomlohardev/claude-system/discussions"><span>Discussions ↗</span><span class="idx">07</span></a>
   </div>
 </header>
 <main id="main">
@@ -94,7 +95,7 @@
       </div>
       <div id="grid" class="grid rv" aria-live="polite"></div>
       <p id="grid-status" class="small muted" style="margin-top:14px"></p>
-      <noscript><div class="grid"><article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> other · v0.1.0</span><span class="kicker" style="gap:6px"><span style="width:8px;height:8px;background:var(--green);display:inline-block;transform:rotate(45deg)"></span> available</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name=example-system">Example System (Reference Fixture)</a></h3><p>Reference fixture used for CI validation and documentation — not intended for real installation or use.</p><div class="meta"><span>#example</span><span class="dot"></span><span>#fixture</span><span class="dot"></span><span>#reference</span></div></article></div></noscript>
+      <noscript><div class="grid"><article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> other · v0.1.0</span><span class="small muted">⬇ 0</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name=example-system">Example System (Reference Fixture)</a></h3><div class="name-line">example-system</div><p>Reference fixture used for CI validation and documentation — not intended for real installation or use.</p><div class="meta"><span>#example</span><span class="dot"></span><span>#fixture</span><span class="dot"></span><span>#reference</span></div><div class="perm-line"><span class="perm-badge"><span class="perm-dot muted" aria-hidden="true"></span> permissions: filesystem:read</span></div></article></div></noscript>
     </div>
   </section>
   <!-- HOW IT WORKS -->
@@ -116,7 +117,7 @@
       </div>
     </div>
   </section>
-  <!-- INSTALL -->
+  <!-- INSTALL — tabs per DESIGN.md 8.7 -->
   <section class="section" id="install">
     <div class="wrap">
       <div class="sec-head rv">
@@ -126,16 +127,41 @@
         </div>
         <span class="sec-tag">Node ≥18 · claude CLI</span>
       </div>
-      <div class="rv" style="max-width:62ch">
-        <p style="font-size:15px;color:var(--muted);margin-bottom:16px">Primary install is via Vercel — plain text, auditable. Also on npm and PyPI as thin wrappers around the same CLI.</p>
-        <pre aria-label="Install command"><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh
+      <div class="rv" style="max-width:68ch">
+        <p style="font-size:15px;color:var(--muted);margin-bottom:16px">Primary install is via Vercel — plain text, auditable. Thin wrappers on <code class="inline">npm</code> and <code class="inline">pip</code> delegate to the same CLI.</p>
+        <div class="install-tabs" role="tablist" aria-label="Install tabs">
+          <button class="pill active" role="tab" aria-selected="true">curl | sh</button>
+          <button class="pill" role="tab" aria-selected="false">npm</button>
+          <button class="pill" role="tab" aria-selected="false">pip</button>
+        </div>
+        <div class="install-panel active" role="tabpanel"><pre aria-label="curl install"><code>curl -fsSL https://claude-system-tau.vercel.app/install | sh
 # then
 claude-system list
 claude-system search &lt;keyword&gt;
 claude-system install &lt;name&gt;
-claude-system run &lt;name&gt;</code></pre>
-        <p class="small muted" style="margin-top:12px">Alternatives: <code class="inline">npm i -g claude-system</code> · <code class="inline">pip install claude-system</code> · <code class="inline">curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | sh</code></p>
+claude-system run &lt;name&gt;</code></pre></div>
+        <div class="install-panel" role="tabpanel"><pre><code>npm i -g claude-system
+claude-system list
+claude-system install &lt;name&gt;
+claude-system run &lt;name&gt;</code></pre></div>
+        <div class="install-panel" role="tabpanel"><pre><code>pip install claude-system
+claude-system list
+claude-system install &lt;name&gt;
+claude-system run &lt;name&gt;</code></pre></div>
+        <p class="small muted" style="margin-top:12px">Fallback: <code class="inline">curl -fsSL https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.sh | sh</code> · <a href="/docs/cli" style="color:var(--accent);text-decoration:underline">CLI reference →</a> · store <code class="inline">~/.claude-system/systems/&lt;name&gt;/</code></p>
       </div>
+    </div>
+  </section>
+  <!-- TRUST STRIP — permissions + WHY per DESIGN.md 8.8/8.9 -->
+  <section class="section" style="padding-top:0;border-top:none">
+    <div class="wrap">
+      <div class="validate-strip rv" role="list" aria-label="Trust checks">
+        <div class="validate-cell ok"><strong>✓ valid</strong><span>schema</span></div>
+        <div class="validate-cell ok"><strong>✓ name</strong><span>folder === name</span></div>
+        <div class="validate-cell warn"><strong># WHY:</strong><span>setup.sh consent y/N</span></div>
+        <div class="validate-cell ok"><strong>honest</strong><span>permissions[] reviewed</span></div>
+      </div>
+      <p class="small muted rv" style="text-align:center;margin-top:10px">Every System declares <code class="inline">permissions[]</code> honestly — read with <code class="inline">claude-system info &lt;name&gt;</code> before <code class="inline">install</code>. See <a href="/docs/security" style="color:var(--accent);text-decoration:underline">Security</a>.</p>
     </div>
   </section>
   <!-- COMMUNITY -->
@@ -184,7 +210,7 @@ claude-system run &lt;name&gt;</code></pre>
   <div class="footer-grid">
     <div class="footer-brand">An open, public notebook — work logged daily, shown honestly, presented like archival print material.</div>
     <div class="footer-col"><h4>Systems</h4><a href="/browse">Browse all</a><a href="/system?name=example-system">Example system</a><a href="/api/registry">/api/registry</a><a href="/api/search?q=example">/api/search</a></div>
-    <div class="footer-col"><h4>Docs</h4><a href="/docs/creating-a-system">Creating a System</a><a href="/docs/security">Security</a><a href="/docs/spec">Spec</a><a href="https://github.com/hariomlohardev/claude-system/blob/main/CONTRIBUTING.md">Contributing</a></div>
+    <div class="footer-col"><h4>Docs</h4><a href="/docs/creating-a-system">Creating a System</a><a href="/docs/cli">CLI Reference</a><a href="/docs/security">Security</a><a href="/docs/spec">Spec</a><a href="https://github.com/hariomlohardev/claude-system/blob/main/CONTRIBUTING.md">Contributing</a></div>
     <div class="footer-col"><h4>Community</h4><a href="https://github.com/hariomlohardev/claude-system">GitHub ↗</a><a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions ↗</a><a href="https://github.com/hariomlohardev/claude-system/issues">Issues</a><a href="/sitemap.xml">Sitemap</a></div>
   </div>
   <div class="footer-bar">
@@ -197,10 +223,17 @@ claude-system run &lt;name&gt;</code></pre>
 <script>
 (function(){
   var grid=document.getElementById('grid'), status=document.getElementById('grid-status');
+  function permBadge(perms){
+    if(!perms || !perms.length) return '<span class="perm-badge"><span class="perm-dot muted" aria-hidden="true"></span> permissions: []</span>';
+    var hasShell=perms.indexOf('shell:exec')!==-1, hasCred=perms.indexOf('credentials:read')!==-1;
+    if(hasShell||hasCred) return '<span class="perm-badge warn"><span class="perm-dot accent" aria-hidden="true"></span> '+(hasShell?'shell:exec':'')+(hasShell&&hasCred?' · ':'')+(hasCred?'credentials:read':'')+'</span>';
+    return '<span class="perm-badge"><span class="perm-dot green" aria-hidden="true"></span> '+perms.slice(0,2).join(' · ')+'</span>';
+  }
   function cardHTML(s){
     var tags=(s.keywords||[]).slice(0,4).map(function(k){return '<span>#'+k+'</span>';}).join(' <span class="dot"></span> ');
     var cat=s.category||'other';
-    return '<article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> '+cat+' · v'+s.version+'</span><span class="small muted">'+(s.downloads!=null? '⬇ '+s.downloads : '')+'</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name='+s.name+'">'+(s.displayName||s.name)+'</a></h3><p>'+ (s.description||'') +'</p><div class="meta">'+tags+'</div><div style="margin-top:auto;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" onclick="navigator.clipboard.writeText(\'claude-system install '+s.name+'\').then(function(b){b.textContent=\'Copied!\'}).catch(function(){})">Copy install</button><a class="btn solid sm" href="/system?name='+s.name+'">View →</a></div></article>';
+    var perms=s.permissions||[];
+    return '<article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> '+cat+' · v'+s.version+'</span><span class="small muted">'+(s.downloads!=null? '⬇ '+s.downloads : '⬇ 0')+'</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name='+s.name+'">'+(s.displayName||s.name)+'</a></h3><div class="name-line">'+s.name+'</div><p>'+ (s.description||'') +'</p><div class="meta">'+tags+'</div><div class="perm-line">'+permBadge(perms)+'</div><div style="margin-top:auto;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" onclick="navigator.clipboard.writeText(\'claude-system install '+s.name+'\').then(function(b){this.textContent=\'Copied!\'}).catch(function(){})" aria-label="Copy install '+s.name+'">Copy install</button><a class="btn solid sm" href="/system?name='+s.name+'">View →</a></div></article>';
   }
   async function load(){
     status.textContent='Loading…';
@@ -218,7 +251,7 @@ claude-system run &lt;name&gt;</code></pre>
       setTimeout(function(){ document.querySelectorAll('.card.rv:not(.in)').forEach(function(c){ c.classList.add('in'); }); }, 60);
     }catch(e){
       // inline fallback
-      grid.innerHTML = '<article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> other · v0.1.0</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name=example-system">Example System (Reference Fixture)</a></h3><p>Reference fixture used for CI validation and documentation — not intended for real installation or use.</p><div class="meta"><span>#example</span> <span class="dot"></span> <span>#fixture</span></div><div style="margin-top:auto;display:flex;gap:8px"><a class="btn solid sm" href="/system?name=example-system">View →</a></div></article>';
+      grid.innerHTML = '<article class="card"><div class="card-top"><span class="card-kicker"><span class="diamond" aria-hidden="true"></span> other · v0.1.0</span><span class="small muted">⬇ 0</span></div><span class="chip" aria-hidden="true">↗</span><h3><a href="/system?name=example-system">Example System (Reference Fixture)</a></h3><div class="name-line">example-system</div><p>Reference fixture used for CI validation and documentation — not intended for real installation or use.</p><div class="meta"><span>#example</span> <span class="dot"></span> <span>#fixture</span></div><div class="perm-line"><span class="perm-badge"><span class="perm-dot muted" aria-hidden="true"></span> permissions: filesystem:read</span></div><div style="margin-top:auto;display:flex;gap:8px"><a class="btn solid sm" href="/system?name=example-system">View →</a></div></article>';
       status.textContent='Showing fallback — registry unavailable. Try /api/registry.';
     }
   }
