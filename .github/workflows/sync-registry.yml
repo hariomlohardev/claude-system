@@ -1,0 +1,23 @@
+name: Sync Registry to Supabase
+on:
+  push:
+    branches: [main]
+    paths: [systems/**, registry/index.json, scripts/generate-index.js]
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm --prefix cli ci || npm --prefix cli install
+      - run: npm --prefix cli run build
+      - run: node scripts/generate-index.js
+      - name: Upsert Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/sync-supabase.js

@@ -75,6 +75,23 @@ async function runInstall(name: string): Promise<void> {
 
   await recordInstall(name, entry.version);
 
+  // Fire-and-forget analytics — do not block install on failure
+  try {
+    const vercelUrl = 'https://claude-system-tau.vercel.app';
+    // Use native fetch with short timeout, ignore errors
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), 3000);
+    fetch(`${vercelUrl}/api/systems/${name}/install`, { method: 'POST', signal: controller.signal }).then(async (r) => {
+      clearTimeout(t);
+      if (!r.ok) {
+        console.error(theme.dim('› analytics unavailable'));
+      }
+    }).catch(() => {
+      clearTimeout(t);
+      console.error(theme.dim('› analytics unavailable'));
+    });
+  } catch {}
+
   console.log(theme.success(`Installed ${theme.cyan(name)} ${theme.dim(`v${entry.version}`)}`));
   console.log(theme.dim(`  → ${destPath}`));
   console.log('');

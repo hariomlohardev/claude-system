@@ -15,6 +15,9 @@ export interface RegistrySource {
 const VERCEL_REGISTRY_URL =
   'https://claude-system-tau.vercel.app/api/registry';
 
+const VERCEL_SEARCH_URL =
+  'https://claude-system-tau.vercel.app/api/search';
+
 const GITHUB_FALLBACK_URL =
   'https://raw.githubusercontent.com/hariomlohardev/claude-system/main/registry/index.json';
 
@@ -170,9 +173,13 @@ export class VercelRegistry implements RegistrySource {
     let res: Response | null = null;
     let lastErr: string | null = null;
     try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
       res = await fetch(url, {
         headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
       if (res.ok) {
         const json: any = await res.json();
         // Normalize Vercel shape: ensure displayName vs display_name, strip extra keys before strict validation
@@ -281,6 +288,47 @@ export async function findInRegistry(name: string, source: RegistrySource = getR
 }
 
 export async function searchRegistry(query: string, source: RegistrySource = getRegistrySource()): Promise<RegistryEntry[]> {
+  // Prefer Vercel search API when source is Vercel
+  if (source.label === 'vercel') {
+    try {
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(`${VERCEL_SEARCH_URL}?q=${encodeURIComponent(query)}`, {
+        headers: { Accept: 'application/json' },
+        signal: controller.signal,
+      });
+      clearTimeout(t);
+      if (res.ok) {
+        const data: any = await res.json();
+        const rawSystems: any[] = Array.isArray(data.systems) ? data.systems : Array.isArray(data) ? data : [];
+        if (rawSystems.length > 0) {
+          // Normalize Supabase rows to RegistryEntry shape
+          const normalized = rawSystems.map((s: any) => ({
+            name: s.name,
+            displayName: s.displayName ?? s.display_name,
+            version: s.version,
+            description: s.description,
+            keywords: s.keywords ?? [],
+            category: s.category,
+            author: s.author,
+            license: s.license,
+            path: s.path ?? `systems/${s.name}`,
+          }));
+          const parsed = normalized.map((e: any) => {
+            const p = registryIndexSchema.shape.systems.element.safeParse(e);
+            return p.success ? p.data : null;
+          }).filter(Boolean) as RegistryEntry[];
+          if (parsed.length > 0) return parsed;
+          // If API returned empty but we have data, fall through to local filter
+        }
+        // API returned 0 results — still return empty (no fallback to avoid hiding "no results")
+        if (data.count === 0) return [];
+      }
+    } catch (err) {
+      console.error(theme.dim(`  (Vercel search unavailable — falling back to local filter: ${err instanceof Error ? err.message : String(err)})`));
+    }
+  }
+  // Fallback: local filter on full index (works for GitHub, file, and Vercel fallback)
   const index = await source.fetchIndex();
   const q = query.toLowerCase();
   return index.systems.filter(
