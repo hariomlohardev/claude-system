@@ -58,4 +58,16 @@ var ham=document.getElementById('ham'); var mp=document.getElementById('mobile-p
 if(ham&&mp&&!menuBtn){
   ham.addEventListener('click',function(){ var o=ham.getAttribute('aria-expanded')==='true'; ham.setAttribute('aria-expanded',String(!o)); mp.classList.toggle('open',!o); });
 }
+// star count — non-blocking, fallback to label only
+try{
+  fetch('https://api.github.com/repos/hariomlohardev/claude-system', {headers:{Accept:'application/vnd.github.v3+json'}})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if(!d || typeof d.stargazers_count !== 'number') return;
+      document.querySelectorAll('.star-count').forEach(function(el){
+        el.textContent=' · ★ '+d.stargazers_count;
+        el.style.opacity='.85';
+      });
+    }).catch(function(){});
+}catch(e){}
 })();

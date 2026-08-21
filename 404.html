@@ -46,6 +46,11 @@ header{position:sticky;top:0;z-index:100;background:rgba(246,244,238,.94);backdr
 .logo-word{font-family:var(--mono);font-size:13px;letter-spacing:.05em;line-height:1.25;color:var(--ink)}
 .logo-word i{display:block;font-style:normal;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 .btn{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;padding:14px 20px;border:1px solid var(--ink);display:inline-flex;align-items:center;gap:10px;min-height:46px;color:var(--ink);transition:background .2s,color .2s}
+.gh-pill{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;border:1px solid var(--ink);padding:10px 14px;display:inline-flex;align-items:center;gap:9px;transition:background .2s,color .2s;color:var(--ink)}
+.gh-pill i{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2.2s infinite}
+.gh-pill:hover{background:var(--ink);color:var(--paper)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(30,122,78,.45)}70%{box-shadow:0 0 0 7px rgba(30,122,78,0)}100%{box-shadow:0 0 0 0 rgba(30,122,78,0)}}
+.head-right{display:flex;align-items:center;gap:12px}
 .btn:hover{background:var(--ink);color:var(--paper)}
 .btn.solid{background:var(--ink);color:var(--paper)}
 .btn.solid:hover{background:var(--accent);border-color:var(--accent)}
@@ -83,6 +88,10 @@ footer{border-top:1px solid var(--ink);background:var(--paper)}
         <a href="/browse" style="font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)">Browse</a>
         <a href="/docs" style="font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)">Docs</a>
       </nav>
+      <div class="head-right" style="display:flex;align-items:center;gap:12px">
+        <a class="gh-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><i aria-hidden="true" style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block"></i><span>Repo&nbsp;↗</span></a>
+        <a class="gh-pill star-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener" aria-label="Star claude-system on GitHub"><span aria-hidden="true">★</span> Star<span class="star-count" aria-hidden="true" style="opacity:.7"> · ★</span></a>
+      </div>
     </div>
   </div>
 </header>
@@ -111,6 +120,20 @@ addEventListener('scroll',function(){var h=document.documentElement.scrollHeight
 document.addEventListener('keydown',function(e){
   if((e.key==='g'||e.key==='G')&&!e.metaKey&&!e.ctrlKey&&!e.altKey) window.open('https://github.com/hariomlohardev/claude-system','_blank','noopener');
 });
+
+// star count — non-blocking
+try{
+  fetch('https://api.github.com/repos/hariomlohardev/claude-system', {headers:{Accept:'application/vnd.github.v3+json'}})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if(!d || typeof d.stargazers_count !== 'number') return;
+      document.querySelectorAll('.star-count').forEach(function(el){
+        el.textContent=' · ★ '+d.stargazers_count;
+        el.style.opacity='.85';
+      });
+    }).catch(function(){});
+}catch(e){}
+
 </script>
 </body>
 </html>

@@ -248,6 +248,7 @@ html:not(.js) .rv{opacity:1;transform:none}
       </nav>
       <div class="head-right">
         <a class="gh-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener"><i aria-hidden="true"></i><span>Repo&nbsp;↗</span></a>
+        <a class="gh-pill star-pill" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener" aria-label="Star claude-system on GitHub"><span aria-hidden="true">★</span> Star<span class="star-count" aria-hidden="true" style="opacity:.7"> · ★</span></a>
         <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobilePanel" aria-label="Open menu">
           <span class="bars" aria-hidden="true"><span></span><span></span></span> Menu
         </button>
@@ -265,6 +266,7 @@ html:not(.js) .rv{opacity:1;transform:none}
     <div class="mp-actions">
       <a href="/docs">Docs</a>
       <a class="alt" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">Repo ↗</a>
+      <a class="alt" href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">★ Star</a>
     </div>
   </div>
 </header>
@@ -576,6 +578,20 @@ window.addEventListener('keydown',function(e){
   if(e.key==='g'||e.key==='G')window.open('https://github.com/hariomlohardev/claude-system','_blank','noopener');
 });
 document.getElementById('topBtn').addEventListener('click',function(){window.scrollTo({top:0,behavior:reduced?'auto':'smooth'});});
+
+// star count — non-blocking
+try{
+  fetch('https://api.github.com/repos/hariomlohardev/claude-system', {headers:{Accept:'application/vnd.github.v3+json'}})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if(!d || typeof d.stargazers_count !== 'number') return;
+      document.querySelectorAll('.star-count').forEach(function(el){
+        el.textContent=' · ★ '+d.stargazers_count;
+        el.style.opacity='.85';
+      });
+    }).catch(function(){});
+}catch(e){}
+
 })();
 </script>
 </body>
