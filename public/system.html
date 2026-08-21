@@ -1,0 +1,61 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>System — claude-system</title>
+<meta name="keywords" content="claude code, claude-system, systems, skills, agents, commands">
+<meta name="theme-color" content="#0f0f12">
+<link rel="canonical" href="https://claude-system-tau.vercel.app/">
+<meta property="og:title" content="claude-system — Curated Systems for Claude Code">
+<meta property="og:description" content="Install a complete workflow in one shot — not plugins one by one.">
+<meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
+<meta property="og:url" content="https://claude-system-tau.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<style>
+:root{--bg:#fafafa;--fg:#1a1a1a;--muted:#6b7280;--border:#e5e7eb;--card:#fff;--accent:#111;--accent-fg:#fff;--radius:12px}
+@media(prefers-color-scheme:dark){ :root{--bg:#0f0f12;--fg:#e5e7eb;--muted:#9ca3af;--border:#27272a;--card:#18181b;--accent:#fafafa;--accent-fg:#111} }
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans,system-ui,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+.container{max-width:780px;margin:0 auto;padding:32px 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.badge{font-size:11px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted)}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:8px 12px;font-size:13px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;overflow:auto;font-size:13px}
+.footer{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="/" style="text-decoration:none">← Back</a> · <a href="/browse">Browse</a>
+  <div id="content" class="card" style="margin-top:16px">Loading…</div>
+  <div class="footer"><a href="https://github.com/hariomlohardev/claude-system">GitHub</a> · <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a> · <a href="/api/registry">/api/registry</a></div>
+</div>
+<script>
+const params=new URLSearchParams(location.search); const name=params.get('name');
+const el=document.getElementById('content');
+async function load(){
+  if(!name){ el.textContent='Missing ?name='; return; }
+  try{
+    const r=await fetch('/api/systems/'+encodeURIComponent(name));
+    if(!r.ok) throw new Error((await r.json()).error||r.statusText);
+    const j=await r.json();
+    const s=j.system;
+    const versions=j.versions||[];
+    el.innerHTML='<h1 style="margin:0">'+s.name+' <span class="badge">'+(s.category||'other')+'</span> <span class="badge">v'+s.version+'</span> '+(s.downloads!=null?'<span class="badge">⬇ '+s.downloads+'</span>':'')+'</h1>'
+      + '<p style="color:var(--muted);margin:4px 0">'+(s.display_name||s.displayName||'')+'</p>'
+      + '<p>'+(s.description||'')+'</p>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)">'+(s.keywords||[]).map(k=>'<span class="badge">'+k+'</span>').join('')+'</div>'
+      + '<p style="font-size:13px"><strong>Author:</strong> '+(s.author?.name||'')+' '+(s.author?.github?'<a href="https://github.com/'+s.author.github+'">@'+s.author.github+'</a>':'')+' · <strong>License:</strong> '+(s.license||'')+'</p>'
+      + '<p style="font-size:13px"><strong>Path:</strong> <code>'+(s.path||'')+'</code> · <strong>Spec:</strong> '+(s.claude_spec_version||'')+'</p>'
+      + '<pre><code>claude-system install '+s.name+'\nclaude-system run '+s.name+'\nclaude-system info '+s.name+'</code></pre>'
+      + '<div style="display:flex;gap:8px"><button class="btn" onclick="navigator.clipboard.writeText(\'claude-system install '+s.name+'\')">Copy install</button><a class="btn primary" href="https://github.com/hariomlohardev/claude-system/tree/main/systems/'+s.name+'">View on GitHub →</a></div>'
+      + '<h3 style="margin-top:24px">Version history</h3><ul style="font-size:13px">'+(versions.map(v=>'<li>'+v.version+' · ⬇ '+v.downloads+' · '+new Date(v.published_at).toLocaleDateString()+'</li>').join('') || '<li>Only one version</li>')+'</ul>'
+      + '<p style="font-size:12px;color:var(--muted)">Downloads auto-increment on <code>claude-system install</code> via <code>POST /api/systems/:name/install</code></p>';
+  }catch(e){ el.textContent='Failed: '+e.message }
+}
+load();
+</script>
+</body>
+</html>

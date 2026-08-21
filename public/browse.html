@@ -1,0 +1,82 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Browse — claude-system</title>
+<meta name="keywords" content="claude code, claude-system, systems, skills, agents, commands">
+<meta name="theme-color" content="#0f0f12">
+<link rel="canonical" href="https://claude-system-tau.vercel.app/">
+<meta property="og:title" content="claude-system — Curated Systems for Claude Code">
+<meta property="og:description" content="Install a complete workflow in one shot — not plugins one by one.">
+<meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
+<meta property="og:url" content="https://claude-system-tau.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<style>
+:root{--bg:#fafafa;--fg:#1a1a1a;--muted:#6b7280;--border:#e5e7eb;--card:#fff;--accent:#111;--accent-fg:#fff;--radius:12px}
+@media(prefers-color-scheme:dark){ :root{--bg:#0f0f12;--fg:#e5e7eb;--muted:#9ca3af;--border:#27272a;--card:#18181b;--accent:#fafafa;--accent-fg:#111} }
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans,system-ui,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+.container{max-width:960px;margin:0 auto;padding:32px 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:16px}
+.badge{font-size:11px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted)}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+input,select{padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg)}
+.filters{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1><a href="/" style="text-decoration:none">← claude-system</a> · Browse</h1>
+  <p style="color:var(--muted)">Live search via <code>/api/search?q=</code> · also filters by category · <a href="/api/registry">/api/registry</a> · <a href="/api/stats">trending</a></p>
+  <div class="filters">
+    <input id="q" placeholder="Search…" style="flex:1;min-width:200px">
+    <select id="cat"><option value="">All categories</option><option>open-source</option><option>frontend</option><option>backend</option><option>testing</option><option>security</option><option>docs</option><option>research</option><option>devops</option><option>other</option></select>
+  </div>
+  <div id="grid" class="grid"></div>
+  <p id="status" style="color:var(--muted);font-size:13px"></p>
+  <div class="footer"><a href="https://github.com/hariomlohardev/claude-system">GitHub</a> · <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a></div>
+</div>
+<script>
+const grid=document.getElementById('grid'), status=document.getElementById('status'), q=document.getElementById('q'), cat=document.getElementById('cat');
+let all=[];
+async function loadAll(){
+  const r=await fetch('/api/registry'); const j=await r.json(); all=j.systems||[]; render(all);
+}
+async function search(){
+  const v=q.value.trim(), c=cat.value;
+  if(!v && !c) return render(all);
+  if(v){
+    try{
+      const r=await fetch('/api/search?q='+encodeURIComponent(v));
+      const j=await r.json();
+      let list=j.systems||[];
+      list=list.map(s=>({name:s.name, displayName:s.display_name||s.displayName, version:s.version, description:s.description, keywords:s.keywords||[], category:s.category, author:s.author, license:s.license, path:s.path||'systems/'+s.name, downloads:s.downloads}));
+      if(c) list=list.filter(s=>s.category===c);
+      status.textContent = list.length + ' results for "'+v+'"';
+      return render(list);
+    }catch(e){ }
+  }
+  let list=all;
+  if(v) list=list.filter(s=> (s.name+s.displayName+s.description+(s.keywords||[]).join(' ')).toLowerCase().includes(v.toLowerCase()));
+  if(c) list=list.filter(s=>s.category===c);
+  render(list);
+}
+function render(list){
+  grid.innerHTML='';
+  list.forEach(s=>{
+    const el=document.createElement('div'); el.className='card';
+    el.innerHTML='<h3 style="margin:0"><a href="/system?name='+s.name+'" style="text-decoration:none">'+s.name+'</a> <span class="badge">'+(s.category||'other')+'</span> <span class="badge">v'+s.version+'</span> '+(s.downloads!=null?'<span class="badge">⬇ '+s.downloads+'</span>':'')+'</h3><div style="font-size:13px">'+(s.displayName||'')+'</div><p style="color:var(--muted);font-size:13px;margin:0">'+(s.description||'')+'</p><div style="margin-top:auto;display:flex;gap:8px"><button class="btn" onclick="navigator.clipboard.writeText(\'claude-system install '+s.name+'\')">Copy</button><a class="btn primary" href="/system?name='+s.name+'">View →</a></div>';
+    grid.appendChild(el);
+  });
+  if(!list.length) grid.innerHTML='<p style="color:var(--muted)">No results.</p>';
+  if(!q.value && !cat.value) status.textContent = list.length + ' system(s)';
+}
+q.addEventListener('input', search); cat.addEventListener('change', search);
+loadAll();
+</script>
+</body>
+</html>

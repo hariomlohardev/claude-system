@@ -1,0 +1,121 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>claude-system — Curated Systems for Claude Code</title>
+<meta name="keywords" content="claude code, claude-system, systems, skills, agents, commands">
+<meta name="theme-color" content="#0f0f12">
+<link rel="canonical" href="https://claude-system-tau.vercel.app/">
+<meta property="og:title" content="claude-system — Curated Systems for Claude Code">
+<meta property="og:description" content="Install a complete workflow in one shot — not plugins one by one.">
+<meta property="og:image" content="https://claude-system-tau.vercel.app/og.png">
+<meta property="og:url" content="https://claude-system-tau.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
+<meta name="description" content="Curated, opinionated Systems for Claude Code — install a complete workflow in one shot.">
+<style>
+:root{--bg:#fafafa;--fg:#1a1a1a;--muted:#6b7280;--border:#e5e7eb;--card:#fff;--accent:#111;--accent-fg:#fff;--radius:12px}
+@media(prefers-color-scheme:dark){ :root{--bg:#0f0f12;--fg:#e5e7eb;--muted:#9ca3af;--border:#27272a;--card:#18181b;--accent:#fafafa;--accent-fg:#111} }
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+a{color:inherit}
+.container{max-width:960px;margin:0 auto;padding:48px 20px}
+.hero{padding:32px 0 16px;text-align:center}
+.hero h1{font-size:42px;letter-spacing:-0.02em;margin:0;font-weight:800}
+.hero p{color:var(--muted);margin:8px 0 0;font-size:18px}
+.badges{margin:16px 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.badges a{border:1px solid var(--border);border-radius:999px;padding:6px 12px;font-size:12px;text-decoration:none;background:var(--card);color:var(--muted)}
+.quickstart{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:24px 0}
+.quickstart pre{margin:12px 0 0;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;overflow:auto;font-size:13px}
+.quickstart code{font-family:ui-monospace,monospace}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.card h3{margin:0;font-size:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-size:11px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;color:var(--muted)}
+.card p{margin:0;color:var(--muted);font-size:13px}
+.card .meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.card .actions{margin-top:auto;display:flex;gap:8px}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.btn:hover{opacity:.9}
+.footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--border);text-align:center;color:var(--muted);font-size:13px}
+input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>claude-system</h1>
+    <p>Curated, opinionated Systems for Claude Code — install a complete workflow in one shot.</p>
+    <div class="badges">
+      <a href="https://www.npmjs.com/package/claude-system">npm</a>
+      <a href="https://pypi.org/project/claude-system/">PyPI</a>
+      <a href="https://github.com/hariomlohardev/claude-system/actions/workflows/validate.yml">CI</a>
+      <a href="https://github.com/hariomlohardev/claude-system">GitHub</a>
+      <a href="https://github.com/hariomlohardev/claude-system/discussions">Discussions</a>
+      <a href="/api/registry">API</a>
+    </div>
+  </div>
+  <div class="quickstart">
+    <strong>Quickstart</strong>
+    <pre><code>npm i -g claude-system   # or pip install claude-system
+# or curl | sh
+curl -fsSL https://claude-system-tau.vercel.app/install | sh
+
+claude-system list
+claude-system search &lt;keyword&gt;
+claude-system install &lt;name&gt;
+claude-system run &lt;name&gt;</code></pre>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <a href="/browse" class="btn primary">Browse Systems →</a>
+      <a href="https://github.com/hariomlohardev/claude-system#readme" class="btn">Docs</a>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:32px">
+    <h2 style="margin:0">Systems</h2>
+    <input id="q" placeholder="Search systems…" style="max-width:260px" oninput="filterCards()">
+  </div>
+  <div id="grid" class="grid"></div>
+  <p id="status" style="color:var(--muted);font-size:13px;margin-top:12px"></p>
+  <div class="footer">
+    <a href="https://github.com/hariomlohardev/claude-system">github.com/hariomlohardev/claude-system</a> · MIT · <a href="/api/registry">/api/registry</a> · <a href="/api/stats">/api/stats</a>
+  </div>
+</div>
+<script>
+const grid = document.getElementById('grid');
+const status = document.getElementById('status');
+const q = document.getElementById('q');
+let systems = [];
+async function load(){
+  status.textContent = 'Loading…';
+  try{
+    const r = await fetch('/api/registry');
+    const j = await r.json();
+    systems = j.systems || [];
+    render(systems);
+    status.textContent = systems.length + ' system(s) · fresh from Supabase + Vercel';
+  }catch(e){ status.textContent = 'Failed to load registry: ' + e.message }
+}
+function render(list){
+  grid.innerHTML = '';
+  list.forEach(s=>{
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = '<h3><a href="/system?name='+s.name+'" style="text-decoration:none">'+s.name+'</a> <span class="badge">'+(s.category||'other')+'</span> <span class="badge">v'+s.version+'</span> '+(s.downloads!=null?'<span class="badge">⬇ '+s.downloads+'</span>':'')+'</h3>'
+    + '<div style="font-size:13px">'+s.displayName+'</div>'
+    + '<p>'+(s.description||'')+'</p>'
+    + '<div class="meta"><span>'+(s.keywords||[]).join(' · ')+'</span></div>'
+    + '<div class="actions"><button class="btn" onclick="navigator.clipboard.writeText(\'claude-system install '+s.name+'\').then(()=>this.textContent=\'Copied!\')">Copy install</button><a class="btn primary" href="/system?name='+s.name+'">View →</a></div>';
+    grid.appendChild(el);
+  });
+  if(!list.length) grid.innerHTML = '<p style="color:var(--muted)">No systems found.</p>';
+}
+function filterCards(){
+  const v = q.value.trim().toLowerCase();
+  if(!v) return render(systems);
+  render(systems.filter(s=> (s.name+s.displayName+s.description+(s.keywords||[]).join(' ')).toLowerCase().includes(v) ));
+}
+load();
+</script>
+</body>
+</html>
