@@ -27,7 +27,11 @@
 ## Install
 
 ```sh
+# macOS / Linux (bash, also works in Git Bash on Windows)
 curl -fsSL https://claude-system-tau.vercel.app/install | sh
+# Windows (PowerShell, native — no WSL/Bash required)
+powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/hariomlohardev/claude-system/main/install.ps1 | iex"
+# or: curl -fsSL https://claude-system-tau.vercel.app/install.ps1 -o install.ps1; powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
 Alternatives:
