@@ -284,24 +284,17 @@ html:not(.js) .rv{opacity:1;transform:none}
           <span class="lens">Filter</span>
           <input id="sideFilter" type="search" placeholder="steps… ( / )" autocomplete="off" aria-label="Filter guide steps" />
         </label>
-        <div class="side-group"><h4><i></i> Start</h4><ul>
-          <li><a href="#before-you-start" class="active">Before you start</a></li>
-          <li><a href="#initialize">Initialize</a></li>
-        </ul></div>
-        <div class="side-group"><h4><i></i> Build</h4><ul>
-          <li><a href="#configure">Configure</a></li>
-          <li><a href="#design-tokens">Design tokens</a></li>
-          <li><a href="#components">Components</a></li>
-        </ul></div>
-        <div class="side-group"><h4><i></i> Assemble</h4><ul>
-          <li><a href="#pages">Pages</a></li>
-          <li><a href="#preview">Preview</a></li>
+        <div class="side-group"><h4><i></i> Guide</h4><ul>
+          <li><a href="#minimum-required-files" class="active">Minimum required files</a></li>
+          <li><a href="#system-json">system.json</a></li>
+          <li><a href="#permissions">Permissions</a></li>
+          <li><a href="#other-files">Other files</a></li>
         </ul></div>
         <div class="side-group"><h4><i></i> Ship</h4><ul>
-          <li><a href="#build">Build</a></li>
-          <li><a href="#deploy">Deploy</a></li>
-          <li><a href="#verify">Verify</a></li>
-          <li><a href="#next-steps">Next steps</a></li>
+          <li><a href="#testing-locally">Testing locally</a></li>
+          <li><a href="#pr-flow">PR flow</a></li>
+          <li><a href="#registry-generated">registry is generated</a></li>
+          <li><a href="#keeping-in-sync">Keeping in sync</a></li>
         </ul></div>
       </aside>
 
@@ -309,181 +302,266 @@ html:not(.js) .rv{opacity:1;transform:none}
       <div>
         <div class="crumb"><a href="/">Home</a><span class="sep">/</span><a href="/docs">Docs</a><span class="sep">/</span><span style="color:var(--ink-2)">Creating a System</span></div>
         <h1 class="doc-h1 rv">Creating a <em>system</em></h1>
-        <p class="doc-lede rv">A complete walkthrough — from your first <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">init</code> to a deployed, spec-checked system. Eleven steps, no shortcuts skipped.</p>
-        <div class="doc-meta rv"><span class="ver">guide</span><span>·</span><span>11 steps</span><span>·</span><span>~15 min</span></div>
+        <p class="doc-lede rv">A System is a versioned bundle of <code style="font-family:var(--mono);font-size:.85em;background:var(--paper-2);padding:2px 6px">CLAUDE.md</code> + skills + agents + commands + hooks — see <a href="/docs/spec">SYSTEM_SPEC.md</a> for the contract.</p>
+        <div class="doc-meta rv"><span class="ver">guide</span><span>·</span><span>8 steps</span><span>·</span><span>~15 min</span></div>
 
-        <article class="prose">
+                <article class="prose">
 
-          <h2 id="before-you-start">Before you start<a class="anchor" href="#before-you-start" aria-label="Link to Before you start">#</a></h2>
-          <p>You need three things: <strong>Node.js 18+</strong>, a <strong>terminal</strong>, and <strong>git</strong>. If you haven't installed claude-system yet, do that first.</p>
+          <p style="font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Scope reminder from <code>CLAUDE.md</code></p>
+          <div class="callout"><span class="co-label">Scope</span><p><code>claude-system</code> is the ecosystem / package layer <em>around</em> Claude Code. It never replaces Claude Code — it prepares an environment and shells out to the real <code>claude</code> CLI. A System should not try to build a chat runtime or coding agent; it configures Claude Code. See <a href="/docs/spec">SYSTEM_SPEC.md</a> — when in doubt, the spec wins.</p></div>
+
+          <h2 id="minimum-required-files">Minimum required files<a class="anchor" href="#minimum-required-files" aria-label="Link to Minimum required files">#</a></h2>
+          <p>Every System lives under <code>systems/&lt;name&gt;/</code> where <code>&lt;name&gt;</code> is the kebab-case id. <strong>Folder name must exactly equal the <code>"name"</code> field in <code>system.json</code></strong> — CI enforces this and will fail your PR on a mismatch. See <code>systems/README.md</code>.</p>
+          <p>A valid System must contain at minimum:</p>
           <div class="codeblock">
-            <div class="code-head"><span>terminal — check</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>node --version          # v18 or newer
-claude-system --version # should print a version</code></pre>
+            <div class="code-head"><span>required — 3 files</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>systems/&lt;name&gt;/
+├── system.json   # required — manifest, validates against schemas/system.schema.json
+├── CLAUDE.md     # required — prompt injected into Claude Code at session start
+└── README.md     # required — human docs for browsing on GitHub</code></pre>
           </div>
-          <div class="callout"><span class="co-label">Note</span><p>If <code>claude-system</code> isn't found, install it via <a href="/docs.html#install">curl, npm, or pip</a>, then restart your terminal.</p></div>
-
-          <h2 id="initialize">Initialize<a class="anchor" href="#initialize" aria-label="Link to Initialize">#</a></h2>
-          <p>Scaffold a fresh project. This creates the folder structure, a starter config, and the token file.</p>
+          <p>Additional folders are optional — add them only if you need them:</p>
           <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>cp -r template/starter-system systems/my-new-system
-cd my-system</code></pre>
+            <div class="code-head"><span>optional</span></div>
+            <pre><code>├── skills/       # optional — Claude Code skills
+├── agents/       # optional — subagents
+├── commands/     # optional — slash commands
+├── hooks/        # optional — hooks
+└── settings.json # optional — Claude Code settings overrides (see template)</code></pre>
           </div>
-          <p>You'll get this structure:</p>
+          <p>Both <code>template/starter-system/</code> (the copy-me template) and <code>systems/example-system/</code> (a permanently-valid CI fixture) demonstrate the minimal structure. Prefer copying the template:</p>
           <div class="codeblock">
-            <div class="code-head"><span>project structure</span></div>
-            <pre><code>my-system/
-├─ claude-system.config.json   # project settings
-├─ src/
-│  ├─ tokens.css               # design tokens
-│  ├─ components/              # reusable pieces
-│  └─ pages/                   # page templates
-└─ dist/                       # build output (generated)</code></pre>
+            <div class="code-head"><span>terminal — scaffold</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>cp -r template/starter-system systems/my-new-system</code></pre>
+          </div>
+          <div class="callout tip"><span class="co-label">Tip</span><p>Or use the CLI helper: <code>claude-system create my-new-system</code> — it copies the template and patches <code>"name"</code> for you.</p></div>
+
+          <h2 id="system-json">system.json — field by field<a class="anchor" href="#system-json" aria-label="Link to system.json">#</a></h2>
+          <p><code>system.json</code> validates against <a href="https://github.com/hariomlohardev/claude-system/blob/main/schemas/system.schema.json" target="_blank" rel="noopener">schemas/system.schema.json</a> (JSON Schema draft-07, <code>additionalProperties: false</code> at every level — unknown fields are rejected). The schema and this doc, plus <code>template/starter-system/</code>, must never drift apart; if you change what's required, update all three.</p>
+
+          <h3>Required fields</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Constraints</th></tr></thead>
+              <tbody>
+                <tr><td>name</td><td>string</td><td><strong>required</strong>, kebab-case <code>^[a-z0-9]+(?:-[a-z0-9]+)*$</code>, 1–64 chars, <strong>must equal folder name</strong></td></tr>
+                <tr><td>displayName</td><td>string</td><td><strong>required</strong>, 1–80 chars — human title in <code>list</code>/<code>info</code>/<code>search</code></td></tr>
+                <tr><td>version</td><td>string</td><td><strong>required</strong>, semver <code>MAJOR.MINOR.PATCH</code> — e.g. <code>1.0.0</code>, <code>0.1.0</code></td></tr>
+                <tr><td>description</td><td>string</td><td><strong>required</strong>, 10–300 chars — one-to-two-sentence summary</td></tr>
+                <tr><td>keywords</td><td>string[]</td><td><strong>required</strong>, 1–15 items, each 1–32 chars, unique — e.g. <code>["open-source","review","pr"]</code></td></tr>
+                <tr><td>author</td><td>object</td><td><strong>required</strong> <code>{ name (required), github (optional), url (optional https://) }</code></td></tr>
+                <tr><td>license</td><td>string</td><td><strong>required</strong>, 1–64 chars — SPDX like <code>MIT</code>, <code>Apache-2.0</code></td></tr>
+                <tr><td>claudeSystem</td><td>object</td><td><strong>required</strong> <code>{ specVersion (semver, e.g. "1.0.0") }</code></td></tr>
+                <tr><td>permissions</td><td>string[]</td><td><strong>required</strong>, default <code>[]</code>, enum — see §3</td></tr>
+              </tbody>
+            </table>
           </div>
 
-          <h2 id="configure">Configure<a class="anchor" href="#configure" aria-label="Link to Configure">#</a></h2>
-          <p>Open <code>claude-system.config.json</code> and set your project's identity. Every key is optional — defaults follow <code>DESIGN.md</code>.</p>
+          <h3>Optional fields</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Constraints</th></tr></thead>
+              <tbody>
+                <tr><td>category</td><td>string</td><td>enum <code>open-source, frontend, backend, testing, security, docs, research, devops, other</code> — omit → <code>other</code></td></tr>
+                <tr><td>repository</td><td>string (URI)</td><td>optional <code>https://</code> — your own repo for this System, if any</td></tr>
+                <tr><td>bugs</td><td>object</td><td>optional <code>{ url (https://) }</code> — where to file issues</td></tr>
+                <tr><td>homepage</td><td>string (URI)</td><td>optional <code>https://</code> — docs or landing page</td></tr>
+                <tr><td>dependencies</td><td>{name,version}[]</td><td>optional, unique — <code>name</code> kebab + <code>version</code> semver/range</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout warn"><span class="co-label">repository / bugs fallback — important</span><p><strong><code>repository</code> is optional.</strong> If you maintain the System only in this monorepo, <strong>omit</strong> it — that's the expected case, don't invent a URL. <strong><code>bugs.url</code> is where to file issues.</strong> If <code>bugs</code> is omitted, tooling treats the default as <code>&lt;this monorepo&gt;/issues</code> tagged <code>system:&lt;name&gt;</code>. It does <strong>NOT</strong> assume <code>repository + "/issues"</code> exists. Be explicit rather than relying on inference. <code>homepage</code> is purely informational.</p></div>
+
+          <p><strong>Example — minimal valid manifest (no external repo):</strong></p>
           <div class="codeblock">
-            <div class="code-head"><span>claude-system.config.json</span><button class="copy" type="button">Copy</button></div>
+            <div class="code-head"><span>system.json — minimal</span><button class="copy" type="button">Copy</button></div>
             <pre><code>{
-  "name":   "my-system",
-  "accent": "#B93A13",
-  "paper":  "#F6F4EE",
-  "fonts":  { "display": "Fraunces", "body": "Archivo", "mono": "Space Mono" },
-  "build":  { "out": "dist", "minify": true },
-  "pages":  ["index"]
+  "name": "my-team-docs",
+  "displayName": "Team Docs Helper",
+  "version": "0.1.0",
+  "description": "Opinionated docs workflow with review checklists and release notes.",
+  "keywords": ["docs", "writing"],
+  "author": { "name": "Your Name" },
+  "license": "MIT",
+  "claudeSystem": { "specVersion": "1.0.0" },
+  "permissions": ["filesystem:read"]
 }</code></pre>
           </div>
+
+          <p><strong>Example — with external repo and explicit bugs:</strong></p>
+          <div class="codeblock">
+            <div class="code-head"><span>system.json — with repo</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>{
+  "name": "rails-review",
+  "displayName": "Rails Review",
+  "version": "1.2.0",
+  "description": "Rails-focused code review System with custom skills and PR checklists.",
+  "keywords": ["rails", "review", "backend"],
+  "category": "backend",
+  "author": { "name": "Ada Lovelace", "github": "ada", "url": "https://example.com" },
+  "license": "MIT",
+  "repository": "https://github.com/ada/rails-review-system",
+  "bugs": { "url": "https://github.com/ada/rails-review-system/issues" },
+  "homepage": "https://example.com/rails-review",
+  "claudeSystem": { "specVersion": "1.0.0" },
+  "dependencies": [],
+  "permissions": ["filesystem:read", "network:read"]
+}</code></pre>
+          </div>
+          <div class="callout"><span class="co-label">Note</span><p>Copy <code>template/starter-system/system.json</code> and replace the placeholder values (<code>"my-new-system"</code>, <code>"Your Name"</code>, <code>"https://example.com"</code>) — a PR that still contains them will be flagged in review.</p></div>
+
+          <h2 id="permissions">Permissions — declare honestly<a class="anchor" href="#permissions" aria-label="Link to Permissions">#</a></h2>
+          <p><code>permissions</code> is a <strong>self-declared</strong> list of capabilities the System may exercise at install/run time. It is <strong>reviewed by maintainers during PR review but not independently verified at runtime</strong> (see <a href="/docs/security">docs/security.md</a>). Declare the honest superset:</p>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Key</th><th>Purpose</th><th>Change it when…</th></tr></thead>
+              <thead><tr><th>Permission</th><th>Meaning</th></tr></thead>
               <tbody>
-                <tr><td>name</td><td>Project identity in metadata</td><td>Always — set it to your system's name.</td></tr>
-                <tr><td>accent</td><td>The single warm accent</td><td>You want a different brand accent (keep contrast ≥ 4.5:1).</td></tr>
-                <tr><td>fonts</td><td>Display / body / mono families</td><td>You're rebranding typography.</td></tr>
-                <tr><td>pages</td><td>Pages to generate</td><td>You add a new page template.</td></tr>
+                <tr><td>filesystem:read</td><td>Reads files outside the installed System folder</td></tr>
+                <tr><td>filesystem:write</td><td>Writes or mutates files</td></tr>
+                <tr><td>network:read</td><td>Makes outbound network requests (fetch, clone)</td></tr>
+                <tr><td>network:write</td><td>Sends data out / pushes</td></tr>
+                <tr><td>shell:exec</td><td>Executes shell commands or scripts</td></tr>
+                <tr><td>credentials:read</td><td>Accesses credentials, tokens, or secrets</td></tr>
               </tbody>
             </table>
           </div>
-
-          <h2 id="design-tokens">Design tokens<a class="anchor" href="#design-tokens" aria-label="Link to Design tokens">#</a></h2>
-          <p>All color, type, and spacing live in <code>src/tokens.css</code>. This is the source of truth — components reference these, never raw values.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>src/tokens.css</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>:root{
-  --paper:#F6F4EE;  --sheet:#FBFAF6;  --paper-2:#EFECE2;
-  --ink:#181611;    --body:#3B382E;   --muted:#5F594A;
-  --line:#DAD5C6;   --accent:#B93A13; --green:#1E7A4E;
-  --serif:'Fraunces',serif; --sans:'Archivo',sans-serif;
-  --mono:'Space Mono',monospace;
-  --ease:cubic-bezier(.22,1,.36,1);
-}</code></pre>
-          </div>
-          <div class="callout warn"><span class="co-label">Warning</span><p>Don't add new hues here. If you need a color that isn't covered, you're likely reaching for decoration — the system is intentionally limited.</p></div>
-
-          <h2 id="components">Components<a class="anchor" href="#components" aria-label="Link to Components">#</a></h2>
-          <p>Generate a component, then edit it. Components are the reusable pieces your pages assemble.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code># generate a component scaffold
-claude-system new button --type component</code></pre>
-          </div>
-          <p>This creates <code>src/components/button.html</code> with the base styles from <code>DESIGN.md</code>:</p>
-          <div class="codeblock">
-            <div class="code-head"><span>src/components/button.html</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>&lt;a class="btn solid" href="#"&gt;Solid button&lt;/a&gt;
-&lt;a class="btn" href="#"&gt;Ghost button&lt;/a&gt;
-
-&lt;style&gt;
-.btn{font-family:var(--mono);font-size:11.5px;letter-spacing:.15em;
-  text-transform:uppercase;padding:14px 20px;border:1px solid var(--ink);
-  color:var(--ink);min-height:46px;display:inline-flex;align-items:center}
-.btn:hover{background:var(--ink);color:var(--paper)}
-.btn.solid{background:var(--ink);color:var(--paper)}
-.btn.solid:hover{background:var(--accent);border-color:var(--accent)}
-&lt;/style&gt;</code></pre>
-          </div>
-          <div class="callout tip"><span class="co-label">Tip</span><p>Keep components small and single-purpose. If a component grows past ~60 lines, split it.</p></div>
-
-          <h2 id="pages">Pages<a class="anchor" href="#pages" aria-label="Link to Pages">#</a></h2>
-          <p>A page composes components into a layout. Start from a built-in template, then customize.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code># create a landing page from the editorial template
-claude-system new index --template editorial</code></pre>
-          </div>
-          <p>Available templates:</p>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Template</th><th>Layout</th><th>Use for</th></tr></thead>
-              <tbody>
-                <tr><td>editorial</td><td>hero · stats · sections</td><td>Landing pages</td></tr>
-                <tr><td>ledger</td><td>filter · rows</td><td>List / index pages</td></tr>
-                <tr><td>notebook</td><td>prose · § headings</td><td>Articles / posts</td></tr>
-                <tr><td>docs</td><td>sidebar · content · toc</td><td>Documentation</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p>Add the page to the <code>pages</code> array in your config so it gets built.</p>
-
-          <h2 id="preview">Preview<a class="anchor" href="#preview" aria-label="Link to Preview">#</a></h2>
-          <p>Start the dev server and open your browser. Changes hot-reload as you edit <code>src/</code>.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>claude-system serve
-# → http://localhost:4000</code></pre>
-          </div>
-          <div class="callout"><span class="co-label">Note</span><p>The dev server reads <code>src/</code> directly — you don't need to rebuild while iterating.</p></div>
-
-          <h2 id="build">Build<a class="anchor" href="#build" aria-label="Link to Build">#</a></h2>
-          <p>When you're happy, build for production. Output goes to <code>dist/</code> as static, minified files.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>claude-system build
-# → wrote dist/index.html (+ tokens, components)</code></pre>
-          </div>
-          <div class="callout warn"><span class="co-label">Warning</span><p>Never hand-edit <code>dist/</code>. It's regenerated on every build — make all changes in <code>src/</code>.</p></div>
-
-          <h2 id="deploy">Deploy<a class="anchor" href="#deploy" aria-label="Link to Deploy">#</a></h2>
-          <p>The output is fully static, so it deploys anywhere. Push <code>dist/</code> to any static host.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>GitHub Pages</span><button class="copy" type="button">Copy</button></div>
-            <pre><code># point GitHub Pages at dist/
-git add dist -f
-git commit -m "deploy"
-git subtree push --prefix dist origin gh-pages</code></pre>
-          </div>
-          <p>Or drag-and-drop <code>dist/</code> onto Netlify, Vercel, or Cloudflare Pages — no config needed.</p>
-
-          <h2 id="verify">Verify<a class="anchor" href="#verify" aria-label="Link to Verify">#</a></h2>
-          <p>Before you ship, run the spec checker. It lints every page against <code>DESIGN.md</code> and reports off-system colors, fonts, spacing, and contrast.</p>
-          <div class="codeblock">
-            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
-            <pre><code>claude-system check
-# ✓ tokens      all on-system
-# ✓ contrast    all pairs ≥ AA
-# ✓ typography  no off-spec fonts
-# ✓ spacing     scale respected
-# 0 errors · 0 warnings</code></pre>
-          </div>
-          <div class="callout tip"><span class="co-label">Tip</span><p>Add <code>claude-system check</code> to your CI so every pull request is verified automatically.</p></div>
-
-          <h2 id="next-steps">Next steps<a class="anchor" href="#next-steps" aria-label="Link to Next steps">#</a></h2>
-          <p>You've built and shipped a system. From here:</p>
+          <p><strong>Rules:</strong></p>
           <ul>
-            <li>Read the <a href="/docs.html">full documentation</a> for every option.</li>
-            <li>Browse the <a href="/#systems">built-in systems</a> for inspiration.</li>
-            <li>Contribute a component or template on <a href="https://github.com/hariomlohardev/claude-system" target="_blank" rel="noopener">GitHub</a>.</li>
+            <li><strong>Default to least privilege.</strong> Start with <code>[]</code> and add only what you need. An empty list is valid and preferred if your System only provides prompt/skills.</li>
+            <li><strong>If your <code>hooks/</code> or <code>skills/</code> run <code>exec</code>, you need <code>shell:exec</code>.</strong> Don't hide it.</li>
+            <li><strong>If you fetch remote content at install or run time, include <code>network:read</code> (and <code>network:write</code> if you push).</strong></li>
+            <li><strong>Reviewers will compare <code>permissions</code> against <code>skills/</code>, <code>agents/</code>, <code>commands/</code>, <code>hooks/</code>, and <code>CLAUDE.md</code>.</strong> A System that declares <code>[]</code> but ships a hook that <code>curl | bash</code> will be rejected. This is a trust signal for users running <code>claude-system install</code>.</li>
           </ul>
+          <p>Users are expected to read <code>permissions</code> before installing, with the same scrutiny they'd give any third-party package.</p>
+
+          <h2 id="other-files">Other files<a class="anchor" href="#other-files" aria-label="Link to Other files">#</a></h2>
+          <h3>CLAUDE.md</h3>
+          <p>This is the prompt injected when the user runs <code>claude-system run &lt;name&gt;</code>. Write it for the model, not for GitHub browsers:</p>
+          <ul>
+            <li>Role and goals ("You are a …")</li>
+            <li>Workflows and quality bars</li>
+            <li>When to use which <code>skills/</code>, <code>agents/</code>, <code>commands/</code></li>
+            <li>Repo-local gotchas and checklists</li>
+          </ul>
+          <p>Keep it concise and actionable. See the placeholder in <code>template/starter-system/CLAUDE.md</code> for structure.</p>
+          <h3>README.md</h3>
+          <p>Human docs shown on GitHub under <code>systems/&lt;name&gt;/</code>. Explain what the System does, who it's for, prerequisites, and usage (<code>claude-system install &lt;name&gt;</code> → <code>claude-system run &lt;name&gt;</code>). The template's <code>README.md</code> tells you what to replace.</p>
+          <h3>settings.json (optional)</h3>
+          <p>If you need to ship Claude Code settings, include <code>settings.json</code> at the System root. The template ships with minimal permissive defaults:</p>
+          <div class="codeblock">
+            <div class="code-head"><span>settings.json</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>{
+  "permissions": {
+    "allow": [],
+    "deny": []
+  }
+}</code></pre>
+          </div>
+          <p>Only add settings you truly need — prefer empty/permissive defaults and let the user narrow them.</p>
+
+          <h2 id="testing-locally">Testing locally before opening a PR<a class="anchor" href="#testing-locally" aria-label="Link to Testing locally">#</a></h2>
+          <p>Validate at least these checks before pushing — they mirror what <code>validate.yml</code> does in CI:</p>
+          <p><strong>1. Schema validity</strong></p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal — ajv</span><button class="copy" type="button">Copy</button></div>
+            <pre><code># any draft-07 validator works; example with ajv-cli
+npx -y ajv-cli validate \
+  -s schemas/system.schema.json \
+  -d systems/&lt;name&gt;/system.json --strict</code></pre>
+          </div>
+          <p>Or, when the CLI is built:</p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal — validate</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>node cli/src/index.js validate systems/&lt;name&gt;
+# or: claude-system validate &lt;name&gt;</code></pre>
+          </div>
+          <p><strong>2. Folder-name rule</strong></p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code># must pass: folder name == system.json name
+name=$(jq -r .name systems/&lt;name&gt;/system.json)
+[ "$name" = "&lt;name&gt;" ] &amp;&amp; echo "ok" || echo "MISMATCH: folder &lt;name&gt; vs name $name"</code></pre>
+          </div>
+          <p><strong>3. Required files present</strong></p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>test -f systems/&lt;name&gt;/system.json &amp;&amp; test -f systems/&lt;name&gt;/CLAUDE.md &amp;&amp; test -f systems/&lt;name&gt;/README.md &amp;&amp; echo "required files ok"</code></pre>
+          </div>
+          <p><strong>4. No unsafe hooks/scripts</strong> — scan <code>hooks/</code> and <code>skills/</code> for <code>curl | sh</code>, <code>rm -rf /</code>, credential exfiltration, etc. (CI runs these checks; run them locally too.)</p>
+          <p><strong>5. Registry preview (optional)</strong></p>
+          <div class="codeblock">
+            <div class="code-head"><span>terminal — preview</span><button class="copy" type="button">Copy</button></div>
+            <pre><code>node scripts/generate-index.js
+cat registry/index.json | jq '.systems[] | select(.name=="&lt;name&gt;")'
+git restore registry/index.json   # don't commit the generated file</code></pre>
+          </div>
+          <p>If any check fails, fix it before opening the PR — it will fail in CI anyway.</p>
+
+          <h2 id="pr-flow">PR flow<a class="anchor" href="#pr-flow" aria-label="Link to PR flow">#</a></h2>
+          <ol>
+            <li><strong>Fork</strong> this repo and clone your fork.</li>
+            <li><strong>Create a branch</strong> from <code>main</code>:
+              <div class="codeblock"><div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div><pre><code>git checkout -b system/&lt;your-name&gt;</code></pre></div>
+            </li>
+            <li><strong>Copy the template:</strong>
+              <div class="codeblock"><div class="code-head"><span>terminal</span><button class="copy" type="button">Copy</button></div><pre><code>cp -r template/starter-system systems/&lt;your-name&gt;</code></pre></div>
+              Replace <code>&lt;your-name&gt;</code> with the same kebab-case value you'll use for <code>"name"</code> in <code>system.json</code>.
+            </li>
+            <li><strong>Edit</strong> <code>systems/&lt;your-name&gt;/</code>:
+              <ul>
+                <li><code>system.json</code> — fill every required field; change all placeholder values</li>
+                <li><code>CLAUDE.md</code> — replace placeholder with real instructions</li>
+                <li><code>README.md</code> — describe the System for humans</li>
+                <li>Add <code>skills/</code>, <code>agents/</code>, <code>commands/</code>, <code>hooks/</code>, <code>settings.json</code> as needed (delete empty placeholder folders if unused)</li>
+              </ul>
+            </li>
+            <li><strong>Test locally</strong> (see §5 above).</li>
+            <li><strong>Commit and push</strong>, then <strong>open a PR</strong> targeting <code>main</code> with title like <code>Add system: &lt;your-name&gt;</code>. Fill the PR template — describe what the System does, why it's useful, and any <code>permissions</code> you declare.</li>
+            <li><strong>CI (<code>validate.yml</code>) runs</strong> on every PR touching <code>systems/**</code>:
+              <ul>
+                <li>Schema validity against <code>schemas/system.schema.json</code></li>
+                <li>Required files present (<code>system.json</code>, <code>CLAUDE.md</code>, <code>README.md</code>)</li>
+                <li>Folder name == <code>system.json:name</code></li>
+                <li>Security checks on hooks/scripts</li>
+                <li><code>registry/index.json</code> not hand-edited</li>
+              </ul>
+              <strong>All checks must pass before merge.</strong> Keep pushing fixes until green — never ask a maintainer to bypass CI.
+            </li>
+            <li><strong>Maintainer review</strong> — a maintainer reviews <code>permissions</code>, content quality, and policy. They may request changes.</li>
+            <li><strong>Merge</strong> — on merge, <code>scripts/generate-index.js</code> regenerates <code>registry/index.json</code> (or a maintainer runs it). Users can then:
+              <div class="codeblock"><div class="code-head"><span>terminal — use it</span><button class="copy" type="button">Copy</button></div><pre><code>claude-system search &lt;keyword&gt;
+claude-system info &lt;your-name&gt;
+claude-system install &lt;your-name&gt;
+claude-system run &lt;your-name&gt;</code></pre></div>
+            </li>
+          </ol>
+
+          <h2 id="registry-generated">registry/index.json is generated — never hand-edit it<a class="anchor" href="#registry-generated" aria-label="Link to registry/index.json is generated">#</a></h2>
+          <p><code>registry/index.json</code> is a <strong>build artifact</strong> rebuilt by <code>scripts/generate-index.js</code> from <code>systems/*/system.json</code>. It is the small file the CLI fetches for <code>search</code>/<code>list</code>/<code>info</code> so users don't clone the whole repo.</p>
+          <ul>
+            <li><strong>Do not edit <code>registry/index.json</code> by hand</strong> in a System PR. Edit your <code>systems/&lt;name&gt;/system.json</code> instead; the index will be regenerated automatically.</li>
+            <li>PRs that hand-edit <code>registry/index.json</code> (instead of editing a <code>system.json</code> and regenerating) will be flagged and required to fix.</li>
+            <li>To preview what the index would contain after your change, run <code>node scripts/generate-index.js</code> locally and inspect the diff — but <strong>restore it before committing</strong> (<code>git restore registry/index.json</code>) unless you're the release path that intentionally commits the generated file.</li>
+          </ul>
+
+          <h2 id="keeping-in-sync">Keeping the contract in sync<a class="anchor" href="#keeping-in-sync" aria-label="Link to Keeping the contract in sync">#</a></h2>
+          <p>If you change what's required in a System, update <strong>all three</strong> together or the repo drifts:</p>
+          <ul>
+            <li><code>schemas/system.schema.json</code></li>
+            <li><code>docs/creating-a-system.md</code> (this guide)</li>
+            <li><code>template/starter-system/</code></li>
+          </ul>
+          <p>See <code>CLAUDE.md</code> → <em>Common tasks</em>.</p>
+          <p>Questions? Open an issue or check <a href="/docs/spec">SYSTEM_SPEC.md</a>, <a href="/docs">docs/architecture.md</a>, and <a href="/docs">docs/registry.md</a>.</p>
 
         </article>
 
         <div class="endmark" aria-hidden="true">◆</div>
 
         <nav class="pager" aria-label="Guide pagination">
-          <a href="/docs.html"><span class="dir">← Prev</span><span class="ttl">Documentation</span></a>
-          <a href="/#systems" class="next"><span class="dir">Next →</span><span class="ttl">Browse systems</span></a>
+          <a href="/docs"><span class="dir">← Documentation</span><span class="ttl">Docs</span></a>
+          <a href="/browse" class="next"><span class="dir">Next →</span><span class="ttl">Browse systems</span></a>
         </nav>
       </div>
 
@@ -491,17 +569,14 @@ git subtree push --prefix dist origin gh-pages</code></pre>
       <aside class="toc" aria-label="On this page">
         <h5><i></i> On this page</h5>
         <ul id="tocList">
-          <li><a href="#before-you-start" class="active">Before you start</a></li>
-          <li><a href="#initialize">Initialize</a></li>
-          <li><a href="#configure">Configure</a></li>
-          <li><a href="#design-tokens">Design tokens</a></li>
-          <li><a href="#components">Components</a></li>
-          <li><a href="#pages">Pages</a></li>
-          <li><a href="#preview">Preview</a></li>
-          <li><a href="#build">Build</a></li>
-          <li><a href="#deploy">Deploy</a></li>
-          <li><a href="#verify">Verify</a></li>
-          <li><a href="#next-steps">Next steps</a></li>
+          <li><a href="#minimum-required-files" class="active">Minimum required files</a></li>
+          <li><a href="#system-json">system.json — field by field</a></li>
+          <li><a href="#permissions">Permissions — declare honestly</a></li>
+          <li><a href="#other-files">Other files</a></li>
+          <li><a href="#testing-locally">Testing locally</a></li>
+          <li><a href="#pr-flow">PR flow</a></li>
+          <li><a href="#registry-generated">registry/index.json is generated</a></li>
+          <li><a href="#keeping-in-sync">Keeping the contract in sync</a></li>
         </ul>
       </aside>
     </div>
