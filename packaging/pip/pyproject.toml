@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "claude-system"
-version = "0.2.0"
+version = "0.3.0"
 description = "claude-system — Python distribution wrapper (thin, bundles cli/dist)"
 readme = "README.md"
 license = "MIT"

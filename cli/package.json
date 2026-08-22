@@ -1,6 +1,6 @@
 {
   "name": "claude-system",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Package-management and ecosystem layer for Claude Code Systems",
   "type": "module",
   "bin": {

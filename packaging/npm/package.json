@@ -1,6 +1,6 @@
 {
   "name": "claude-system",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "claude-system — npm distribution wrapper (thin, re-exports cli/)",
   "private": false,
   "type": "module",
