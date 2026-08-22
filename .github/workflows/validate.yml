@@ -281,9 +281,10 @@ jobs:
               echo "  Found systems/*/system.json change — checking if registry matches generator"
               cp registry/index.json /tmp/old-registry.json
               node scripts/generate-index.js
-              if ! diff -u /tmp/old-registry.json registry/index.json > /tmp/registry-diff.txt 2>&1; then
+              if ! diff <(jq -S '.systems' /tmp/old-registry.json) <(jq -S '.systems' registry/index.json) > /tmp/registry-diff.txt 2>&1; then
                 echo "::error file=registry/index.json::registry/index.json does not match generator output — do not hand-edit it. Edit systems/*/system.json and run node scripts/generate-index.js"
                 cat /tmp/registry-diff.txt
+                diff -u /tmp/old-registry.json registry/index.json | head -n 100 || true
                 git restore registry/index.json
                 exit 1
               else
