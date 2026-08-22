@@ -77,7 +77,10 @@ tmp/
 .remember/logs/
 
 # Claude Code — local-only, not pushed to git (maintained locally per project)
-.claude/
+# Root .claude is local-only; Systems ship their own .claude/skills and .claude/agents
+/.claude/
+!systems/**/.claude/
+!systems/**/.claude/**
 
 # Python
 __pycache__/
