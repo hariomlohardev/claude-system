@@ -1,0 +1,17 @@
+{
+  "$schema": "../../schemas/system.schema.json",
+  "name": "curriculum-system",
+  "displayName": "Study Curriculum",
+  "version": "0.1.0",
+  "description": "A Claude Code-driven self-study curriculum runner — paste a month plan, generate daily materials, test and quiz honestly, and track progress with streaks and reviews.",
+  "keywords": ["study", "curriculum", "learning", "course", "curriculum-runner"],
+  "category": "other",
+  "author": { "name": "Hariom Lohar", "github": "hariomlohardev", "url": "https://github.com/hariomlohardev" },
+  "license": "MIT",
+  "repository": "https://github.com/hariomlohardev/claude-system",
+  "bugs": { "url": "https://github.com/hariomlohardev/claude-system/issues?q=is%3Aissue+is%3Aopen+label%3Acurriculum-system" },
+  "homepage": "https://github.com/hariomlohardev/claude-system#readme",
+  "claudeSystem": { "specVersion": "1.0.0" },
+  "dependencies": [],
+  "permissions": ["filesystem:read", "filesystem:write", "network:read", "network:write", "shell:exec"]
+}

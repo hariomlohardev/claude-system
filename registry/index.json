@@ -1,7 +1,28 @@
 {
   "$schema": "../schemas/registry-index.schema.json",
-  "generatedAt": "2026-08-21T10:58:16.664Z",
+  "generatedAt": "2026-08-22T07:09:18.487Z",
   "systems": [
+    {
+      "name": "curriculum-system",
+      "displayName": "Study Curriculum",
+      "version": "0.1.0",
+      "description": "A Claude Code-driven self-study curriculum runner — paste a month plan, generate daily materials, test and quiz honestly, and track progress with streaks and reviews.",
+      "author": {
+        "name": "Hariom Lohar",
+        "github": "hariomlohardev",
+        "url": "https://github.com/hariomlohardev"
+      },
+      "license": "MIT",
+      "keywords": [
+        "study",
+        "curriculum",
+        "learning",
+        "course",
+        "curriculum-runner"
+      ],
+      "path": "systems/curriculum-system",
+      "category": "other"
+    },
     {
       "name": "example-system",
       "displayName": "Example System (Reference Fixture)",
