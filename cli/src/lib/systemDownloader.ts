@@ -49,7 +49,13 @@ export async function downloadSystemFromGitHub(opts: {
       if (e.type === 'file' && e.path) {
         files.push({ path: e.path as string, download_url: (e.download_url as string | null) ?? null, type: 'file' });
       } else if (e.type === 'dir' && e.url) {
-        queue.push(`${e.url}?ref=${ref}`);
+        try {
+          const u = new URL(e.url);
+          u.searchParams.set('ref', ref);
+          queue.push(u.toString());
+        } catch {
+          queue.push(e.url.includes('?') ? e.url : `${e.url}?ref=${ref}`);
+        }
       }
     }
   }
