@@ -1,6 +1,6 @@
 {
   "$schema": "../schemas/registry-index.schema.json",
-  "generatedAt": "2026-08-22T07:09:18.487Z",
+  "generatedAt": "2026-08-22T08:55:52.138Z",
   "systems": [
     {
       "name": "curriculum-system",
@@ -22,6 +22,27 @@
       ],
       "path": "systems/curriculum-system",
       "category": "other"
+    },
+    {
+      "name": "design-scribe",
+      "displayName": "Design Scribe",
+      "version": "0.1.0",
+      "description": "Builds a living DESIGN.md by collecting URL, screenshot, and image references, iterating on generated HTML previews, and scoring every iteration with an automatic design-critic subagent.",
+      "author": {
+        "name": "hariomlohardev",
+        "github": "hariomlohardev"
+      },
+      "license": "MIT",
+      "keywords": [
+        "design",
+        "design-system",
+        "ui",
+        "reference",
+        "html",
+        "branding"
+      ],
+      "path": "systems/design-scribe",
+      "category": "frontend"
     },
     {
       "name": "example-system",
