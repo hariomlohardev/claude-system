@@ -1,0 +1,13 @@
+{
+  "name": "design-scribe",
+  "displayName": "Design Scribe",
+  "version": "0.1.0",
+  "description": "Builds a living DESIGN.md by collecting URL, screenshot, and image references, iterating on generated HTML previews, and scoring every iteration with an automatic design-critic subagent.",
+  "keywords": ["design", "design-system", "ui", "reference", "html", "branding"],
+  "category": "frontend",
+  "author": { "name": "hariomlohardev", "github": "hariomlohardev" },
+  "license": "MIT",
+  "claudeSystem": { "specVersion": "1.0.0" },
+  "dependencies": [],
+  "permissions": ["filesystem:read", "filesystem:write", "network:read", "shell:exec"]
+}
