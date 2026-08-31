@@ -1,0 +1,23 @@
+name: Stale good first issues
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          only-issue-labels: "good first issue"
+          days-before-issue-stale: 30
+          days-before-issue-close: 7
+          exempt-issue-labels: "pinned,help wanted"
+          stale-issue-message: "Still interested? Comment to keep this open — otherwise it'll auto-close in 7 days."
+          stale-issue-label: "stale"
