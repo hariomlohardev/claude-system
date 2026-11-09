@@ -6,6 +6,30 @@ import { systemJsonSchema, checkUnsafeContent } from '../utils/validation.js';
 import { theme } from '../utils/theme.js';
 import { handleError } from '../utils/errors.js';
 
+function hasSetupWhy(content: string): boolean {
+  return content.split('\n').some((raw) => {
+    const line = raw.trim();
+    return /^#\s*WHY:?\s*\S.{4,}/i.test(line) || /^echo\s+["']?.{6,}/i.test(line);
+  });
+}
+
+function fixHint(error: string, systemPath: string): string | undefined {
+  const folderName = basename(resolve(systemPath));
+  if (error.includes('must exactly match folder name')) {
+    return `Fix: set "name" in system.json to "${folderName}" or rename the folder`;
+  }
+  if (error === 'Missing required file: CLAUDE.md') {
+    return `Fix: cp template/starter-system/CLAUDE.md systems/${folderName}/`;
+  }
+  if (error.includes('permissions does not include "shell:exec"')) {
+    return 'Fix: add "shell:exec" to permissions[] in system.json';
+  }
+  if (error.includes('WHY message missing')) {
+    return 'Fix: add "# WHY: ..." to setup.sh';
+  }
+  return undefined;
+}
+
 export function registerValidate(program: Command): void {
   program
     .command('validate')
@@ -34,6 +58,7 @@ async function validateOne(systemPath: string): Promise<ValidateResult> {
   const errors: string[] = [];
   const warnings: string[] = [];
   const folderName = basename(resolve(systemPath));
+  let permissions: string[] | undefined;
 
   // Required files
   const requiredFiles = ['system.json', 'CLAUDE.md', 'README.md'];
@@ -62,6 +87,7 @@ async function validateOne(systemPath: string): Promise<ValidateResult> {
           errors.push(`system.json: ${issue.path.join('.') || '(root)'} — ${issue.message}`);
         }
       } else {
+        permissions = parsed.data.permissions;
         // name === folder name — skip for template (placeholder "my-new-system" vs "starter-system" is intentional)
         const isTemplate = folderName === 'starter-system' && systemPath.includes('template');
         // Only enforce for real Systems under systems/
@@ -106,6 +132,12 @@ async function validateOne(systemPath: string): Promise<ValidateResult> {
     if (existsSync(filePath)) {
       try {
         const content = await readFile(filePath, 'utf-8');
+        if (permissions && !permissions.includes('shell:exec')) {
+          errors.push('setup.sh exists but permissions does not include "shell:exec"');
+        }
+        if (!hasSetupWhy(content)) {
+          errors.push('setup.sh WHY message missing');
+        }
         const issues = checkUnsafeContent(content);
         for (const iss of issues) {
           warnings.push(`${f}:${iss.line} — ${iss.message} — "${iss.snippet}"`);
@@ -167,7 +199,11 @@ export async function runValidate(targetPath: string): Promise<ValidateResult[]>
       }
     } else {
       console.log(theme.error(`${theme.cyan(rel)} — invalid`));
-      for (const e of res.errors) console.log(`  ${theme.red('✗')} ${e}`);
+      for (const e of res.errors) {
+        console.log(`  ${theme.red('✗')} ${e}`);
+        const hint = fixHint(e, p);
+        if (hint) console.log(`    ${theme.dim(hint)}`);
+      }
       for (const w of res.warnings) console.log(`  ${theme.warn(w)}`);
     }
   }

